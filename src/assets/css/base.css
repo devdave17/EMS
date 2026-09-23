@@ -1,0 +1,129 @@
+/* =========================
+   Base Document Styles
+   ========================= */
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+  font-family: var(--font-family);
+  font-size: var(--text-body);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-body);
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* =========================
+   Typography
+   ========================= */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+h1 {
+  font-size: var(--text-page-heading);
+  line-height: var(--line-page-heading);
+  font-weight: var(--font-weight-bold);
+}
+
+h2 {
+  font-size: var(--text-section-heading);
+  line-height: var(--line-section-heading);
+}
+
+h3 {
+  font-size: var(--text-card-heading);
+  line-height: var(--line-card-heading);
+}
+
+p {
+  color: var(--color-text-secondary);
+}
+
+small {
+  font-size: var(--text-body-small);
+  line-height: var(--line-body-small);
+}
+
+a {
+  color: var(--color-primary);
+  transition:
+    color var(--transition-fast),
+    opacity var(--transition-fast);
+}
+
+a:hover {
+  color: var(--color-primary-hover);
+}
+
+/* =========================
+   Text Utilities
+   ========================= */
+
+.text-primary {
+  color: var(--color-text-primary);
+}
+
+.text-secondary {
+  color: var(--color-text-secondary);
+}
+
+.text-muted {
+  color: var(--color-text-muted);
+}
+
+.text-disabled {
+  color: var(--color-text-disabled);
+}
+
+/* =========================
+   Accessibility
+   ========================= */
+
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* =========================
+   Selection
+   ========================= */
+
+::selection {
+  background-color: var(--color-primary-light);
+  color: var(--color-primary-dark);
+}
+
+/* -----------------------------------------
+   Visually Hidden
+   ----------------------------------------- */
+
+.visually-hidden {
+    position: absolute !important;
+
+    width: 1px !important;
+    height: 1px !important;
+
+    padding: 0 !important;
+    margin: -1px !important;
+
+    overflow: hidden !important;
+
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+
+    border: 0 !important;
+}

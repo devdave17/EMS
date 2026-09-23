@@ -1,0 +1,558 @@
+/* =========================================
+   EMS — Student Dashboard
+   ========================================= */
+
+
+/* -----------------------------------------
+   Welcome Header
+   ----------------------------------------- */
+
+.student-welcome {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: var(--space-6);
+}
+
+.student-welcome__content {
+    min-width: 0;
+}
+
+.student-welcome__eyebrow {
+    color: var(--color-primary);
+
+    font-size: var(--text-body-small);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-body-small);
+}
+
+.student-welcome__title {
+    margin-top: var(--space-1);
+
+    color: var(--color-text-primary);
+
+    font-size: var(--text-page-heading);
+    line-height: var(--line-page-heading);
+    font-weight: var(--font-weight-bold);
+}
+
+.student-welcome__description {
+    max-width: 680px;
+
+    margin-top: var(--space-2);
+
+    color: var(--color-text-secondary);
+
+    font-size: var(--text-body);
+    line-height: var(--line-body);
+}
+
+
+/* -----------------------------------------
+   Student Quick Action
+   ----------------------------------------- */
+
+.student-welcome__action {
+    flex-shrink: 0;
+}
+
+
+/* -----------------------------------------
+   Student Stats
+   ----------------------------------------- */
+
+.student-stats {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: var(--space-5);
+}
+
+.student-stat {
+    display: flex;
+    align-items: flex-start;
+
+    gap: var(--space-4);
+
+    min-width: 0;
+}
+
+.student-stat__icon {
+    width: 42px;
+    height: 42px;
+
+    flex-shrink: 0;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: var(--radius-md);
+
+    background-color: var(--color-primary-light);
+    color: var(--color-primary);
+
+    font-size: 16px;
+    font-weight: var(--font-weight-bold);
+}
+
+.student-stat__content {
+    min-width: 0;
+}
+
+.student-stat__label {
+    color: var(--color-text-muted);
+
+    font-size: var(--text-body-small);
+    line-height: var(--line-body-small);
+}
+
+.student-stat__value {
+    margin-top: 4px;
+
+    color: var(--color-text-primary);
+
+    font-size: 24px;
+    line-height: 30px;
+    font-weight: var(--font-weight-bold);
+}
+
+.student-stat__meta {
+    margin-top: 2px;
+
+    color: var(--color-text-muted);
+
+    font-size: var(--text-caption);
+    line-height: var(--line-caption);
+}
+
+
+/* -----------------------------------------
+   Main Dashboard Grid
+   ----------------------------------------- */
+
+.student-dashboard-grid {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1.65fr)
+        minmax(300px, 0.85fr);
+
+    gap: var(--space-6);
+}
+
+
+/* -----------------------------------------
+   Upcoming Exam Card
+   ----------------------------------------- */
+
+.student-next-exam {
+    overflow: hidden;
+}
+
+.student-next-exam__top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: var(--space-4);
+}
+
+.student-next-exam__title {
+    color: var(--color-text-primary);
+
+    font-size: 20px;
+    line-height: 28px;
+    font-weight: var(--font-weight-semibold);
+}
+
+.student-next-exam__subject {
+    margin-top: 4px;
+
+    color: var(--color-text-muted);
+
+    font-size: var(--text-body-small);
+}
+
+.student-next-exam__body {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: var(--space-4);
+
+    margin-top: var(--space-6);
+}
+
+.student-exam-detail {
+    padding: 16px;
+
+    background-color: var(--color-surface-secondary);
+
+    border-radius: var(--radius-md);
+}
+
+.student-exam-detail__label {
+    color: var(--color-text-muted);
+
+    font-size: var(--text-caption);
+    line-height: var(--line-caption);
+}
+
+.student-exam-detail__value {
+    margin-top: 4px;
+
+    color: var(--color-text-primary);
+
+    font-size: var(--text-body);
+    font-weight: var(--font-weight-semibold);
+    line-height: 20px;
+}
+
+.student-next-exam__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: var(--space-4);
+
+    margin-top: var(--space-6);
+    padding-top: var(--space-5);
+
+    border-top:
+        var(--border-width)
+        solid
+        var(--color-border);
+}
+
+.student-next-exam__countdown {
+    color: var(--color-text-secondary);
+
+    font-size: var(--text-body-small);
+}
+
+.student-next-exam__countdown strong {
+    color: var(--color-primary);
+    font-weight: var(--font-weight-semibold);
+}
+
+
+/* -----------------------------------------
+   Exam Status
+   ----------------------------------------- */
+
+.exam-status {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 6px;
+}
+
+.exam-status__dot {
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background-color: currentColor;
+}
+
+
+/* -----------------------------------------
+   Recent Results
+   ----------------------------------------- */
+
+.student-results-list {
+    display: flex;
+    flex-direction: column;
+
+    gap: 0;
+}
+
+.student-result-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: var(--space-4);
+
+    padding: 16px 0;
+
+    border-bottom:
+        var(--border-width)
+        solid
+        var(--color-border);
+}
+
+.student-result-item:first-child {
+    padding-top: 0;
+}
+
+.student-result-item:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
+}
+
+.student-result-item__main {
+    min-width: 0;
+}
+
+.student-result-item__title {
+    color: var(--color-text-primary);
+
+    font-size: var(--text-body);
+    font-weight: var(--font-weight-medium);
+    line-height: 20px;
+}
+
+.student-result-item__meta {
+    margin-top: 2px;
+
+    color: var(--color-text-muted);
+
+    font-size: var(--text-caption);
+    line-height: var(--line-caption);
+}
+
+.student-result-item__score {
+    flex-shrink: 0;
+
+    color: var(--color-text-primary);
+
+    font-size: 16px;
+    font-weight: var(--font-weight-semibold);
+}
+
+
+/* -----------------------------------------
+   Notifications
+   ----------------------------------------- */
+
+.student-notifications {
+    display: flex;
+    flex-direction: column;
+}
+
+.student-notification {
+    display: flex;
+    align-items: flex-start;
+
+    gap: var(--space-3);
+
+    padding: 14px 0;
+
+    border-bottom:
+        var(--border-width)
+        solid
+        var(--color-border);
+}
+
+.student-notification:first-child {
+    padding-top: 0;
+}
+
+.student-notification:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
+}
+
+.student-notification__icon {
+    width: 32px;
+    height: 32px;
+
+    flex-shrink: 0;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: var(--radius-md);
+
+    background-color: var(--color-surface-secondary);
+
+    color: var(--color-text-secondary);
+
+    font-size: 13px;
+}
+
+.student-notification__content {
+    min-width: 0;
+}
+
+.student-notification__title {
+    color: var(--color-text-primary);
+
+    font-size: var(--text-body-small);
+    font-weight: var(--font-weight-semibold);
+    line-height: 20px;
+}
+
+.student-notification__message {
+    margin-top: 2px;
+
+    color: var(--color-text-secondary);
+
+    font-size: var(--text-caption);
+    line-height: var(--line-caption);
+}
+
+.student-notification__time {
+    margin-top: 4px;
+
+    color: var(--color-text-muted);
+
+    font-size: 11px;
+    line-height: 16px;
+}
+
+
+/* -----------------------------------------
+   Quick Actions
+   ----------------------------------------- */
+
+.student-quick-actions {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: var(--space-4);
+}
+
+.student-quick-action {
+    min-height: 88px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+
+    padding: var(--space-4);
+
+    background-color: var(--color-surface);
+
+    border:
+        var(--border-width)
+        solid
+        var(--color-border);
+
+    border-radius: var(--radius-md);
+
+    transition:
+        border-color var(--transition-fast),
+        background-color var(--transition-fast);
+}
+
+.student-quick-action:hover {
+    background-color: var(--color-primary-light);
+
+    border-color:
+        rgba(55, 48, 163, 0.20);
+}
+
+.student-quick-action__icon {
+    color: var(--color-primary);
+
+    font-size: 18px;
+}
+
+.student-quick-action__label {
+    margin-top: 8px;
+
+    color: var(--color-text-primary);
+
+    font-size: var(--text-body-small);
+    font-weight: var(--font-weight-semibold);
+}
+
+
+/* -----------------------------------------
+   Section Header
+   ----------------------------------------- */
+
+.student-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: var(--space-4);
+
+    margin-bottom: var(--space-4);
+}
+
+.student-section-header__title {
+    color: var(--color-text-primary);
+
+    font-size: var(--text-section-heading);
+    line-height: var(--line-section-heading);
+    font-weight: var(--font-weight-semibold);
+}
+
+.student-section-header__link {
+    flex-shrink: 0;
+
+    font-size: var(--text-body-small);
+    font-weight: var(--font-weight-medium);
+}
+
+
+/* -----------------------------------------
+   Responsive
+   ----------------------------------------- */
+
+@media (max-width: 1279px) {
+
+    .student-stats {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .student-dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+@media (max-width: 767px) {
+
+    .student-welcome {
+        flex-direction: column;
+    }
+
+    .student-welcome__action {
+        width: 100%;
+    }
+
+    .student-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .student-next-exam__body {
+        grid-template-columns: 1fr;
+    }
+
+    .student-next-exam__footer {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .student-quick-actions {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+@media (max-width: 479px) {
+
+    .student-welcome__title {
+        font-size: 24px;
+        line-height: 32px;
+    }
+
+    .student-next-exam__title {
+        font-size: 18px;
+        line-height: 26px;
+    }
+}

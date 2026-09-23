@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="My Exams — Exam Management System"
+    >
+
+    <meta name="theme-color" content="#3730A3">
+
+    <title>My Exams — EMS</title>
+
+
+    <!-- =========================
+         Global CSS
+         ========================= -->
+
+    <link
+        rel="stylesheet"
+        href="../../assets/css/variables.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../../assets/css/reset.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../../assets/css/base.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../../assets/css/layout.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../../assets/css/components.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../../assets/css/forms.css"
+    >
+
+    <!-- Page CSS -->
+
+    <link
+        rel="stylesheet"
+        href="../../assets/css/pages/student/exams.css"
+    >
+
+</head>
+
+
+<body>
+
+    <div class="app-shell">
+
+
+        <!-- =================================
+             Sidebar
+             ================================= -->
+
+        <div
+            data-component="../../components/sidebar.html"
+        ></div>
+
+
+        <!-- =================================
+             Main Application
+             ================================= -->
+
+        <div class="app-main">
+
+
+            <!-- =================================
+                 Topbar
+                 ================================= -->
+
+            <div
+                data-component="../../components/topbar.html"
+            ></div>
+
+
+            <!-- =================================
+                 Main Content
+                 ================================= -->
+
+            <main class="app-content">
+
+
+                <!-- =================================
+                     Page Header
+                     ================================= -->
+
+                <header class="student-exams-header">
+
+                    <div class="student-exams-header__content">
+
+                        <h1 class="student-exams-header__title">
+                            My Exams
+                        </h1>
+
+                        <p class="student-exams-header__description">
+                            View your upcoming and completed examinations,
+                            including schedule, duration, and proctoring
+                            requirements.
+                        </p>
+
+                    </div>
+
+                </header>
+
+
+                <!-- =================================
+                     Search & Filters
+                     ================================= -->
+
+                <section
+                    class="exam-filter-bar"
+                    aria-label="Exam filters"
+                >
+
+                    <div class="exam-filter-search">
+
+                        <span
+                            class="exam-filter-search__icon"
+                            aria-hidden="true"
+                        >
+                            ⌕
+                        </span>
+
+                        <label
+                            class="visually-hidden"
+                            for="exam-search"
+                        >
+                            Search exams
+                        </label>
+
+                        <input
+                            type="search"
+                            class="form-control"
+                            id="exam-search"
+                            placeholder="Search exams..."
+                            autocomplete="off"
+                        >
+
+                    </div>
+
+
+                    <div class="exam-filter-select">
+
+                        <label
+                            class="visually-hidden"
+                            for="exam-status"
+                        >
+                            Filter by exam status
+                        </label>
+
+                        <select
+                            class="form-control"
+                            id="exam-status"
+                        >
+                            <option value="ALL">
+                                All Exams
+                            </option>
+
+                            <option value="UPCOMING">
+                                Upcoming
+                            </option>
+
+                            <option value="COMPLETED">
+                                Completed
+                            </option>
+                        </select>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================
+                     Upcoming Exams
+                     ================================= -->
+
+                <section
+                    class="exam-section"
+                    aria-labelledby="upcoming-exams-title"
+                >
+
+                    <div class="exam-section__header">
+
+                        <h2
+                            class="exam-section__title"
+                            id="upcoming-exams-title"
+                        >
+                            Upcoming Exams
+                        </h2>
+
+                        <span class="exam-section__count">
+                            3 examinations
+                        </span>
+
+                    </div>
+
+
+                    <div class="exam-card-grid">
+
+
+                        <!-- Operating Systems -->
+
+                        <article class="exam-card">
+
+                            <div class="exam-card__body">
+
+
+                                <div class="exam-card__top">
+
+                                    <div class="exam-card__title-group">
+
+                                        <h3 class="exam-card__title">
+                                            Operating Systems
+                                        </h3>
+
+                                        <div class="exam-card__code">
+                                            CS-301
+                                        </div>
+
+                                    </div>
+
+
+                                    <span class="badge badge--info">
+                                        Upcoming
+                                    </span>
+
+                                </div>
+
+
+                                <p class="exam-card__subject">
+                                    MCA Semester I
+                                </p>
+
+
+                                <div class="exam-card__details">
+
+
+                                    <div class="exam-card__detail">
+
+                                        <div class="exam-card__detail-label">
+                                            Date
+                                        </div>
+
+                                        <div class="exam-card__detail-value">
+                                            28 Sep 2026
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="exam-card__detail">
+
+                                        <div class="exam-card__detail-label">
+                                            Time
+                                        </div>
+
+                                        <div class="exam-card__detail-value">
+                                            10:00 AM
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="exam-card__detail">
+
+                                        <div class="exam-card__detail-label">
+                                            Duration
+                                        </div>
+
+                                        <div class="exam-card__detail-value">
+                                            90 Minutes
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="exam-card__detail">
+
+                                        <div class="exam-card__detail-label">
+                                            Questions
+                                        </div>
+
+                                        <div class="exam-card__detail-value">
+                                            50
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="exam-card__proctoring">
+
+                                    <span
+                                        class="exam-card__proctoring-icon"
+                                        aria-hidden="true"
+                                    >
+                                        P
+                                    </span>
+
+                                    <span>
+                                        Proctored examination
+                                    </span>
+
+                                </div>
+
+
+                                <div class="exam-card__footer">
+
+                                    <span class="exam-card__footer-info">
+                                        Not started
+                                    </span>
+
+                                    <a
+                                        href="exam-details.html"
+                                        class="btn btn--primary"
+                                    >
+                                        View Details
+                                    </a>
+
+                                </div>
+
+                            </div>
+
+                        </article>
+
+
+                        <!-- DBMS -->
+
+                        <article class="exam-card">
+
+                            <div class="exam-card__body">
+
+
+                                <div class="exam-card__top">
+
+                                    <div class="exam-card__title-group">
+
+                                        <h3 class="exam-card__title">
+                                            Database Management Systems
+                                        </h3>
+
+                                        <div class="exam-card__code">
+                                            CS-302
+                                        </div>
+
+                                    </div>
+
+
+                                    <span class="badge badge--info">
+                                        Upcoming
+                                    </span>
+
+                                </div>
+
+
+                                <p class="exam-card__subject">
+                                    MCA Semester I
+                                </p>
+
+
+                                <div class="exam-card__details">
+
+
+                                    <div class="exam-card__detail">
+
+                                        <div class="exam-card__detail-label">
+                                            Date
+                                        </div>
+
+                                        <div class="exam-card__detail-value">
+                                            02 Oct 2026
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="exam-card__detail">
+
+                                        <div class="exam-card__detail-label">
+                                            Time
+                                        </div>
+
+                                        <div class="exam-card__detail-value">
+                                            02:00 PM
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="exam-card__detail">
+
+                                        <div class="exam-card__detail-label">
+                                            Duration
+                                        </div>
+
+                                        <div class="exam-card__detail-value">
+                                            90 Minutes
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="exam-card__detail">
+
+                                        <div class="exam-card__detail-label">
+                                            Questions
+                                        </div>
+
+                                        <div class="exam-card__detail-value">
+                                            50
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="exam-card__proctoring">
+
+                                    <span
+                                        class="exam-card__proctoring-icon"
+                                        aria-hidden="true"
+                                    >
+                                        P
+                                    </span>
+
+                                    <span>
+                                        Proctored examination
+                                    </span>
+
+                                </div>
+
+
+                                <div class="exam-card__footer">
+
+                                    <span class="exam-card__footer-info">
+                                        Not started
+                                    </span>
+
+                                    <a
+                                        href="exam-details.html"
+                                        class="btn btn--primary"
+                                    >
+                                        View Details
+                                    </a>
+
+                                </div>
+
+                            </div>
+
+                        </article>
+
+
+                        <!-- Computer Networks -->
+
+                        <article class="exam-card">
+
+                            <div class="exam-card__body">
+
+
+                                <div class="exam-card__top">
+
+                                    <div class="exam-card__title-group">
+
+                                        <h3 class="exam-card__title">
+                                            Computer Networks
+                                        </h3>
+
+                                        <div class="exam-card__code">
+                                            CS-303
+                                        </div>
+
+                                    </div>
+
+
+                                    <span class="badge badge--info">
+                                        Upcoming
+                                    </span>
+
+                                </div>
+
+
+                                <p class="exam-card__subject">
+                                    MCA Semester I
+                                </p>
+
+
+                                <div class="exam-card__details">
+
+
+                                    <div class="exam-card__detail">
+
+                                        <div class="exam-card__detail-label">
+                                            Date
+                                        </div>
+
+                                        <div class="exam-card__detail-value">
+                                            07 Oct 2026
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="exam-card__detail">
+
+                                        <div class="exam-card__detail-label">
+                                            Time
+                                        </div>
+
+                                        <div class="exam-card__detail-value">
+                                            10:30 AM
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="exam-card__detail">
+
+                                        <div class="exam-card__detail-label">
+                                            Duration
+                                        </div>
+
+                                        <div class="exam-card__detail-value">
+                                            90 Minutes
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="exam-card__detail">
+
+                                        <div class="exam-card__detail-label">
+                                            Questions
+                                        </div>
+
+                                        <div class="exam-card__detail-value">
+                                            60
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="exam-card__proctoring">
+
+                                    <span
+                                        class="exam-card__proctoring-icon"
+                                        aria-hidden="true"
+                                    >
+                                        P
+                                    </span>
+
+                                    <span>
+                                        Standard examination
+                                    </span>
+
+                                </div>
+
+
+                                <div class="exam-card__footer">
+
+                                    <span class="exam-card__footer-info">
+                                        Not started
+                                    </span>
+
+                                    <a
+                                        href="exam-details.html"
+                                        class="btn btn--primary"
+                                    >
+                                        View Details
+                                    </a>
+
+                                </div>
+
+                            </div>
+
+                        </article>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================
+                     Completed Exams
+                     ================================= -->
+
+                <section
+                    class="exam-section"
+                    aria-labelledby="completed-exams-title"
+                >
+
+                    <div class="exam-section__header">
+
+                        <h2
+                            class="exam-section__title"
+                            id="completed-exams-title"
+                        >
+                            Completed Exams
+                        </h2>
+
+                        <span class="exam-section__count">
+                            1 examination
+                        </span>
+
+                    </div>
+
+
+                    <div class="exam-card-grid">
+
+
+                        <!-- Computer Programming -->
+
+                        <article class="exam-card exam-card--completed">
+
+                            <div class="exam-card__body">
+
+
+                                <div class="exam-card__top">
+
+                                    <div class="exam-card__title-group">
+
+                                        <h3 class="exam-card__title">
+                                            Computer Programming
+                                        </h3>
+
+                                        <div class="exam-card__code">
+                                            CS-304
+                                        </div>
+
+                                    </div>
+
+
+                                    <span class="badge badge--success">
+                                        Completed
+                                    </span>
+
+                                </div>
+
+
+                                <p class="exam-card__subject">
+                                    MCA Semester I
+                                </p>
+
+
+                                <div class="exam-card__details">
+
+
+                                    <div class="exam-card__detail">
+
+                                        <div class="exam-card__detail-label">
+                                            Date
+                                        </div>
+
+                                        <div class="exam-card__detail-value">
+                                            16 Sep 2026
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="exam-card__detail">
+
+                                        <div class="exam-card__detail-label">
+                                            Time
+                                        </div>
+
+                                        <div class="exam-card__detail-value">
+                                            10:00 AM
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="exam-card__detail">
+
+                                        <div class="exam-card__detail-label">
+                                            Duration
+                                        </div>
+
+                                        <div class="exam-card__detail-value">
+                                            90 Minutes
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="exam-card__detail">
+
+                                        <div class="exam-card__detail-label">
+                                            Attempt
+                                        </div>
+
+                                        <div class="exam-card__detail-value">
+                                            Submitted
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="exam-card__proctoring">
+
+                                    <span
+                                        class="exam-card__proctoring-icon"
+                                        aria-hidden="true"
+                                    >
+                                        ✓
+                                    </span>
+
+                                    <span>
+                                        Examination submitted successfully
+                                    </span>
+
+                                </div>
+
+
+                                <div class="exam-card__footer">
+
+                                    <span class="exam-card__footer-info">
+                                        Result available
+                                    </span>
+
+                                    <a
+                                        href="result-details.html"
+                                        class="btn btn--secondary"
+                                    >
+                                        View Result
+                                    </a>
+
+                                </div>
+
+                            </div>
+
+                        </article>
+
+                    </div>
+
+                </section>
+
+
+            </main>
+
+
+            <!-- =================================
+                 Footer
+                 ================================= -->
+
+            <div
+                data-component="../../components/footer.html"
+            ></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================
+         Mobile Sidebar Overlay
+         ================================= -->
+
+    <div
+        class="app-overlay"
+        aria-hidden="true"
+    ></div>
+
+
+    <!-- =================================
+         JavaScript
+         ================================= -->
+
+    <script src="../../assets/js/core/state.js"></script>
+
+    <script src="../../assets/js/core/guard.js"></script>
+
+    <script src="../../assets/js/components/sidebar.js"></script>
+
+    <script src="../../assets/js/core/app.js"></script>
+
+
+    <!-- Student Role Guard -->
+
+    <script>
+        requireRole("STUDENT");
+    </script>
+
+</body>
+
+</html>

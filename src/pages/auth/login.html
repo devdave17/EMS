@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Sign in to the Exam Management System."
+    >
+
+    <meta name="theme-color" content="#3730A3">
+
+    <title>Sign In — EMS</title>
+
+
+    <!-- =========================
+         Global CSS
+         ========================= -->
+
+    <link
+        rel="stylesheet"
+        href="../../assets/css/variables.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../../assets/css/reset.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../../assets/css/base.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../../assets/css/layout.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../../assets/css/components.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../../assets/css/forms.css"
+    >
+
+    <!-- Page-specific CSS -->
+
+    <link
+        rel="stylesheet"
+        href="../../assets/css/pages/auth/login.css"
+    >
+
+</head>
+
+
+<body>
+
+    <main class="login-page">
+
+
+        <!-- =================================
+             Brand Panel
+             ================================= -->
+
+        <section
+            class="login-brand-panel"
+            aria-label="EMS information"
+        >
+
+            <div class="login-brand-content">
+
+                <div
+                    class="login-brand-mark"
+                    aria-hidden="true"
+                >
+                    E
+                </div>
+
+                <h1 class="login-brand-title">
+                    Exam Management System
+                </h1>
+
+                <p class="login-brand-description">
+                    A secure and organized platform for
+                    managing online examinations,
+                    candidates, monitoring, and results.
+                </p>
+
+
+                <div class="login-brand-points">
+
+                    <div class="login-brand-point">
+
+                        <span
+                            class="login-brand-point__icon"
+                            aria-hidden="true"
+                        >
+                            ✓
+                        </span>
+
+                        <span>
+                            Secure role-based examination access
+                        </span>
+
+                    </div>
+
+
+                    <div class="login-brand-point">
+
+                        <span
+                            class="login-brand-point__icon"
+                            aria-hidden="true"
+                        >
+                            ✓
+                        </span>
+
+                        <span>
+                            Organized exam scheduling and management
+                        </span>
+
+                    </div>
+
+
+                    <div class="login-brand-point">
+
+                        <span
+                            class="login-brand-point__icon"
+                            aria-hidden="true"
+                        >
+                            ✓
+                        </span>
+
+                        <span>
+                            Proctoring, alerts, results, and reports
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================
+             Login Panel
+             ================================= -->
+
+        <section class="login-form-panel">
+
+            <div class="login-container">
+
+
+                <!-- Mobile Brand -->
+
+                <div class="login-mobile-brand">
+
+                    <span
+                        class="login-mobile-brand__logo"
+                        aria-hidden="true"
+                    >
+                        E
+                    </span>
+
+                    <span class="login-mobile-brand__name">
+                        EMS
+                    </span>
+
+                </div>
+
+
+                <!-- Header -->
+
+                <header class="login-header">
+
+                    <h2 class="login-title">
+                        Sign in to EMS
+                    </h2>
+
+                    <p class="login-description">
+                        Enter your credentials to access
+                        your examination workspace.
+                    </p>
+
+                </header>
+
+
+                <!-- Login Form -->
+
+                <form
+                    class="login-form"
+                    id="login-form"
+                    novalidate
+                >
+
+
+                    <!-- User ID -->
+
+                    <div class="form-group">
+
+                        <label
+                            class="form-label"
+                            for="user-id"
+                        >
+                            User ID
+                            <span
+                                class="form-label__required"
+                                aria-hidden="true"
+                            >
+                                *
+                            </span>
+                        </label>
+
+                        <input
+                            class="form-control"
+                            type="text"
+                            id="user-id"
+                            name="userId"
+                            placeholder="Enter your user ID"
+                            autocomplete="username"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- Password -->
+
+                    <div class="form-group">
+
+                        <label
+                            class="form-label"
+                            for="password"
+                        >
+                            Password
+                            <span
+                                class="form-label__required"
+                                aria-hidden="true"
+                            >
+                                *
+                            </span>
+                        </label>
+
+
+                        <input
+                            class="form-control"
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- Options -->
+
+                    <div class="login-form__options">
+
+                        <label class="login-remember">
+
+                            <input
+                                type="checkbox"
+                                id="remember-me"
+                                name="rememberMe"
+                            >
+
+                            <span>
+                                Remember me
+                            </span>
+
+                        </label>
+
+
+                        <a
+                            href="#"
+                            class="login-forgot"
+                            id="forgot-password-link"
+                        >
+                            Forgot password?
+                        </a>
+
+                    </div>
+
+
+                    <!-- Submit -->
+
+                    <button
+                        type="submit"
+                        class="btn btn--primary btn--lg login-submit"
+                        id="login-submit"
+                    >
+                        Sign In
+                    </button>
+
+                </form>
+
+
+                <!-- Security Note -->
+
+                <div class="login-security-note">
+
+                    <span
+                        class="login-security-note__icon"
+                        aria-hidden="true"
+                    >
+                        🔒
+                    </span>
+
+                    <span>
+                        Access to examination features is
+                        restricted to authenticated and
+                        authorized users.
+                    </span>
+
+                </div>
+
+
+                <!-- Footer -->
+
+                <footer class="login-footer">
+
+                    <p>
+                        © 2026 Exam Management System
+                    </p>
+
+                </footer>
+
+            </div>
+
+        </section>
+
+    </main>
+    <!-- Mock Data -->
+<script src="../../services/mock/users.js"></script>
+
+<!-- Core Authentication -->
+<script src="../../assets/js/core/auth.js"></script>
+
+<!-- Application State -->
+<script src="../../assets/js/core/state.js"></script>
+
+<!-- Login Page -->
+<script src="../../assets/js/pages/login.js"></script>
+<!-- EMS JavaScript -->
+
+<script src="../../services/mock/users.js"></script>
+
+<script src="../../assets/js/core/auth.js"></script>
+
+<script src="../../assets/js/core/state.js"></script>
+
+<script src="../../assets/js/pages/login.js"></script>
+
+
+</body>
+
+</html>

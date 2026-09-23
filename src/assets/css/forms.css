@@ -1,0 +1,278 @@
+/* =========================================
+   EMS — Form Components
+   ========================================= */
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+
+    gap: var(--space-2);
+}
+
+.form-group + .form-group {
+    margin-top: var(--space-4);
+}
+
+
+/* -----------------------------------------
+   Label
+   ----------------------------------------- */
+
+.form-label {
+    color: var(--color-text-primary);
+
+    font-size: var(--text-body);
+    font-weight: var(--font-weight-medium);
+    line-height: 20px;
+}
+
+.form-label__required {
+    color: var(--color-danger);
+}
+
+
+/* -----------------------------------------
+   Help Text
+   ----------------------------------------- */
+
+.form-help {
+    color: var(--color-text-muted);
+
+    font-size: var(--text-body-small);
+    line-height: var(--line-body-small);
+}
+
+
+/* -----------------------------------------
+   Input / Select / Textarea
+   ----------------------------------------- */
+
+.form-control {
+    width: 100%;
+    min-height: var(--input-height-md);
+
+    padding: 0 var(--space-3);
+
+    background-color: var(--color-surface);
+    border: var(--border-width) solid var(--color-border-strong);
+    border-radius: var(--radius-md);
+
+    color: var(--color-text-primary);
+
+    font-size: var(--text-body);
+    line-height: 20px;
+
+    transition:
+        border-color var(--transition-fast),
+        box-shadow var(--transition-fast),
+        background-color var(--transition-fast);
+}
+
+.form-control::placeholder {
+    color: var(--color-text-disabled);
+}
+
+.form-control:hover {
+    border-color: var(--color-border-strong);
+}
+
+.form-control:focus {
+    border-color: var(--color-primary);
+
+    box-shadow:
+        0 0 0 3px var(--color-primary-light);
+}
+
+.form-control:disabled {
+    background-color: var(--color-surface-secondary);
+    color: var(--color-text-disabled);
+
+    cursor: not-allowed;
+}
+
+.form-control[readonly] {
+    background-color: var(--color-surface-secondary);
+}
+
+
+/* -----------------------------------------
+   Textarea
+   ----------------------------------------- */
+
+textarea.form-control {
+    min-height: 120px;
+    padding-top: var(--space-3);
+    padding-bottom: var(--space-3);
+
+    line-height: var(--line-body);
+}
+
+
+/* -----------------------------------------
+   Select
+   ----------------------------------------- */
+
+select.form-control {
+    cursor: pointer;
+}
+
+
+/* -----------------------------------------
+   Input Sizes
+   ----------------------------------------- */
+
+.form-control--sm {
+    min-height: var(--input-height-sm);
+}
+
+.form-control--lg {
+    min-height: var(--input-height-lg);
+}
+
+
+/* -----------------------------------------
+   Validation
+   ----------------------------------------- */
+
+.form-control--error {
+    border-color: var(--color-danger);
+}
+
+.form-control--error:focus {
+    border-color: var(--color-danger);
+
+    box-shadow:
+        0 0 0 3px var(--color-danger-bg);
+}
+
+.form-control--success {
+    border-color: var(--color-success);
+}
+
+.form-error {
+    color: var(--color-danger);
+
+    font-size: var(--text-body-small);
+    line-height: var(--line-body-small);
+}
+
+.form-success {
+    color: var(--color-success);
+
+    font-size: var(--text-body-small);
+    line-height: var(--line-body-small);
+}
+
+
+/* -----------------------------------------
+   Form Row
+   ----------------------------------------- */
+
+.form-row {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: var(--space-4);
+}
+
+
+/* -----------------------------------------
+   Form Section
+   ----------------------------------------- */
+
+.form-section {
+    padding: var(--space-6);
+
+    background-color: var(--color-surface);
+
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-lg);
+}
+
+.form-section + .form-section {
+    margin-top: var(--space-6);
+}
+
+.form-section__header {
+    margin-bottom: var(--space-5);
+}
+
+.form-section__title {
+    color: var(--color-text-primary);
+
+    font-size: var(--text-card-heading);
+    line-height: var(--line-card-heading);
+    font-weight: var(--font-weight-semibold);
+}
+
+.form-section__description {
+    margin-top: var(--space-1);
+
+    color: var(--color-text-muted);
+
+    font-size: var(--text-body-small);
+}
+
+
+/* -----------------------------------------
+   Checkbox / Radio
+   ----------------------------------------- */
+
+.choice {
+    display: flex;
+    align-items: flex-start;
+
+    gap: var(--space-2);
+
+    color: var(--color-text-secondary);
+
+    cursor: pointer;
+}
+
+.choice input {
+    width: 18px;
+    height: 18px;
+
+    margin-top: 2px;
+
+    accent-color: var(--color-primary);
+
+    cursor: pointer;
+}
+
+.choice__content {
+    min-width: 0;
+}
+
+.choice__label {
+    color: var(--color-text-primary);
+
+    font-size: var(--text-body);
+    font-weight: var(--font-weight-medium);
+}
+
+.choice__description {
+    margin-top: 2px;
+
+    color: var(--color-text-muted);
+
+    font-size: var(--text-body-small);
+}
+
+
+/* -----------------------------------------
+   Responsive Forms
+   ----------------------------------------- */
+
+@media (max-width: 767px) {
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .form-section {
+        padding: var(--space-5);
+    }
+}

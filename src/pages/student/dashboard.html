@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Student Dashboard — Exam Management System"
+    >
+
+    <meta name="theme-color" content="#3730A3">
+
+    <title>Student Dashboard — EMS</title>
+
+
+    <!-- =========================
+         Global CSS
+         ========================= -->
+
+    <link
+        rel="stylesheet"
+        href="../../assets/css/variables.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../../assets/css/reset.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../../assets/css/base.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../../assets/css/layout.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../../assets/css/components.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../../assets/css/forms.css"
+    >
+
+    <!-- Page CSS -->
+
+    <link
+        rel="stylesheet"
+        href="../../assets/css/pages/student/dashboard.css"
+    >
+
+</head>
+
+
+<body>
+
+    <div class="app-shell">
+
+
+        <!-- =================================
+             Sidebar
+             ================================= -->
+
+        <div
+            data-component="../../components/sidebar.html"
+        ></div>
+
+
+        <!-- =================================
+             Main Application
+             ================================= -->
+
+        <div class="app-main">
+
+
+            <!-- =================================
+                 Topbar
+                 ================================= -->
+
+            <div
+                data-component="../../components/topbar.html"
+            ></div>
+
+
+            <!-- =================================
+                 Main Content
+                 ================================= -->
+
+            <main class="app-content">
+
+
+                <!-- =================================
+                     Welcome
+                     ================================= -->
+
+                <section
+                    class="content-section"
+                    aria-labelledby="student-welcome-title"
+                >
+
+                    <div class="student-welcome">
+
+                        <div class="student-welcome__content">
+
+                            <div class="student-welcome__eyebrow">
+                                Student Workspace
+                            </div>
+
+                            <h1
+                                class="student-welcome__title"
+                                id="student-welcome-title"
+                            >
+                                Welcome back, Arjun
+                            </h1>
+
+                            <p class="student-welcome__description">
+                                Keep track of your upcoming examinations,
+                                results, and important examination updates.
+                            </p>
+
+                        </div>
+
+
+                        <div class="student-welcome__action">
+
+                            <a
+                                href="exams.html"
+                                class="btn btn--primary"
+                            >
+                                View My Exams
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================
+                     Statistics
+                     ================================= -->
+
+                <section
+                    class="content-section"
+                    aria-label="Student statistics"
+                >
+
+                    <div class="student-stats">
+
+
+                        <!-- Upcoming -->
+
+                        <article class="card">
+
+                            <div class="card__body">
+
+                                <div class="student-stat">
+
+                                    <div
+                                        class="student-stat__icon"
+                                        aria-hidden="true"
+                                    >
+                                        E
+                                    </div>
+
+                                    <div class="student-stat__content">
+
+                                        <div class="student-stat__label">
+                                            Upcoming Exams
+                                        </div>
+
+                                        <div class="student-stat__value">
+                                            3
+                                        </div>
+
+                                        <div class="student-stat__meta">
+                                            Scheduled for you
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </article>
+
+
+                        <!-- Completed -->
+
+                        <article class="card">
+
+                            <div class="card__body">
+
+                                <div class="student-stat">
+
+                                    <div
+                                        class="student-stat__icon"
+                                        aria-hidden="true"
+                                    >
+                                        ✓
+                                    </div>
+
+                                    <div class="student-stat__content">
+
+                                        <div class="student-stat__label">
+                                            Completed Exams
+                                        </div>
+
+                                        <div class="student-stat__value">
+                                            12
+                                        </div>
+
+                                        <div class="student-stat__meta">
+                                            Successfully submitted
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </article>
+
+
+                        <!-- Results -->
+
+                        <article class="card">
+
+                            <div class="card__body">
+
+                                <div class="student-stat">
+
+                                    <div
+                                        class="student-stat__icon"
+                                        aria-hidden="true"
+                                    >
+                                        R
+                                    </div>
+
+                                    <div class="student-stat__content">
+
+                                        <div class="student-stat__label">
+                                            Results Available
+                                        </div>
+
+                                        <div class="student-stat__value">
+                                            8
+                                        </div>
+
+                                        <div class="student-stat__meta">
+                                            Ready to view
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </article>
+
+
+                        <!-- Pending -->
+
+                        <article class="card">
+
+                            <div class="card__body">
+
+                                <div class="student-stat">
+
+                                    <div
+                                        class="student-stat__icon"
+                                        aria-hidden="true"
+                                    >
+                                        P
+                                    </div>
+
+                                    <div class="student-stat__content">
+
+                                        <div class="student-stat__label">
+                                            Pending Results
+                                        </div>
+
+                                        <div class="student-stat__value">
+                                            4
+                                        </div>
+
+                                        <div class="student-stat__meta">
+                                            Under evaluation
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </article>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================
+                     Main Dashboard Grid
+                     ================================= -->
+
+                <section
+                    class="content-section"
+                    aria-label="Student examination information"
+                >
+
+                    <div class="student-dashboard-grid">
+
+
+                        <!-- =================================
+                             Next Exam
+                             ================================= -->
+
+                        <article
+                            class="card student-next-exam"
+                        >
+
+                            <div class="card__body">
+
+
+                                <div class="student-next-exam__top">
+
+                                    <div>
+
+                                        <h2 class="student-next-exam__title">
+                                            Operating Systems
+                                        </h2>
+
+                                        <p class="student-next-exam__subject">
+                                            MCA Semester I • CS-301
+                                        </p>
+
+                                    </div>
+
+
+                                    <span class="badge badge--info">
+                                        Upcoming
+                                    </span>
+
+                                </div>
+
+
+                                <div class="student-next-exam__body">
+
+
+                                    <div class="student-exam-detail">
+
+                                        <div class="student-exam-detail__label">
+                                            Date
+                                        </div>
+
+                                        <div class="student-exam-detail__value">
+                                            28 Sep 2026
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="student-exam-detail">
+
+                                        <div class="student-exam-detail__label">
+                                            Start Time
+                                        </div>
+
+                                        <div class="student-exam-detail__value">
+                                            10:00 AM
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="student-exam-detail">
+
+                                        <div class="student-exam-detail__label">
+                                            Duration
+                                        </div>
+
+                                        <div class="student-exam-detail__value">
+                                            90 Minutes
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="student-next-exam__footer">
+
+                                    <div class="student-next-exam__countdown">
+
+                                        Starts in:
+
+                                        <strong>
+                                            2 days
+                                        </strong>
+
+                                    </div>
+
+
+                                    <a
+                                        href="exam-details.html"
+                                        class="btn btn--primary"
+                                    >
+                                        View Exam
+                                    </a>
+
+                                </div>
+
+                            </div>
+
+                        </article>
+
+
+                        <!-- =================================
+                             Recent Results
+                             ================================= -->
+
+                        <article class="card">
+
+                            <div class="card__header">
+
+                                <div>
+
+                                    <h2 class="card__title">
+                                        Recent Results
+                                    </h2>
+
+                                    <p class="card__description">
+                                        Your latest examination results.
+                                    </p>
+
+                                </div>
+
+                                <a
+                                    href="results.html"
+                                    class="student-section-header__link"
+                                >
+                                    View All
+                                </a>
+
+                            </div>
+
+
+                            <div class="card__body">
+
+                                <div class="student-results-list">
+
+
+                                    <div class="student-result-item">
+
+                                        <div class="student-result-item__main">
+
+                                            <div class="student-result-item__title">
+                                                Computer Networks
+                                            </div>
+
+                                            <div class="student-result-item__meta">
+                                                Published 24 Sep 2026
+                                            </div>
+
+                                        </div>
+
+                                        <div class="student-result-item__score">
+                                            82%
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="student-result-item">
+
+                                        <div class="student-result-item__main">
+
+                                            <div class="student-result-item__title">
+                                                Database Management Systems
+                                            </div>
+
+                                            <div class="student-result-item__meta">
+                                                Published 20 Sep 2026
+                                            </div>
+
+                                        </div>
+
+                                        <div class="student-result-item__score">
+                                            76%
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="student-result-item">
+
+                                        <div class="student-result-item__main">
+
+                                            <div class="student-result-item__title">
+                                                Computer Programming
+                                            </div>
+
+                                            <div class="student-result-item__meta">
+                                                Published 16 Sep 2026
+                                            </div>
+
+                                        </div>
+
+                                        <div class="student-result-item__score">
+                                            88%
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </article>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================
+                     Notifications + Quick Actions
+                     ================================= -->
+
+                <section
+                    class="content-section"
+                    aria-label="Student updates and actions"
+                >
+
+                    <div class="student-dashboard-grid">
+
+
+                        <!-- Notifications -->
+
+                        <article class="card">
+
+                            <div class="card__header">
+
+                                <div>
+
+                                    <h2 class="card__title">
+                                        Important Updates
+                                    </h2>
+
+                                    <p class="card__description">
+                                        Recent examination notifications.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="card__body">
+
+                                <div class="student-notifications">
+
+
+                                    <div class="student-notification">
+
+                                        <div
+                                            class="student-notification__icon"
+                                            aria-hidden="true"
+                                        >
+                                            !
+                                        </div>
+
+                                        <div class="student-notification__content">
+
+                                            <div class="student-notification__title">
+                                                Operating Systems exam scheduled
+                                            </div>
+
+                                            <div class="student-notification__message">
+                                                Your exam is scheduled for
+                                                28 Sep at 10:00 AM.
+                                            </div>
+
+                                            <div class="student-notification__time">
+                                                Today
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="student-notification">
+
+                                        <div
+                                            class="student-notification__icon"
+                                            aria-hidden="true"
+                                        >
+                                            ✓
+                                        </div>
+
+                                        <div class="student-notification__content">
+
+                                            <div class="student-notification__title">
+                                                Computer Networks result published
+                                            </div>
+
+                                            <div class="student-notification__message">
+                                                Your result is now available.
+                                            </div>
+
+                                            <div class="student-notification__time">
+                                                Yesterday
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="student-notification">
+
+                                        <div
+                                            class="student-notification__icon"
+                                            aria-hidden="true"
+                                        >
+                                            i
+                                        </div>
+
+                                        <div class="student-notification__content">
+
+                                            <div class="student-notification__title">
+                                                Examination instructions updated
+                                            </div>
+
+                                            <div class="student-notification__message">
+                                                Review the latest exam instructions
+                                                before your next attempt.
+                                            </div>
+
+                                            <div class="student-notification__time">
+                                                2 days ago
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </article>
+
+
+                        <!-- Quick Actions -->
+
+                        <article class="card">
+
+                            <div class="card__header">
+
+                                <div>
+
+                                    <h2 class="card__title">
+                                        Quick Actions
+                                    </h2>
+
+                                    <p class="card__description">
+                                        Frequently used actions.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="card__body">
+
+                                <div class="student-quick-actions">
+
+
+                                    <a
+                                        href="exams.html"
+                                        class="student-quick-action"
+                                    >
+
+                                        <span
+                                            class="student-quick-action__icon"
+                                            aria-hidden="true"
+                                        >
+                                            E
+                                        </span>
+
+                                        <span class="student-quick-action__label">
+                                            My Exams
+                                        </span>
+
+                                    </a>
+
+
+                                    <a
+                                        href="results.html"
+                                        class="student-quick-action"
+                                    >
+
+                                        <span
+                                            class="student-quick-action__icon"
+                                            aria-hidden="true"
+                                        >
+                                            R
+                                        </span>
+
+                                        <span class="student-quick-action__label">
+                                            My Results
+                                        </span>
+
+                                    </a>
+
+
+                                    <a
+                                        href="#"
+                                        class="student-quick-action"
+                                    >
+
+                                        <span
+                                            class="student-quick-action__icon"
+                                            aria-hidden="true"
+                                        >
+                                            P
+                                        </span>
+
+                                        <span class="student-quick-action__label">
+                                            Profile
+                                        </span>
+
+                                    </a>
+
+                                </div>
+
+                            </div>
+
+                        </article>
+
+                    </div>
+
+                </section>
+
+
+            </main>
+
+
+            <!-- =================================
+                 Footer
+                 ================================= -->
+
+            <div
+                data-component="../../components/footer.html"
+            ></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================
+         Mobile Sidebar Overlay
+         ================================= -->
+
+    <div
+        class="app-overlay"
+        aria-hidden="true"
+    ></div>
+
+
+    <!-- =================================
+         JavaScript
+         ================================= -->
+
+    <script src="../../assets/js/core/state.js"></script>
+
+    <script src="../../assets/js/core/guard.js"></script>
+    
+    <script src="../../assets/js/components/sidebar.js"></script>
+
+    <script src="../../assets/js/core/app.js"></script>
+
+
+    <!-- Student Dashboard Guard -->
+
+    <script>
+        requireRole("STUDENT");
+    </script>
+
+</body>
+
+</html>
