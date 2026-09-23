@@ -1,4 +1,5 @@
 package com.IIITV.EMS.Services;
+import com.IIITV.EMS.Model.Role;
 import com.IIITV.EMS.Model.User;
 import com.IIITV.EMS.Repository.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

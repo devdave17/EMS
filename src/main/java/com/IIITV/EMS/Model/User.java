@@ -1,5 +1,6 @@
 package com.IIITV.EMS.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -15,6 +16,7 @@ public class User {
 
     private String email;
 
+    @JsonIgnore
     private String password;
 
     private Role role;
