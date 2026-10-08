@@ -1,68 +1,79 @@
 /* =========================================
    EMS — Authentication Service
-   Frontend Mock Authentication
    ========================================= */
 
-
 /**
- * Authenticate a user using the mock user list.
+ * Authenticate a user through the EMS backend.
  *
- * NOTE:
- * This is only for the frontend prototype.
- * Real authentication will be handled by the
- * Spring Boot backend later.
- *
- * @param {string} userId
+ * @param {string} email
  * @param {string} password
- * @returns {object}
+ * @returns {Promise<{success: boolean, user?: object, message?: string}>}
  */
-function authenticateUser(userId, password) {
+async function authenticateUser(email, password) {
 
-    const normalizedUserId = userId.trim();
+    const normalizedEmail = String(email ?? "").trim();
 
-    if (!normalizedUserId || !password) {
+    if (!normalizedEmail || !password) {
         return {
             success: false,
-            message: "Please enter your User ID and password."
+            message: "Please enter your email and password."
         };
     }
 
-    const user = MOCK_USERS.find(
-        (item) =>
-            item.userId === normalizedUserId &&
-            item.password === password
-    );
+    try {
+        const response = await fetch("/api/auth/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                email: normalizedEmail,
+                password
+            })
+        });
 
-    if (!user) {
+        let responseData = null;
+
+        try {
+            responseData = await response.json();
+        } catch (error) {
+            // A non-JSON response is handled below as an invalid response.
+        }
+
+        if (!response.ok) {
+            return {
+                success: false,
+                message:
+                    responseData?.message ||
+                    (response.status === 401 || response.status === 403
+                        ? "Invalid email or password."
+                        : "Sign in failed. Please try again.")
+            };
+        }
+
+        if (!responseData || typeof responseData !== "object" || Array.isArray(responseData)) {
+            return {
+                success: false,
+                message: "The server returned an invalid sign-in response."
+            };
+        }
+
+        return {
+            success: true,
+            user: responseData
+        };
+
+    } catch (error) {
         return {
             success: false,
-            message: "Invalid User ID or password."
+            message: "Unable to connect to the server. Please try again."
         };
     }
-
-    /*
-     * Do not keep the password in the authenticated
-     * session object.
-     */
-
-    const authenticatedUser = {
-        id: user.id,
-        userId: user.userId,
-        name: user.name,
-        role: user.role,
-        roleLabel: user.roleLabel,
-        email: user.email
-    };
-
-    return {
-        success: true,
-        user: authenticatedUser
-    };
 }
 
 
 /**
- * Get the dashboard path for a user's role.
+ * Get the dashboard path for a user's backend role.
  *
  * @param {string} role
  * @returns {string|null}
@@ -72,11 +83,10 @@ function getDashboardPath(role) {
     const dashboardMap = {
         STUDENT: "../student/dashboard.html",
         TEACHER: "../teacher/dashboard.html",
-        ADMIN: "../admin/dashboard.html",
-        AUTHORITY: "../authority/dashboard.html"
+        ADMIN: "../admin/dashboard.html"
     };
 
-    return dashboardMap[role] || null;
+    return Object.prototype.hasOwnProperty.call(dashboardMap, role) ? dashboardMap[role] : null;
 }
 
 
@@ -88,12 +98,9 @@ function getDashboardPath(role) {
  */
 function isValidRole(role) {
 
-    const validRoles = [
+    return [
         "STUDENT",
         "TEACHER",
-        "ADMIN",
-        "AUTHORITY"
-    ];
-
-    return validRoles.includes(role);
+        "ADMIN"
+    ].includes(role);
 }

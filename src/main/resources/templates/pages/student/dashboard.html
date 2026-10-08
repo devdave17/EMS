@@ -802,13 +802,21 @@
 
     <script src="../../assets/js/core/app.js"></script>
 
+    <script src="../../assets/js/core/dashboard.js"></script>
+    <!-- Arjun add line-->
+
 
     <!-- Student Dashboard Guard -->
 
     <script>
         requireRole("STUDENT");
     </script>
+    <script>
+        const testUser = getCurrentUser();
 
+        document.getElementById("student-welcome-title").textContent =
+            `Welcome back, ${testUser.name}`;
+    </script>
 </body>
 
 </html>
