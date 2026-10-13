@@ -54,20 +54,27 @@ async function handleLoginSubmit(event) {
     }
 
     const user = result.user;
-    const dashboardPath = getDashboardPath(user?.role);
+    const token = result.token;
 
+    const role = String(user?.role ?? "").toUpperCase();
+    const dashboardPath = getDashboardPath(role);
+    console.log(dashboardPath);
     if (!dashboardPath) {
         showLoginError("Your account role is not supported.");
         setLoginLoading(false);
         return;
     }
 
+// Save JWT token
+    localStorage.setItem("token", token);
+
+// Save user session
     const sessionSaved = setCurrentUser(user);
 
     if (!sessionSaved) {
-        showLoginError(
-            "Unable to create your session. Please try again."
-        );
+        localStorage.removeItem("token");
+
+        showLoginError("Unable to create your session. Please try again.");
         setLoginLoading(false);
         return;
     }

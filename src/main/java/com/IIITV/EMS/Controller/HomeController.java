@@ -16,5 +16,20 @@ public class HomeController {
         return "pages/auth/login";
     }
 
+    @GetMapping("auth/student/dashboard")
+    public String studentDashboard(){
+        return "pages/student/dashboard";
+    }
+
+    @GetMapping("auth/teacher/dashboard")
+    public String teacherDashboard(){
+        return "pages/teacher/dashboard";
+    }
+
+    @GetMapping("auth/admin/dashboard")
+    public String adminDashboard(){
+        return "pages/admin/dashboard";
+    }
+
 
 }
