@@ -2,9 +2,12 @@ package com.IIITV.EMS.Services;
 import com.IIITV.EMS.Model.Role;
 import com.IIITV.EMS.Model.User;
 import com.IIITV.EMS.Repository.UserRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -29,11 +32,52 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public Optional<User> findByEmail(String email) {
-        return userRepository.findByEmail(email);
+    public User updateUser(String id, User updatedUser) {
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setName(updatedUser.getName());
+        user.setEmail(updatedUser.getEmail());
+        user.setRole(updatedUser.getRole());
+        user.setStatus(updatedUser.getStatus());
+
+        if (updatedUser.getPassword() != null &&
+                !updatedUser.getPassword().isBlank()) {
+
+            user.setPassword(
+                    passwordEncoder.encode(updatedUser.getPassword())
+            );
+        }
+
+        return userRepository.save(user);
+    }
+    // Get All Users
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 
-    public boolean existsByEmail(String email) {
-        return userRepository.existsByEmail(email);
+    // Get User By ID
+    public User getUserById(String id) {
+        return userRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                "User not found"
+                        )
+                );
+    }
+
+    // Delete User
+    public void deleteUser(String id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                "User not found"
+                        )
+                );
+
+        userRepository.delete(user);
     }
 }

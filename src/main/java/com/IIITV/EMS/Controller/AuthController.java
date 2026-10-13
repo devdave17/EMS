@@ -6,24 +6,26 @@ import com.IIITV.EMS.Services.AuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
 
     private final AuthService authService;
-
     public AuthController(AuthService authService) {
         this.authService = authService;
     }
 
     @PostMapping("/login")
-    public ResponseEntity<User> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<Map<String, Object>> login(
+            @RequestBody LoginRequest request) {
 
-        User user = authService.login(
-                request.getEmail(),
-                request.getPassword()
+        return ResponseEntity.ok(
+                authService.login(
+                        request.getEmail(),
+                        request.getPassword()
+                )
         );
-
-        return ResponseEntity.ok(user);
     }
 }
