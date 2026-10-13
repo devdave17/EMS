@@ -1,0 +1,60 @@
+Assignment 4 — Curl Transcript
+Project: Exam Management System (EMS)
+Service: Quiz Service
+Base URL: http://localhost:8080/api/quizzes
+
+1. Create a quiz successfully
+
+Command:
+curl -i -X POST http://localhost:8080/api/quizzes -H "Authorization: Bearer %TOKEN%" -H "Content-Type: application/json" -H "Idempotency-Key: assignment4-quiz-101" -d "{\"title\":\"Assignment 4 Java Quiz\",\"description\":\"Testing quiz creation and idempotency\"}"
+
+Response:
+HTTP/1.1 201
+Location: http://localhost:8080/api/quizzes/6ace6af50fe11a1a4185c58d
+Content-Type: application/json
+
+{"createdAt":"2026-10-13T23:01:33.5287993","createdBy":null,"description":"Testing quiz creation and idempotency","id":"6ace6af50fe11a1a4185c58d","status":"DRAFT","title":"Assignment 4 Java Quiz","updatedAt":"2026-10-13T23:01:33.5287993"}
+
+2. Repeat the same request with the same idempotency key
+
+Command:
+curl -i -X POST http://localhost:8080/api/quizzes -H "Authorization: Bearer %TOKEN%" -H "Content-Type: application/json" -H "Idempotency-Key: assignment4-quiz-101" -d "{\"title\":\"Assignment 4 Java Quiz\",\"description\":\"Testing quiz creation and idempotency\"}"
+
+Response:
+HTTP/1.1 200
+Content-Type: application/json
+
+{"createdAt":"2026-10-13T23:01:33.528","createdBy":null,"description":"Testing quiz creation and idempotency","id":"6ace6af50fe11a1a4185c58d","status":"DRAFT","title":"Assignment 4 Java Quiz","updatedAt":"2026-10-13T23:01:33.528"}
+
+3. Reject a malformed JSON request
+
+Command:
+curl -i -X POST http://localhost:8080/api/quizzes -H "Authorization: Bearer %TOKEN%" -H "Content-Type: application/json" -H "Idempotency-Key: assignment4-malformed-101" -d "{\"title\":"
+
+Response:
+HTTP/1.1 400
+Content-Type: application/problem+json;charset=UTF-8
+
+{"detail":"Malformed JSON request or invalid field format","title":"Bad Request","status":400,"type":"malformed-request"}
+
+4. Request a missing quiz
+
+Command:
+curl -i http://localhost:8080/api/quizzes/000000000000000000000000 -H "Authorization: Bearer %TOKEN%"
+
+Response:
+HTTP/1.1 404
+Content-Type: application/problem+json;charset=UTF-8
+
+{"detail":"Quiz not found","title":"Not Found","status":404,"type":"user-not-found"}
+
+5. Reject an invalid quiz state transition
+
+Command:
+curl -i -X PUT http://localhost:8080/api/quizzes/6ace6af50fe11a1a4185c58d/status -H "Authorization: Bearer %TOKEN%" -H "Content-Type: application/json" -d "\"CLOSED\""
+
+Response:
+HTTP/1.1 409
+Content-Type: application/problem+json;charset=UTF-8
+
+{"detail":"Invalid quiz status transition: DRAFT -> CLOSED","title":"Conflict","status":409,"type":"illegal-transition"}
