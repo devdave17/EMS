@@ -58,9 +58,18 @@ async function authenticateUser(email, password) {
             };
         }
 
+// Backend response: { token: "...", user: { ... } }
+        if (!responseData.token || !responseData.user) {
+            return {
+                success: false,
+                message: "Invalid sign-in response from server."
+            };
+        }
+
         return {
             success: true,
-            user: responseData
+            user: responseData.user,
+            token: responseData.token
         };
 
     } catch (error) {
@@ -81,9 +90,9 @@ async function authenticateUser(email, password) {
 function getDashboardPath(role) {
 
     const dashboardMap = {
-        STUDENT: "../student/dashboard.html",
-        TEACHER: "../teacher/dashboard.html",
-        ADMIN: "../admin/dashboard.html"
+        STUDENT: "student/dashboard",
+        TEACHER: "teacher/dashboard",
+        ADMIN: "admin/dashboard"
     };
 
     return Object.prototype.hasOwnProperty.call(dashboardMap, role) ? dashboardMap[role] : null;
