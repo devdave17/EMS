@@ -1,10 +1,10 @@
-🎓 Exam Management System (EMS) - Online Examination Service
+🎓 Exam Management System (EMS) - Online Examination Service    
 
-Group - 18
-Dev Dave : 20251651034
-Arjun Bodana : 20251651029
-Vikash Kumar : 20251651029
-Kuldeep Rout : 20251651053
+Group - 18    
+Dev Dave : 20251651034    
+Arjun Bodana : 20251651029    
+Vikash Kumar : 20251651029    
+Kuldeep Rout : 20251651053    
 
 Welcome to the Core API for the Exam Management System (EMS). This project is a highly robust, RESTful microservice built in Python. It manages live examination sessions and timers, demonstrating production-ready backend engineering principles, network resilience, and strict API contract enforcement.
 
