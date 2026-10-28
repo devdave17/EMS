@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,6 +24,103 @@
 <main class="mx-auto max-w-5xl px-5 py-8">
     <div id="loading" class="rounded-xl border bg-white p-8 text-center">
         Loading your exam...
+    </div>
+
+    <section id="setupArea" class="hidden mx-auto max-w-2xl rounded-2xl border bg-white p-6 shadow-sm">
+        <div class="flex items-start gap-4">
+            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-indigo-50 text-indigo-700">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                     viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M15 10l4.5-2.5A1 1 0 0 1 21 8.4v7.2a1 1 0 0 1-1.5.9L15 14m-9 5h7a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2Z"/>
+                </svg>
+            </div>
+            <div>
+                <h2 class="text-xl font-bold">Secure Exam Setup</h2>
+                <p class="mt-1 text-sm leading-6 text-slate-600">
+                    Before entering the exam, allow camera access and enable fullscreen.
+                    During the exam, fullscreen exits and tab visibility changes may be recorded as warnings.
+                </p>
+            </div>
+        </div>
+
+        <div class="mt-5 grid gap-3 sm:grid-cols-2">
+            <div class="rounded-xl border p-4">
+                <p class="font-semibold">Camera</p>
+                <p id="cameraSetupStatus" class="mt-1 text-sm text-slate-500">Permission required</p>
+            </div>
+            <div class="rounded-xl border p-4">
+                <p class="font-semibold">Fullscreen</p>
+                <p id="fullscreenSetupStatus" class="mt-1 text-sm text-slate-500">Not enabled</p>
+            </div>
+        </div>
+
+        <video id="cameraPreview" autoplay muted playsinline
+               class="mt-4 hidden max-h-48 w-full rounded-xl bg-slate-950 object-contain"></video>
+
+        <p class="mt-4 text-xs leading-5 text-slate-500">
+            Camera frames may be sent to the configured proctoring service for automated analysis.
+            Automated signals can be inaccurate and are not, by themselves, proof of cheating.
+        </p>
+
+        <div id="setupError" class="mt-4 hidden rounded-lg border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700"></div>
+
+        <button id="startSecureExamBtn" type="button"
+                class="mt-5 w-full rounded-xl bg-indigo-600 px-5 py-3 font-semibold text-white hover:bg-indigo-700">
+            Enable Camera & Enter Fullscreen
+        </button>
+    </section>
+
+    <section id="proctoringStatus" class="hidden mb-5 rounded-xl border bg-white p-4">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+            <div>
+                <p class="font-semibold">Proctoring Status</p>
+                <p id="cameraLiveStatus" class="text-sm text-slate-500">Camera initializing...</p>
+            </div>
+            <!-- Live Camera Preview During Exam -->
+            <div id="examCameraContainer"
+                 class="fixed bottom-4 right-4 z-50 w-48 rounded-xl border-4 border-gray-300 bg-white p-2 shadow-lg">
+
+                <p class="mb-1 text-xs font-semibold text-gray-700">
+                    Live Camera
+                </p>
+
+                <video id="examCameraPreview"
+                       autoplay
+                       playsinline
+                       muted
+                       class="w-full rounded-lg bg-black">
+                </video>
+
+                <p id="examCameraStatus"
+                   class="mt-1 text-center text-xs text-green-600">
+                    Camera Active
+                </p>
+            </div>
+            <div class="rounded-lg border border-amber-200 bg-amber-50 px-4 py-2">
+                <p class="text-xs text-amber-700">Warnings</p>
+                <p id="warningCount" class="text-xl font-bold text-amber-800">0</p>
+            </div>
+        </div>
+        <p id="lastWarning" class="mt-2 text-sm text-slate-500">No warnings recorded.</p>
+    </section>
+
+    <div id="fullscreenWarningModal"
+         class="fixed inset-0 z-[60] hidden items-center justify-center bg-slate-950/70 p-4">
+        <div class="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
+            <div class="flex h-12 w-12 items-center justify-center rounded-full bg-rose-100 text-rose-700">
+                <span class="text-2xl font-bold">!</span>
+            </div>
+            <h2 class="mt-4 text-xl font-bold">Return to Fullscreen</h2>
+            <p id="fullscreenWarningText" class="mt-2 text-sm leading-6 text-slate-600">
+                Fullscreen was exited while your exam is in progress. Please return to fullscreen to continue.
+                This event may be recorded as a warning.
+            </p>
+            <button id="returnFullscreenBtn" type="button"
+                    class="mt-5 w-full rounded-xl bg-indigo-600 px-4 py-3 font-semibold text-white hover:bg-indigo-700">
+                Return to Exam
+            </button>
+        </div>
     </div>
 
     <div id="errorBox" class="hidden rounded-xl border border-red-200 bg-red-50 p-5 text-red-700">
@@ -120,10 +216,11 @@
         <div id="reviewList" class="mt-6 space-y-4"></div>
 
         <div class="mt-8 flex flex-wrap justify-between gap-3 border-t pt-5">
-<!--            <button id="backToExamBtn"-->
-<!--                    class="rounded-lg border px-5 py-3 font-semibold hover:bg-slate-50">-->
-<!--                Back to Exam-->
-<!--            </button>-->
+            <button id="backToExamBtn"
+                    type="button"
+                    class="rounded-lg border px-5 py-3 font-semibold hover:bg-slate-50">
+                Back to Exam
+            </button>
 
             <button id="confirmSubmitBtn"
                     class="rounded-lg bg-rose-600 px-5 py-3 font-semibold text-white hover:bg-rose-700">
@@ -132,64 +229,36 @@
         </div>
     </section>
 
-    <!-- Submit Confirmation Modal -->
     <div id="submitConfirmModal"
          class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm">
-
         <div class="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl">
-
             <div class="flex items-center gap-4 border-b border-amber-100 bg-amber-50 px-6 py-5">
                 <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-amber-100 text-amber-700">
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                         class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                         stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                              d="M12 9v3m0 4h.01M10.3 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.7 3.86a2 2 0 0 0-3.4 0Z"/>
-                    </svg>
+                    <span class="text-2xl font-bold">!</span>
                 </div>
-
                 <div>
-                    <h2 class="text-xl font-bold text-slate-900">
-                        Submit Examination?
-                    </h2>
-                    <p class="mt-1 text-sm text-amber-800">
-                        Please review before proceeding.
-                    </p>
+                    <h2 class="text-xl font-bold text-slate-900">Submit Examination?</h2>
+                    <p class="mt-1 text-sm text-amber-800">Please review before proceeding.</p>
                 </div>
             </div>
-
             <div class="space-y-4 p-6">
                 <p class="text-sm leading-6 text-slate-600">
-                    You are about to leave the examination section and review
-                    your answers before final submission.
+                    You will be able to review your answers before final submission.
                 </p>
-
                 <div class="rounded-xl border border-rose-200 bg-rose-50 p-4">
-                    <p class="font-semibold text-rose-800">
-                        Important Warning
-                    </p>
+                    <p class="font-semibold text-rose-800">Important Warning</p>
                     <p class="mt-2 text-sm leading-6 text-rose-700">
-                        Once you confirm the final submission, your exam attempt
-                        will be permanently submitted. You will not be able to
-                        reopen the exam or change your answers.
+                        Once you confirm final submission, your exam attempt cannot be reopened
+                        and you will not be able to change your answers.
                     </p>
                 </div>
-
-                <p class="text-sm text-slate-600">
-                    You can still return to the exam from the review section
-                    and make changes before final submission.
-                </p>
-
                 <div class="flex gap-3 pt-2">
-                    <button id="cancelSubmitModalBtn"
-                            type="button"
-                            class="flex-1 rounded-xl border border-slate-300 px-4 py-3 font-semibold text-slate-700 transition hover:bg-slate-50">
+                    <button id="cancelSubmitModalBtn" type="button"
+                            class="flex-1 rounded-xl border border-slate-300 px-4 py-3 font-semibold text-slate-700 hover:bg-slate-50">
                         Continue Exam
                     </button>
-
-                    <button id="proceedReviewBtn"
-                            type="button"
-                            class="flex-1 rounded-xl bg-indigo-600 px-4 py-3 font-semibold text-white transition hover:bg-indigo-700">
+                    <button id="proceedReviewBtn" type="button"
+                            class="flex-1 rounded-xl bg-indigo-600 px-4 py-3 font-semibold text-white hover:bg-indigo-700">
                         Review Answers
                     </button>
                 </div>
@@ -200,6 +269,7 @@
 </main>
 
 <script>
+    console.log("[EMS] Exam script loaded");
     (() => {
         const token = localStorage.getItem("token");
         const params = new URLSearchParams(location.search);
@@ -217,28 +287,30 @@
         let isSubmitting = false;
         let isReadOnly = false;
 
+        // Set this to the reachable FastAPI URL. Use HTTPS in production.
+        const PROCTORING_BASE_URL = "http://localhost:8000";
+        const FRAME_INTERVAL_MS = 1000;
+        let cameraStream = null;
+        let cameraVideo = null;
+        let frameCanvas = null;
+        let frameInterval = null;
+        let examStartedInBrowser = false;
+        let warningTotal = 0;
+        let lastWarningAt = {};
+        let headTurnEventCount = 0;
+        const HEAD_TURNS_PER_WARNING = 5;
+        let fullscreenPromptOpen = false;
+
         if (!token || !sessionId) {
             location.replace("/auth/login");
             return;
         }
 
-        function openSubmitConfirmation() {
-            const modal = $("submitConfirmModal");
-
-            modal.classList.remove("hidden");
-            modal.classList.add("flex");
-        }
-
-        function closeSubmitConfirmation() {
-            const modal = $("submitConfirmModal");
-
-            modal.classList.add("hidden");
-            modal.classList.remove("flex");
-        }
-
         function showError(message) {
             $("loading").classList.add("hidden");
             $("examArea").classList.add("hidden");
+            $("setupArea").classList.add("hidden");
+            $("reviewArea").classList.add("hidden");
             $("errorBox").classList.remove("hidden");
             $("errorText").textContent = message;
         }
@@ -321,7 +393,9 @@
                     updateNavigation();
                     $("saveStatus").textContent = "Saving answer...";
 
-                    saveQueue = saveQueue.then(() => saveAnswer(q.id, String(index)));
+                    saveQueue = saveQueue
+                        .catch(() => {})
+                        .then(() => saveAnswer(q.id, String(index)));
 
                     saveQueue.catch(error => {
                         $("saveStatus").textContent = "Save failed: " + error.message;
@@ -422,7 +496,17 @@
                     {method: "POST"}
                 );
                 isReadOnly = true;
+                examStartedInBrowser = false;
                 clearInterval(timerInterval);
+                clearInterval(frameInterval);
+                if (cameraStream) {
+                    cameraStream.getTracks().forEach(track => track.stop());
+                    cameraStream = null;
+                }
+                $("proctoringStatus").classList.add("hidden");
+                if (document.fullscreenElement) {
+                    document.exitFullscreen().catch(() => {});
+                }
 
                 $("examArea").classList.add("hidden");
                 $("reviewArea").classList.add("hidden");
@@ -485,29 +569,357 @@
                 }
 
                 $("loading").classList.add("hidden");
-                $("examArea").classList.remove("hidden");
-
-                // $("submitBtn").addEventListener("click", () => submitExam(false));
-                $("previousBtn").addEventListener("click", () => {
-                    if (currentIndex > 0) {
-                        currentIndex--;
-                        renderQuestion();
-                    }
-                });
-                $("nextBtn").addEventListener("click", () => {
-                    if (currentIndex < questions.length - 1) {
-                        currentIndex++;
-                        renderQuestion();
-                    }
-                });
-
-                renderQuestion();
-                startTimer();
+                $("setupArea").classList.remove("hidden");
+                $("cameraSetupStatus").textContent = "Permission required";
+                $("fullscreenSetupStatus").textContent = "Not enabled";
 
             } catch (error) {
                 showError(error.message || "Unable to load exam.");
             }
         }
+        function setSetupError(message) {
+            $("setupError").textContent = message;
+            $("setupError").classList.remove("hidden");
+        }
+
+        function registerWarning(type, message, cooldownMs = 3000) {
+            const now = Date.now();
+            if (lastWarningAt[type] && now - lastWarningAt[type] < cooldownMs) return;
+            lastWarningAt[type] = now;
+            warningTotal++;
+            $("warningCount").textContent = String(warningTotal);
+            $("lastWarning").textContent =
+                `${new Date().toLocaleTimeString()} — ${message}`;
+
+            // Warning count is currently client-side only.
+            // Persist it later through an authenticated EMS proctoring-event API.
+        }
+        function registerHeadTurnEvent() {
+            headTurnEventCount++;
+
+            console.log(
+                `[PROCTORING] Head-turn events: ${headTurnEventCount}/${HEAD_TURNS_PER_WARNING}`
+            );
+
+            if (headTurnEventCount >= HEAD_TURNS_PER_WARNING) {
+                headTurnEventCount = 0;
+
+                registerWarning(
+                    "HEAD_TURN_BATCH",
+                    "5 confirmed head-turn events detected.",
+                    0
+                );
+            }
+        }
+        function updateFaceDetection(faceCount) {
+            const cameraContainer = $("examCameraContainer");
+            console.log(faceCount)
+            if (faceCount !== 1) {
+                // Zero faces or multiple faces
+                cameraContainer.classList.remove(
+                    "border-gray-300",
+                    "border-green-500"
+                );
+                cameraContainer.classList.add("border-red-500");
+
+                registerWarning(
+                    faceCount === 0 ? "NO_FACE_DETECTED" : "MULTIPLE_FACES_DETECTED",
+                    faceCount === 0
+                        ? "No face detected in camera."
+                        : "Multiple faces detected in camera.",
+                    5000
+                );
+            } else {
+                // Exactly one face detected
+                cameraContainer.classList.remove("border-red-500");
+                cameraContainer.classList.add("border-green-500");
+            }
+        }
+
+        async function enterFullscreen() {
+            if (!document.fullscreenElement) {
+                await document.documentElement.requestFullscreen();
+            }
+            $("fullscreenSetupStatus").textContent = "Enabled";
+        }
+
+
+        async function startSecureExam() {
+            console.log("[EMS] Start exam clicked");
+            const button = $("startSecureExamBtn");
+
+            button.disabled = true;
+            button.textContent = "Starting Exam...";
+
+            try {
+                // 1. Enter fullscreen
+                await enterFullscreen();
+
+                // 2. Request camera access
+                if (!cameraStream) {
+                    cameraStream = await navigator.mediaDevices.getUserMedia({
+                        video: true,
+                        audio: false
+                    });
+                }
+
+                // 3. Prepare camera preview for proctoring
+                cameraVideo = $("cameraPreview");
+                cameraVideo.srcObject = cameraStream;
+                cameraVideo.classList.remove("hidden");
+
+                await cameraVideo.play();
+
+                $("cameraSetupStatus").textContent = "Camera enabled";
+                $("fullscreenSetupStatus").textContent = "Enabled";
+
+                // 4. Activate the existing exam session
+                examStartedInBrowser = true;
+
+                $("setupArea").classList.add("hidden");
+                $("loading").classList.add("hidden");
+                $("errorBox").classList.add("hidden");
+
+                $("examArea").classList.remove("hidden");
+                $("proctoringStatus").classList.remove("hidden");
+                $("examCameraContainer").classList.remove("hidden");
+
+                // 5. Render the already-loaded questions
+                currentIndex = 0;
+                renderQuestion();
+
+                // 6. Start the existing session deadline timer
+                startTimer();
+                const examCameraPreview = $("examCameraPreview");
+
+                examCameraPreview.srcObject = cameraStream;
+                await examCameraPreview.play();
+                // 7. Start webcam frame capture
+                startFrameCapture();
+
+            } catch (error) {
+                console.error("Secure exam setup failed:", error);
+
+                examStartedInBrowser = false;
+
+                $("setupError").textContent =
+                    "Unable to start the exam: " + error.message;
+
+                $("setupError").classList.remove("hidden");
+
+                button.disabled = false;
+                button.textContent = "Enable Camera & Enter Fullscreen";
+            }
+        }
+
+
+        function startFrameCapture() {
+            console.log("[EMS] startFrameCapture called", {
+                cameraStream: !!cameraStream,
+                cameraVideo: !!cameraVideo,
+                readyState: cameraVideo?.readyState
+            });
+            if (!cameraStream || !cameraVideo) return;
+
+            frameCanvas = document.createElement("canvas");
+            const track = cameraStream.getVideoTracks()[0];
+
+            track.addEventListener("ended", () => {
+                if (!examStartedInBrowser || isReadOnly) return;
+                $("cameraLiveStatus").textContent = "Camera disconnected";
+                registerWarning("CAMERA_DISCONNECTED", "Camera stream disconnected.", 5000);
+            });
+
+            $("cameraLiveStatus").textContent = "Camera active; sending frames for analysis";
+            captureAndSendFrame();
+            frameInterval = setInterval(captureAndSendFrame, FRAME_INTERVAL_MS);
+        }
+
+
+        async function captureAndSendFrame() {
+            console.log("[PROCTORING] captureAndSendFrame called", {
+                examStartedInBrowser,
+                isReadOnly,
+                videoReadyState: cameraVideo?.readyState
+            });
+            if (
+                !examStartedInBrowser ||
+                isReadOnly ||
+                !cameraVideo ||
+                cameraVideo.readyState < HTMLMediaElement.HAVE_CURRENT_DATA
+            ) {
+                return;
+            }
+
+            try {
+                const maxDimension = 1280;
+                const scale = Math.min(
+                    1,
+                    maxDimension / Math.max(
+                        cameraVideo.videoWidth,
+                        cameraVideo.videoHeight
+                    )
+                );
+
+                frameCanvas.width = Math.max(
+                    1,
+                    Math.round(cameraVideo.videoWidth * scale)
+                );
+                frameCanvas.height = Math.max(
+                    1,
+                    Math.round(cameraVideo.videoHeight * scale)
+                );
+
+                const context = frameCanvas.getContext("2d");
+                context.drawImage(
+                    cameraVideo,
+                    0,
+                    0,
+                    frameCanvas.width,
+                    frameCanvas.height
+                );
+
+                const blob = await new Promise(resolve =>
+                    frameCanvas.toBlob(resolve, "image/jpeg", 0.75)
+                );
+
+                if (!blob) {
+                    console.error("Frame capture failed: empty image blob");
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append("file", blob, "frame.jpg");
+                console.log("[PROCTORING] Sending frame", {
+                    sessionId,
+                    blobSize: blob.size,
+                    blobType: blob.type
+                });
+                const response = await fetch(
+                    `${PROCTORING_BASE_URL}/v1/proctoring/sessions/${encodeURIComponent(sessionId)}/frames`,
+                    {
+                        method: "POST",
+                        headers: token
+                            ? { Authorization: `Bearer ${token}` }
+                            : {},
+                        body: formData
+                    }
+                );
+                console.log("[PROCTORING] HTTP status:", response.status);
+
+                const data = await response.json().catch(error => {
+                    console.error("[PROCTORING] Invalid JSON response:", error);
+                    return null;
+                });
+
+                console.log("[PROCTORING] API response body:", data);
+
+                if (!response.ok) {
+                    console.error("Frame upload failed:", response.status, data);
+                    $("cameraLiveStatus").textContent =
+                        `Proctoring error: ${response.status}`;
+                    return;
+                }
+
+                if (typeof data?.face_count === "number") {
+                    updateFaceDetection(data.face_count);
+                } else {
+                    console.warn("API response has no numeric face_count:", data);
+                }
+                if (!response.ok) {
+                    console.error("Frame upload failed:", response.status, data);
+                    $("cameraLiveStatus").textContent =
+                        `Proctoring error: ${response.status}`;
+                    return;
+                }else{
+                    console.log("Response status: ", response.status);
+                }
+
+                console.log("Proctoring response:", data);
+
+                $("cameraLiveStatus").textContent =
+                    "Camera active; proctoring connected";
+
+                if (typeof data?.face_count === "number") {
+                    updateFaceDetection(data.face_count);
+                } else {
+                    console.warn("API response has no numeric face_count:", data);
+                }
+                (data?.events || []).forEach(event => {
+                    const type = String(event.type || "PROCTORING_EVENT");
+
+                    if (type === "HEAD_TURN_SUSPECTED") {
+                        registerHeadTurnEvent();
+                        return;
+                    }
+
+                    if (
+                        type === "SUDDEN_HEAD_MOVEMENT" ||
+                        type === "REPEATED_HEAD_TURNS"
+                    ) {
+                        // In events ko tabhi count karna jab ye
+                        // distinct turns hon, duplicate summaries nahi.
+                        return;
+                    }
+
+                    const messages = {
+                        NO_FACE: "No face detected by the camera.",
+                        MULTIPLE_FACES: "More than one face detected."
+                    };
+
+                    registerWarning(
+                        type,
+                        messages[type] || `Proctoring signal: ${type}`,
+                        5000
+                    );
+                });
+
+
+            } catch (error) {
+                console.error("Frame processing failed:", error);
+                $("cameraLiveStatus").textContent =
+                    "Camera active; proctoring service unavailable";
+            }
+        }
+
+
+        async function returnToFullscreen() {
+            try {
+                await enterFullscreen();
+                $("fullscreenWarningModal").classList.add("hidden");
+                $("fullscreenWarningModal").classList.remove("flex");
+                fullscreenPromptOpen = false;
+            } catch (error) {
+                $("fullscreenWarningText").textContent =
+                    "Fullscreen could not be enabled. Click Return to Exam again to retry.";
+            }
+        }
+
+        document.addEventListener("fullscreenchange", () => {
+            if (!examStartedInBrowser || isReadOnly) return;
+
+            if (!document.fullscreenElement) {
+                registerWarning("FULLSCREEN_EXIT", "Exited fullscreen during the exam.", 1500);
+                if (!fullscreenPromptOpen) {
+                    fullscreenPromptOpen = true;
+                    $("fullscreenWarningModal").classList.remove("hidden");
+                    $("fullscreenWarningModal").classList.add("flex");
+                }
+            }
+        });
+
+        document.addEventListener("visibilitychange", () => {
+            if (examStartedInBrowser && !isReadOnly && document.hidden) {
+                registerWarning("TAB_HIDDEN", "Exam tab became hidden.", 3000);
+            }
+        });
+
+        window.addEventListener("blur", () => {
+            if (examStartedInBrowser && !isReadOnly) {
+                registerWarning("WINDOW_BLUR", "Browser window lost focus.", 3000);
+            }
+        });
+
         function showReview() {
             const attempted = questions.filter(q => answers[q.id] != null).length;
             const unanswered = questions.length - attempted;
@@ -564,52 +976,77 @@
             $("reviewArea").classList.remove("hidden");
         }
 
+        function openSubmitConfirmation() {
+            $("submitConfirmModal").classList.remove("hidden");
+            $("submitConfirmModal").classList.add("flex");
+        }
+
+        function closeSubmitConfirmation() {
+            $("submitConfirmModal").classList.add("hidden");
+            $("submitConfirmModal").classList.remove("flex");
+        }
 
         $("submitBtn").addEventListener("click", () => {
             if (isSubmitting || isReadOnly) return;
-
             openSubmitConfirmation();
         });
 
-        $("cancelSubmitModalBtn").addEventListener("click", () => {
-            closeSubmitConfirmation();
-        });
+        $("cancelSubmitModalBtn").addEventListener("click", closeSubmitConfirmation);
 
         $("proceedReviewBtn").addEventListener("click", async () => {
             if (isSubmitting || isReadOnly) return;
-
-            const proceedButton = $("proceedReviewBtn");
-            proceedButton.disabled = true;
-            proceedButton.textContent = "Loading Review...";
+            const button = $("proceedReviewBtn");
+            button.disabled = true;
+            button.textContent = "Loading Review...";
 
             try {
                 $("saveStatus").textContent = "Waiting for answers to save...";
-
-                // Wait for pending answer saves.
                 await saveQueue;
-
                 closeSubmitConfirmation();
                 showReview();
-
                 $("saveStatus").textContent = "Review your answers before submitting.";
             } catch (error) {
                 alert("Some answers could not be saved. Please retry: " + error.message);
             } finally {
-                proceedButton.disabled = false;
-                proceedButton.textContent = "Review Answers";
+                button.disabled = false;
+                button.textContent = "Review Answers";
+            }
+        });
+
+        $("startSecureExamBtn").addEventListener("click", startSecureExam);
+        $("returnFullscreenBtn").addEventListener("click", returnToFullscreen);
+
+        $("previousBtn").addEventListener("click", () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                renderQuestion();
+            }
+        });
+
+        $("nextBtn").addEventListener("click", () => {
+            if (currentIndex < questions.length - 1) {
+                currentIndex++;
+                renderQuestion();
             }
         });
 
         $("retryBtn").addEventListener("click", loadExam);
 
-        // $("backToExamBtn").addEventListener("click", () => {
-        //     $("reviewArea").classList.add("hidden");
-        //     $("examArea").classList.remove("hidden");
-        // });
+        $("backToExamBtn").addEventListener("click", () => {
+            $("reviewArea").classList.add("hidden");
+            $("examArea").classList.remove("hidden");
+            $("examCameraContainer").classList.remove("hidden");
+            renderQuestion();
+        });
 
         $("confirmSubmitBtn").addEventListener("click", () => {
             submitExam(true);
         });
+        window.addEventListener("beforeunload", () => {
+            clearInterval(frameInterval);
+            if (cameraStream) cameraStream.getTracks().forEach(track => track.stop());
+        });
+
         loadExam();
     })();
 
