@@ -1,7 +1,8 @@
 
 package com.IIITV.EMS.Security;
 
-import jakarta.servlet.http.HttpServletResponse;
+import java.util.List;
+
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,8 +12,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.util.List;
 
 @Configuration
 public class SecurityConfig {
@@ -25,15 +24,13 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .headers(headers -> headers
-                        .contentTypeOptions(options -> {})
+                        .contentTypeOptions(options -> {
+                        })
                         .httpStrictTransportSecurity(hsts -> hsts
                                 .includeSubDomains(true)
-                                .maxAgeInSeconds(31536000)
-                        )
-                )
+                                .maxAgeInSeconds(31536000)))
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll()
-                );
+                        .anyRequest().permitAll());
 
         return http.build();
     }
@@ -47,16 +44,13 @@ public class SecurityConfig {
         config.setAllowedOriginPatterns(List.of("*"));
         config.setAllowedMethods(
                 List.of("GET", "POST", "PUT", "PATCH",
-                        "DELETE", "OPTIONS", "HEAD")
-        );
+                        "DELETE", "OPTIONS", "HEAD"));
         config.setAllowedHeaders(List.of("*"));
         config.setExposedHeaders(List.of(
                 "ETag", "Location", "Retry-After",
-                "X-RateLimit-Limit", "X-RateLimit-Remaining"
-        ));
+                "X-RateLimit-Limit", "X-RateLimit-Remaining"));
 
-        UrlBasedCorsConfigurationSource source =
-                new UrlBasedCorsConfigurationSource();
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/api/**", config);
 
         return source;
@@ -66,8 +60,7 @@ public class SecurityConfig {
     public FilterRegistrationBean<RateLimitFilter> rateLimitFilterRegistration(
             RateLimitFilter rateLimitFilter) {
 
-        FilterRegistrationBean<RateLimitFilter> registration =
-                new FilterRegistrationBean<>();
+        FilterRegistrationBean<RateLimitFilter> registration = new FilterRegistrationBean<>();
 
         registration.setFilter(rateLimitFilter);
         registration.addUrlPatterns("/api/*");
@@ -76,17 +69,28 @@ public class SecurityConfig {
         return registration;
     }
 
-
     @Bean
     public FilterRegistrationBean<BearerTokenFilter> bearerTokenFilterRegistration(
             BearerTokenFilter bearerTokenFilter) {
 
-        FilterRegistrationBean<BearerTokenFilter> registration =
-                new FilterRegistrationBean<>();
+        FilterRegistrationBean<BearerTokenFilter> registration = new FilterRegistrationBean<>();
 
         registration.setFilter(bearerTokenFilter);
         registration.addUrlPatterns("/api/*");
         registration.setOrder(2);
+
+        return registration;
+    }
+
+    @Bean
+    public FilterRegistrationBean<ActivityLogFilter> activityLogFilterRegistration(
+            ActivityLogFilter activityLogFilter) {
+
+        FilterRegistrationBean<ActivityLogFilter> registration = new FilterRegistrationBean<>();
+
+        registration.setFilter(activityLogFilter);
+        registration.addUrlPatterns("/api/*");
+        registration.setOrder(3);
 
         return registration;
     }

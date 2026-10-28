@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Activity Logs | EMS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-800">
+<header class="border-b border-slate-200 bg-white">
+    <div
+            class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8"
+    >
+        <div class="flex items-center gap-3">
+            <img
+                    class="h-12 w-12 rounded-lg object-contain"
+                    src="/EMSlogo.png"
+                    alt="EMS logo"
+            />
+            <div>
+                <a
+                        class="text-sm font-semibold text-violet-700"
+                        href="/auth/admin/dashboard"
+                >EMS Administration</a
+                >
+                <h1 class="mt-1 text-xl font-bold text-slate-950">Activity logs</h1>
+            </div>
+        </div>
+        <nav class="flex items-center gap-4 text-sm">
+            <a
+                    class="font-medium text-slate-600 hover:text-violet-700"
+                    href="/auth/admin/users"
+            >User management</a
+            >
+            <a
+                    class="font-medium text-slate-600 hover:text-violet-700"
+                    href="/auth/admin/settings"
+            >Settings</a
+            >
+            <button
+                    id="logout-button"
+                    class="font-medium text-red-700 hover:text-red-900"
+                    type="button"
+            >
+                Sign out
+            </button>
+        </nav>
+    </div>
+</header>
+
+<main class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+        <div>
+            <h2 class="text-lg font-semibold text-slate-950">System activity</h2>
+            <p class="mt-1 text-sm text-slate-600">
+                Recent changes made through the EMS API.
+            </p>
+        </div>
+        <button
+                id="refresh-button"
+                class="inline-flex min-h-10 items-center justify-center gap-2 rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100 disabled:opacity-60"
+                type="button"
+        >
+            <span aria-hidden="true">↻</span> Refresh
+        </button>
+    </div>
+
+    <section class="mt-6 border-y border-slate-200 py-4">
+        <div class="grid gap-3 sm:grid-cols-[minmax(16rem,1fr)_12rem]">
+            <label class="sr-only" for="activity-search">Search activity</label>
+            <input
+                    id="activity-search"
+                    type="search"
+                    placeholder="Search actor, action, or endpoint"
+                    class="min-h-10 rounded-md border border-slate-300 bg-white px-3 text-sm outline-none focus:border-violet-600 focus:ring-2 focus:ring-violet-100"
+            />
+            <label class="sr-only" for="category-filter"
+            >Filter by category</label
+            >
+            <select
+                    id="category-filter"
+                    class="min-h-10 rounded-md border border-slate-300 bg-white px-3 text-sm outline-none focus:border-violet-600 focus:ring-2 focus:ring-violet-100"
+            >
+                <option value="">All categories</option>
+                <option value="Users">Users</option>
+                <option value="Examinations">Examinations</option>
+                <option value="Questions">Questions</option>
+                <option value="Administration">Administration</option>
+                <option value="System">System</option>
+            </select>
+        </div>
+    </section>
+
+    <p
+            id="activity-message"
+            class="py-4 text-sm text-slate-600"
+            role="status"
+            aria-live="polite"
+    >
+        Loading activity...
+    </p>
+
+    <div class="overflow-x-auto border-b border-slate-200">
+        <table class="w-full min-w-[760px] text-left text-sm">
+            <thead
+                    class="bg-slate-100 text-xs font-semibold uppercase text-slate-600"
+            >
+            <tr>
+                <th class="px-4 py-3" scope="col">Time</th>
+                <th class="px-4 py-3" scope="col">Actor</th>
+                <th class="px-4 py-3" scope="col">Activity</th>
+                <th class="px-4 py-3" scope="col">Category</th>
+                <th class="px-4 py-3" scope="col">Result</th>
+                <th class="px-4 py-3" scope="col">Endpoint</th>
+            </tr>
+            </thead>
+            <tbody
+                    id="activity-table"
+                    class="divide-y divide-slate-200 bg-white"
+            ></tbody>
+        </table>
+    </div>
+    <p id="activity-count" class="mt-3 text-xs text-slate-500"></p>
+</main>
+
+<script>
+    const token = localStorage.getItem('token');
+    let activities = [];
+
+    function signOut() {
+        localStorage.removeItem('token');
+        localStorage.removeItem('ems_current_user');
+        window.location.replace('/auth/login');
+    }
+
+    let currentUser;
+    try {
+        currentUser = JSON.parse(localStorage.getItem('ems_current_user'));
+    } catch (error) {
+        signOut();
+    }
+
+    if (!token || !currentUser || currentUser.role !== 'ADMIN') {
+        signOut();
+    }
+
+    document
+        .getElementById('logout-button')
+        .addEventListener('click', signOut);
+    document
+        .getElementById('refresh-button')
+        .addEventListener('click', loadActivities);
+    document
+        .getElementById('activity-search')
+        .addEventListener('input', renderActivities);
+    document
+        .getElementById('category-filter')
+        .addEventListener('change', renderActivities);
+
+    function formatTimestamp(value) {
+        const date = new Date(value);
+        return Number.isNaN(date.getTime())
+            ? value || 'Unknown time'
+            : new Intl.DateTimeFormat(undefined, {
+                dateStyle: 'medium',
+                timeStyle: 'short',
+            }).format(date);
+    }
+
+    function addCell(row, value, className = '') {
+        const cell = document.createElement('td');
+        cell.className = `px-4 py-3 text-slate-700 ${className}`;
+        cell.textContent = value || '—';
+        row.append(cell);
+    }
+
+    function renderActivities() {
+        const query = document
+            .getElementById('activity-search')
+            .value.trim()
+            .toLowerCase();
+        const category = document.getElementById('category-filter').value;
+        const filtered = activities.filter((activity) => {
+            const searchable = [
+                activity.actorName,
+                activity.actorRole,
+                activity.action,
+                activity.category,
+                activity.endpoint,
+                activity.outcome,
+            ]
+                .filter(Boolean)
+                .join(' ')
+                .toLowerCase();
+            return (
+                searchable.includes(query) &&
+                (!category || activity.category === category)
+            );
+        });
+
+        const table = document.getElementById('activity-table');
+        table.replaceChildren();
+        filtered.forEach((activity) => {
+            const row = document.createElement('tr');
+            addCell(
+                row,
+                formatTimestamp(activity.occurredAt),
+                'whitespace-nowrap',
+            );
+            addCell(
+                row,
+                `${activity.actorName || 'Unknown user'} (${activity.actorRole || 'Unknown'})`,
+            );
+            addCell(row, activity.action);
+            addCell(row, activity.category);
+            const result = document.createElement('td');
+            result.className = 'px-4 py-3';
+            const badge = document.createElement('span');
+            const succeeded = activity.outcome === 'Success';
+            badge.className = succeeded
+                ? 'rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700'
+                : 'rounded-full bg-red-50 px-2.5 py-1 text-xs font-semibold text-red-700';
+            badge.textContent = `${activity.outcome || 'Unknown'} (${activity.statusCode ?? '—'})`;
+            result.append(badge);
+            row.append(result);
+            addCell(row, activity.endpoint, 'font-mono text-xs');
+            table.append(row);
+        });
+
+        const message = document.getElementById('activity-message');
+        message.textContent = filtered.length
+            ? ''
+            : activities.length
+                ? 'No activity matches these filters.'
+                : 'No activity has been recorded yet.';
+        document.getElementById('activity-count').textContent =
+            `Showing ${filtered.length} of ${activities.length} recent records (maximum 100).`;
+    }
+
+    async function loadActivities() {
+        const button = document.getElementById('refresh-button');
+        const message = document.getElementById('activity-message');
+        button.disabled = true;
+        message.textContent = 'Loading activity...';
+
+        try {
+            const response = await fetch('/api/admin/activity?limit=100', {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    Accept: 'application/json',
+                },
+                cache: 'no-store',
+            });
+
+            if (response.status === 401) {
+                signOut();
+                return;
+            }
+            if (!response.ok) {
+                throw new Error(`Could not load activity (${response.status}).`);
+            }
+
+            activities = await response.json();
+            renderActivities();
+        } catch (error) {
+            message.textContent = error.message || 'Could not load activity.';
+        } finally {
+            button.disabled = false;
+        }
+    }
+
+    loadActivities();
+</script>
+</body>
+</html>
