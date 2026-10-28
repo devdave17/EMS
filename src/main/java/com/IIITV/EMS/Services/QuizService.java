@@ -1,22 +1,27 @@
 package com.IIITV.EMS.Services;
 
-import com.IIITV.EMS.Model.Quiz;
-import com.IIITV.EMS.Model.QuizStatus;
-import com.IIITV.EMS.Repository.QuizRepository;
+import java.time.LocalDateTime;
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import com.IIITV.EMS.Model.Quiz;
+import com.IIITV.EMS.Model.QuizStatus;
+import com.IIITV.EMS.Repository.QuizRepository;
 
 @Service
 public class QuizService {
 
     private final QuizRepository quizRepository;
+    private final QuestionService questionService;
 
-    public QuizService(QuizRepository quizRepository) {
+    public QuizService(
+            QuizRepository quizRepository,
+            QuestionService questionService) {
         this.quizRepository = quizRepository;
+        this.questionService = questionService;
     }
 
     public Quiz createQuiz(Quiz quiz, String teacherId) {
@@ -40,8 +45,7 @@ public class QuizService {
     public Quiz getQuizById(String id) {
         return quizRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Quiz not found"
-                ));
+                        HttpStatus.NOT_FOUND, "Quiz not found"));
     }
 
     public List<Quiz> getQuizzes(QuizStatus status) {
@@ -58,28 +62,30 @@ public class QuizService {
         if (status == null) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
-                    "Status is required"
-            );
+                    "Status is required");
         }
 
         QuizStatus currentStatus = quiz.getStatus();
 
-        boolean validTransition =
-                (currentStatus == QuizStatus.DRAFT
-                        && status == QuizStatus.PUBLISHED)
-                        || (currentStatus == QuizStatus.PUBLISHED
-                        && status == QuizStatus.CLOSED);
+        boolean validTransition = (currentStatus == QuizStatus.DRAFT
+                && status == QuizStatus.PUBLISHED)
+                || (currentStatus == QuizStatus.PUBLISHED
+                && status == QuizStatus.CLOSED);
 
         if (currentStatus == status) {
             return quiz;
+        }
+
+        if (currentStatus == QuizStatus.DRAFT
+                && status == QuizStatus.PUBLISHED) {
+            questionService.validateQuizForPublishing(id);
         }
 
         if (!validTransition) {
             throw new ResponseStatusException(
                     HttpStatus.CONFLICT,
                     "Invalid quiz status transition: "
-                            + currentStatus + " -> " + status
-            );
+                            + currentStatus + " -> " + status);
         }
 
         quiz.setStatus(status);
