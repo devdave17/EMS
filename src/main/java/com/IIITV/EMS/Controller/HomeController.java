@@ -43,6 +43,11 @@ public class HomeController {
         return "admin-settings";
     }
 
+    @GetMapping("/auth/admin/activity")
+    public String adminActivity() {
+        return "admin-activity";
+    }
+
     @GetMapping("/auth/forgot-password")
     public String forgotPasswordPage() {
         return "forget-password";
