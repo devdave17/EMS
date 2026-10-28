@@ -33,6 +33,11 @@ public class HomeController {
         return "admin-dashboard";
     }
 
+    @GetMapping("auth/admin/users")
+    public String adminUsers() {
+        return "admin-users";
+    }
+
     @GetMapping("/auth/forgot-password")
     public String forgotPasswordPage() {
         return "forget-password";
