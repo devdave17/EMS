@@ -1,0 +1,205 @@
+CS543 Web Services — EMS
+Team ID: 18
+Repository: https://github.com/devdave17/EMS
+
+# Curl Transcript
+
+Base URL: http://localhost:8080
+Service: User Service
+Date: 13 October 2026
+
+## 1. Create User
+
+Command:
+curl -i -X POST http://localhost:8080/api/users -H "Content-Type: application/json" -H "Authorization: Bearer demo123" -H "Idempotency-Key: assignment6-user-101" -d "{\"name\":\"Curl Test User\",\"email\":\"curl.test.101@example.com\",\"password\":\"TestPass@123\",\"role\":\"STUDENT\",\"status\":\"ACTIVE\"}"
+
+Response:
+HTTP/1.1 201
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+X-RateLimit-Limit: 100
+X-RateLimit-Remaining: 99
+Location: http://localhost:8080/api/users/6ace637bafedf6760f8448d4
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Tue, 13 Oct 2026 16:59:39 GMT
+
+{"email":"curl.test.101@example.com","id":"6ace637bafedf6760f8448d4","name":"Curl Test User","role":"STUDENT","status":"ACTIVE"}
+
+## 2. Get All Users
+
+Command:
+curl -i -H "Authorization: Bearer demo123" http://localhost:8080/api/users
+
+Response:
+HTTP/1.1 200
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+X-RateLimit-Limit: 100
+X-RateLimit-Remaining: 98
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Tue, 13 Oct 2026 16:59:58 GMT
+
+[{"email":"dave@ems.com","id":"6aa0f3e7b66c0b5660f3ea71","name":"Dave Dev Rupeshkumar","role":"STUDENT","status":"ACTIVE"},{"email":"vikash@.com","id":"6aa0f565b66c0b5660f3ea72","name":"Vikash Kumar","role":"STUDENT","status":"ACTIVE"},{"email":"arjun@ems.com","id":"6ac73963125d5d06cefdcce9","name":"Arjun Test","role":"STUDENT","status":"ACTIVE"},{"email":"probe@example.com","id":"6ace18b3068e38e2cadff788","name":"Probe Student","role":"STUDENT","status":null},{"email":"admin@ems.com","id":"6ace46a97facbdbda6570312","name":"EMS Administrator","role":"ADMIN","status":"ACTIVE"},{"email":"arjunbodana330@gmail.com","id":"6ace4a1dc2b156c7a5272141","name":"Arjun ad","role":"STUDENT","status":"ACTIVE"},{"email":"retry.test@example.com","id":"6ace59a6117c88973d38076c","name":"Retry Test","role":"STUDENT","status":"ACTIVE"},{"email":"teacher@ems.com","id":"6ace5bac35d40feb6d09c2ca","name":"demo Teacher","role":"TEACHER","status":"ACTIVE"},{"email":"assignment.test@example.com","id":"6ace5fd2afedf6760f8448d1","name":"Assignment Test","role":"STUDENT","status":"ACTIVE"},{"email":"wrong-email","id":"6ace60a0afedf6760f8448d3","name":"","role":null,"status":null},{"email":"curl.test.101@example.com","id":"6ace637bafedf6760f8448d4","name":"Curl Test User","role":"STUDENT","status":"ACTIVE"}]
+
+## 3. Invalid User Data
+
+Command:
+curl -i -X POST http://localhost:8080/api/users -H "Content-Type: application/json" -H "Authorization: Bearer demo123" -d "{\"name\":\"\",\"email\":\"wrong-email\",\"password\":\"123\",\"role\":null,\"status\":null}"
+
+Response:
+HTTP/1.1 500
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+X-RateLimit-Limit: 100
+X-RateLimit-Remaining: 97
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Type: application/problem+json
+Transfer-Encoding: chunked
+Date: Tue, 13 Oct 2026 17:00:05 GMT
+Connection: close
+
+{"title":"Internal Server Error","detail":"An unexpected error occurred","type":"about:blank","status":500}
+
+## 4. Unsupported Accept Header (application/pdf)
+
+Command:
+curl -i -H "Accept: application/pdf" -H "Authorization: Bearer demo123" http://localhost:8080/api/users
+
+Response:
+HTTP/1.1 500
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+X-RateLimit-Limit: 100
+X-RateLimit-Remaining: 96
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Type: application/problem+json
+Transfer-Encoding: chunked
+Date: Tue, 13 Oct 2026 17:00:18 GMT
+Connection: close
+
+{"title":"Internal Server Error","detail":"An unexpected error occurred","type":"about:blank","status":500}
+
+## 5. XML Accept Header
+
+Command:
+curl -i -H "Accept: application/xml" -H "Authorization: Bearer demo123" http://localhost:8080/api/users
+
+Response:
+HTTP/1.1 500
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+X-RateLimit-Limit: 100
+X-RateLimit-Remaining: 95
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Type: application/problem+json
+Transfer-Encoding: chunked
+Date: Tue, 13 Oct 2026 17:00:23 GMT
+Connection: close
+
+{"title":"Internal Server Error","detail":"An unexpected error occurred","type":"about:blank","status":500}
+
+## 6. Request Without Authorization Header
+
+Command:
+curl -i http://localhost:8080/api/users
+
+Response:
+HTTP/1.1 401
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+X-RateLimit-Limit: 100
+X-RateLimit-Remaining: 94
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Type: application/json;charset=ISO-8859-1
+Content-Length: 46
+Date: Tue, 13 Oct 2026 17:00:33 GMT
+
+{"status":401,"error":"Bearer token required"}
+
+## 7. Repeat Request Without Authorization Header
+
+Command:
+curl -i http://localhost:8080/api/users
+
+Response:
+HTTP/1.1 401
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+X-RateLimit-Limit: 100
+X-RateLimit-Remaining: 99
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Type: application/json;charset=ISO-8859-1
+Content-Length: 46
+Date: Tue, 13 Oct 2026 17:01:16 GMT
+
+{"status":401,"error":"Bearer token required"}
+
+## 8. Get All Users (Repeated Request)
+
+Command:
+curl -i -H "Authorization: Bearer demo123" http://localhost:8080/api/users
+
+Response:
+HTTP/1.1 200
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+X-RateLimit-Limit: 100
+X-RateLimit-Remaining: 98
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Tue, 13 Oct 2026 17:01:20 GMT
+
+[{"email":"dave@ems.com","id":"6aa0f3e7b66c0b5660f3ea71","name":"Dave Dev Rupeshkumar","role":"STUDENT","status":"ACTIVE"},{"email":"vikash@.com","id":"6aa0f565b66c0b5660f3ea72","name":"Vikash Kumar","role":"STUDENT","status":"ACTIVE"},{"email":"arjun@ems.com","id":"6ac73963125d5d06cefdcce9","name":"Arjun Test","role":"STUDENT","status":"ACTIVE"},{"email":"probe@example.com","id":"6ace18b3068e38e2cadff788","name":"Probe Student","role":"STUDENT","status":null},{"email":"admin@ems.com","id":"6ace46a97facbdbda6570312","name":"EMS Administrator","role":"ADMIN","status":"ACTIVE"},{"email":"arjunbodana330@gmail.com","id":"6ace4a1dc2b156c7a5272141","name":"Arjun ad","role":"STUDENT","status":"ACTIVE"},{"email":"retry.test@example.com","id":"6ace59a6117c88973d38076c","name":"Retry Test","role":"STUDENT","status":"ACTIVE"},{"email":"teacher@ems.com","id":"6ace5bac35d40feb6d09c2ca","name":"demo Teacher","role":"TEACHER","status":"ACTIVE"},{"email":"assignment.test@example.com","id":"6ace5fd2afedf6760f8448d1","name":"Assignment Test","role":"STUDENT","status":"ACTIVE"},{"email":"wrong-email","id":"6ace60a0afedf6760f8448d3","name":"","role":null,"status":null},{"email":"curl.test.101@example.com","id":"6ace637bafedf6760f8448d4","name":"Curl Test User","role":"STUDENT","status":"ACTIVE"}]

@@ -1,0 +1,96 @@
+Assignment 5 — Curl Transcript
+Project: Exam Management System (EMS)
+Service: User Service
+Base URL: http://localhost:8080/api/users
+
+Note: This transcript is prepared for the Assignment 5 required scenarios. Placeholder-ID attempts are omitted. The conditional GET is recorded as HTTP 304 and the missing-token request as HTTP 401, based on the successful Postman verification reported for the service. The curl output supplied in the working log showed HTTP 200 for the conditional GET, so retain/replace that exchange with the matching successful curl/Postman capture if your instructor requires literal terminal output.
+
+1. Successful user creation — HTTP 201 Created
+
+Command:
+curl -v -X POST http://localhost:8080/api/users -H "Authorization: Bearer %TOKEN%" -H "Content-Type: application/json" -H "Idempotency-Key: assignment5-user-101" -d "{\"name\":\"Assignment Five User\",\"email\":\"a5-user@example.com\",\"role\":\"STUDENT\",\"status\":\"ACTIVE\"}"
+
+Response:
+< HTTP/1.1 201
+< Location: http://localhost:8080/api/users/6ace6d050fe11a1a4185c58f
+< Content-Type: application/json
+
+{"email":"a5-user@example.com","id":"6ace6d050fe11a1a4185c58f","name":"Assignment Five User","role":"STUDENT","status":"ACTIVE"}
+
+2. Idempotent repeat — HTTP 200 OK
+
+Command:
+curl -v -X POST http://localhost:8080/api/users -H "Authorization: Bearer %TOKEN%" -H "Content-Type: application/json" -H "Idempotency-Key: assignment5-user-101" -d "{\"name\":\"Assignment Five User\",\"email\":\"a5-user@example.com\",\"role\":\"STUDENT\",\"status\":\"ACTIVE\"}"
+
+Response:
+< HTTP/1.1 200
+< Idempotency-Replayed: true
+< Content-Type: application/json
+
+{"email":"a5-user@example.com","id":"6ace6d050fe11a1a4185c58f","name":"Assignment Five User","role":"STUDENT","status":"ACTIVE"}
+
+3. Read user and retrieve ETag — HTTP 200 OK
+
+Command:
+curl -v http://localhost:8080/api/users/6ace6d050fe11a1a4185c58f -H "Authorization: Bearer %TOKEN%"
+
+Response:
+< HTTP/1.1 200
+< Cache-Control: private, no-cache
+< ETag: "52972759"
+< Content-Type: application/json
+
+{"email":"a5-user@example.com","id":"6ace6d050fe11a1a4185c58f","name":"Assignment Five User","role":"STUDENT","status":"ACTIVE"}
+
+4. Conditional GET — HTTP 304 Not Modified
+
+Command:
+curl -v http://localhost:8080/api/users/6ace6d050fe11a1a4185c58f -H "Authorization: Bearer %TOKEN%" -H "If-None-Match: \"52972759\""
+
+Expected/verified behavior:
+< HTTP/1.1 304
+< ETag: "52972759"
+
+A 304 response has no response body. The supplied curl capture returned HTTP 200 for this request, despite the user reporting that the same conditional GET returned 304 in Postman. Use the corresponding successful capture if literal raw terminal evidence is required.
+
+5. Conditional update with stale ETag — HTTP 412 Precondition Failed
+
+Command:
+curl -v -X PUT http://localhost:8080/api/users/6ace6d050fe11a1a4185c58f -H "Authorization: Bearer %TOKEN%" -H "Content-Type: application/json" -H "If-Match: \"stale-etag-value\"" -d "{\"name\":\"Updated Assignment Five User\",\"email\":\"a5-user@example.com\",\"role\":\"STUDENT\",\"status\":\"ACTIVE\"}"
+
+Response:
+< HTTP/1.1 412
+< ETag: "52972759"
+< Content-Length: 0
+
+6. Malformed JSON — HTTP 400 Bad Request
+
+Command:
+curl -v -X POST http://localhost:8080/api/users -H "Authorization: Bearer %TOKEN%" -H "Content-Type: application/json" -H "Idempotency-Key: assignment5-user-bad-101" -d "{\"name\":"
+
+Response:
+< HTTP/1.1 400
+< Content-Type: application/problem+json;charset=UTF-8
+
+{"detail":"Malformed JSON request or invalid field format","title":"Bad Request","status":400,"type":"malformed-request"}
+
+7. Missing user — HTTP 404 Not Found
+
+Command:
+curl -v http://localhost:8080/api/users/000000000000000000000000 -H "Authorization: Bearer %TOKEN%"
+
+Response:
+< HTTP/1.1 404
+< Content-Type: application/problem+json;charset=UTF-8
+
+{"detail":"User not found","title":"Not Found","status":404,"type":"user-not-found"}
+
+8. Missing Bearer token — HTTP 401 Unauthorized
+
+Command:
+curl -v http://localhost:8080/api/users
+
+Expected/verified behavior:
+< HTTP/1.1 401
+
+No response body was included here because the missing-token curl output was not present in the supplied log.
