@@ -1,0 +1,515 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Exams | EMS</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca'
+                        }
+                    }
+                }
+            }
+        };
+    </script>
+</head>
+
+<body class="min-h-screen bg-slate-50 text-slate-800">
+
+<div class="min-h-screen md:flex">
+
+    <!-- Sidebar -->
+    <aside class="w-full border-b border-slate-200 bg-white p-5 md:min-h-screen md:w-64 md:border-b-0 md:border-r">
+        <a href="/auth/student/dashboard"
+           class="text-2xl font-bold text-brand-600">
+            EMS<span class="text-slate-700">.</span>
+        </a>
+
+        <p class="mb-6 mt-1 text-xs text-slate-500">
+            Examination Management System
+        </p>
+
+        <nav class="space-y-2">
+            <a href="/auth/student/dashboard"
+               class="block rounded-lg px-4 py-3 text-sm text-slate-600 hover:bg-slate-100">
+                Dashboard
+            </a>
+
+            <a href="/auth/student/exams"
+               class="block rounded-lg bg-brand-50 px-4 py-3 text-sm font-semibold text-brand-700">
+                My Exams
+            </a>
+
+            <a href="/auth/student/results"
+               class="block rounded-lg px-4 py-3 text-sm text-slate-600 hover:bg-slate-100">
+                Results
+            </a>
+
+            <a href="/auth/student/timetable"
+               class="block rounded-lg px-4 py-3 text-sm text-slate-600 hover:bg-slate-100">
+                Timetable
+            </a>
+
+            <a href="/auth/student/profile"
+               class="block rounded-lg px-4 py-3 text-sm text-slate-600 hover:bg-slate-100">
+                My Profile
+            </a>
+        </nav>
+
+        <button id="logoutBtn"
+                class="mt-6 w-full rounded-lg border border-slate-200 px-4 py-3 text-left text-sm text-red-600 hover:bg-red-50">
+            Logout
+        </button>
+    </aside>
+
+    <!-- Main content -->
+    <main class="min-w-0 flex-1 p-5 md:p-8">
+
+        <header class="mb-8 flex flex-wrap items-center justify-between gap-4">
+            <div>
+                <p class="text-sm text-slate-500">Student Portal / My Exams</p>
+                <h1 class="mt-1 text-2xl font-bold tracking-tight md:text-3xl">
+                    My Exams
+                </h1>
+                <p class="mt-2 text-sm text-slate-500">
+                    View your scheduled exams and manage your attempts.
+                </p>
+            </div>
+
+            <div class="rounded-xl border border-slate-200 bg-white px-4 py-3">
+                <p class="text-xs text-slate-500">Logged in as</p>
+                <p id="studentName" class="mt-1 font-semibold">Student</p>
+            </div>
+        </header>
+
+        <!-- Summary cards -->
+        <section class="mb-6 grid grid-cols-2 gap-4 xl:grid-cols-4">
+
+            <div class="rounded-xl border border-slate-200 bg-white p-5">
+                <p class="text-sm text-slate-500">Total Exams</p>
+                <p id="totalCount" class="mt-2 text-3xl font-bold">—</p>
+            </div>
+
+            <div class="rounded-xl border border-slate-200 bg-white p-5">
+                <p class="text-sm text-slate-500">Available</p>
+                <p id="availableCount" class="mt-2 text-3xl font-bold text-emerald-600">—</p>
+            </div>
+
+            <div class="rounded-xl border border-slate-200 bg-white p-5">
+                <p class="text-sm text-slate-500">In Progress</p>
+                <p id="progressCount" class="mt-2 text-3xl font-bold text-amber-600">—</p>
+            </div>
+
+            <div class="rounded-xl border border-slate-200 bg-white p-5">
+                <p class="text-sm text-slate-500">Completed</p>
+                <p id="completedCount" class="mt-2 text-3xl font-bold text-brand-600">—</p>
+            </div>
+
+        </section>
+
+        <!-- Search and filter -->
+        <section class="mb-6 rounded-xl border border-slate-200 bg-white p-4">
+            <div class="flex flex-col gap-3 md:flex-row">
+                <input id="searchInput"
+                       type="search"
+                       placeholder="Search by exam title or subject..."
+                       class="min-w-0 flex-1 rounded-lg border border-slate-300 px-4 py-3 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100">
+
+                <select id="statusFilter"
+                        class="rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm outline-none focus:border-brand-500">
+                    <option value="ALL">All Exams</option>
+                    <option value="UPCOMING">Upcoming</option>
+                    <option value="AVAILABLE">Available</option>
+                    <option value="IN_PROGRESS">In Progress</option>
+                    <option value="COMPLETED">Completed</option>
+                    <option value="ENDED">Ended</option>
+                </select>
+
+                <button id="refreshBtn"
+                        class="rounded-lg bg-brand-600 px-5 py-3 text-sm font-semibold text-white hover:bg-brand-700">
+                    Refresh
+                </button>
+            </div>
+        </section>
+
+        <!-- Loading -->
+        <div id="loadingState"
+             class="rounded-xl border border-slate-200 bg-white p-12 text-center">
+            <p class="font-medium">Loading your exams...</p>
+            <p class="mt-2 text-sm text-slate-500">
+                Fetching the latest exam information.
+            </p>
+        </div>
+
+        <!-- Error -->
+        <div id="errorState"
+             class="hidden rounded-xl border border-red-200 bg-red-50 p-6 text-sm text-red-700">
+            <p id="errorMessage">Unable to load exams.</p>
+            <button id="retryBtn"
+                    class="mt-3 rounded-lg border border-red-300 px-4 py-2 font-semibold hover:bg-red-100">
+                Try Again
+            </button>
+        </div>
+
+        <!-- Empty state -->
+        <div id="emptyState"
+             class="hidden rounded-xl border border-slate-200 bg-white p-12 text-center">
+            <h2 class="text-lg font-semibold">No exams found</h2>
+            <p class="mt-2 text-sm text-slate-500">
+                Try another search or check back later.
+            </p>
+        </div>
+
+        <!-- Exam cards -->
+        <section id="examList"
+                 class="grid gap-5 xl:grid-cols-2">
+        </section>
+
+        <p class="mt-6 text-xs text-slate-400">
+            Exam availability is determined by the server.
+        </p>
+
+    </main>
+</div>
+
+<script>
+    (() => {
+        const API_URL = "/api/student/exams";
+
+        const $ = (id) => document.getElementById(id);
+
+        let exams = [];
+
+        const token = localStorage.getItem("token");
+        let currentUser = null;
+
+        try {
+            currentUser = JSON.parse(
+                localStorage.getItem("ems_current_user") || "null"
+            );
+        } catch {
+            currentUser = null;
+        }
+
+        if (!token || !currentUser || currentUser.role !== "STUDENT") {
+            window.location.replace("/auth/login");
+            return;
+        }
+
+        $("studentName").textContent =
+            currentUser.name ||
+            currentUser.fullName ||
+            currentUser.email ||
+            "Student";
+
+        $("logoutBtn").addEventListener("click", () => {
+            localStorage.removeItem("token");
+            localStorage.removeItem("ems_current_user");
+            window.location.replace("/auth/login");
+        });
+
+        function normalizeStatus(status) {
+            if (status === "SUBMITTED" || status === "AUTO_SUBMITTED") {
+                return "COMPLETED";
+            }
+            return status;
+        }
+
+        function formatDate(value) {
+            if (!value) return "Not scheduled";
+
+            const date = new Date(value);
+
+            if (Number.isNaN(date.getTime())) return value;
+
+            return date.toLocaleString("en-IN", {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit"
+            });
+        }
+
+        function escapeHtml(value) {
+            return String(value ?? "").replace(/[&<>"']/g, char => ({
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#39;"
+            })[char]);
+        }
+
+        function statusStyle(status) {
+            const styles = {
+                AVAILABLE: "bg-emerald-50 text-emerald-700",
+                UPCOMING: "bg-blue-50 text-blue-700",
+                IN_PROGRESS: "bg-amber-50 text-amber-700",
+                COMPLETED: "bg-brand-50 text-brand-700",
+                ENDED: "bg-slate-100 text-slate-600",
+                AUTO_SUBMITTED: "bg-brand-50 text-brand-700",
+                SCHEDULE_NOT_CONFIGURED: "bg-red-50 text-red-700"
+            };
+
+            return styles[status] || "bg-slate-100 text-slate-600";
+        }
+
+        function statusLabel(status) {
+            const labels = {
+                AVAILABLE: "Available",
+                UPCOMING: "Upcoming",
+                IN_PROGRESS: "In Progress",
+                COMPLETED: "Completed",
+                ENDED: "Ended",
+                AUTO_SUBMITTED: "Auto Submitted",
+                SCHEDULE_NOT_CONFIGURED: "Schedule Not Configured"
+            };
+
+            return labels[status] || status.replaceAll("_", " ");
+        }
+
+        function getAction(exam, status) {
+            if (status === "AVAILABLE") {
+                return `
+                <button data-action="start" data-id="${escapeHtml(exam.quizId)}"
+                    class="rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-700">
+                    Start Exam
+                </button>`;
+            }
+
+            if (status === "IN_PROGRESS") {
+                return `
+                <button data-action="resume" data-id="${escapeHtml(exam.quizId)}"
+                    class="rounded-lg bg-amber-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-amber-600">
+                    Resume Exam
+                </button>`;
+            }
+
+            if (status === "COMPLETED") {
+                return `
+                <button data-action="result" data-id="${escapeHtml(exam.quizId)}"
+                    class="rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50">
+                    View Result
+                </button>`;
+            }
+
+            if (status === "AUTO_SUBMITTED") {
+                return `
+                <button data-action="result" data-id="${escapeHtml(exam.quizId)}"
+                    class="rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50">
+                    View Result
+                </button>`;
+            }
+
+            if (status === "UPCOMING") {
+                return `<button disabled class="cursor-not-allowed rounded-lg bg-slate-100 px-4 py-2.5 text-sm font-semibold text-slate-400">Not Started</button>`;
+            }
+
+            return `<button disabled class="cursor-not-allowed rounded-lg bg-slate-100 px-4 py-2.5 text-sm font-semibold text-slate-400">Unavailable</button>`;
+        }
+
+        function render() {
+            const query = $("searchInput").value.trim().toLowerCase();
+            const filter = $("statusFilter").value;
+
+            const filtered = exams.filter(exam => {
+                const status = normalizeStatus(exam.examStatus);
+
+                const matchesSearch =
+                    `${exam.title || ""} ${exam.subject || ""} ${exam.description || ""}`
+                        .toLowerCase()
+                        .includes(query);
+
+                const matchesStatus = filter === "ALL" || status === filter;
+
+                return matchesSearch && matchesStatus;
+            });
+
+            $("totalCount").textContent = exams.length;
+            $("availableCount").textContent =
+                exams.filter(e => normalizeStatus(e.examStatus) === "AVAILABLE").length;
+            $("progressCount").textContent =
+                exams.filter(e => normalizeStatus(e.examStatus) === "IN_PROGRESS").length;
+            $("completedCount").textContent =
+                exams.filter(e => ["COMPLETED", "AUTO_SUBMITTED"].includes(e.examStatus)).length;
+
+            $("examList").innerHTML = filtered.map(exam => {
+                const status = normalizeStatus(exam.examStatus);
+
+                return `
+                <article class="flex flex-col rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+                    <div class="flex flex-wrap items-start justify-between gap-3">
+                        <div class="min-w-0">
+                            <p class="text-xs font-semibold uppercase tracking-wide text-brand-600">
+                                ${escapeHtml(exam.subject || "General")}
+                            </p>
+                            <h2 class="mt-2 break-words text-lg font-bold">
+                                ${escapeHtml(exam.title || "Untitled Exam")}
+                            </h2>
+                        </div>
+
+                        <span class="rounded-full px-3 py-1 text-xs font-semibold ${statusStyle(status)}">
+                            ${escapeHtml(statusLabel(status))}
+                        </span>
+                    </div>
+
+                    <p class="mt-3 line-clamp-2 text-sm leading-6 text-slate-500">
+                        ${escapeHtml(exam.description || "No description provided.")}
+                    </p>
+
+                    <div class="my-5 grid grid-cols-2 gap-4 rounded-lg bg-slate-50 p-4">
+                        <div>
+                            <p class="text-xs text-slate-500">Duration</p>
+                            <p class="mt-1 font-semibold">
+                                ${exam.durationMinutes ?? "—"}${exam.durationMinutes != null ? " min" : ""}
+                            </p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-500">Total Marks</p>
+                            <p class="mt-1 font-semibold">${escapeHtml(exam.totalMarks ?? "—")}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-500">Starts</p>
+                            <p class="mt-1 text-sm font-medium">${escapeHtml(formatDate(exam.startTime))}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-500">Ends</p>
+                            <p class="mt-1 text-sm font-medium">${escapeHtml(formatDate(exam.endTime))}</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-auto flex justify-end border-t border-slate-100 pt-4">
+                        ${getAction(exam, status)}
+                    </div>
+                </article>`;
+            }).join("");
+
+            $("emptyState").classList.toggle("hidden", filtered.length !== 0);
+            $("examList").classList.toggle("hidden", filtered.length === 0);
+        }
+
+        async function loadExams() {
+            $("loadingState").classList.remove("hidden");
+            $("errorState").classList.add("hidden");
+            $("emptyState").classList.add("hidden");
+            $("examList").classList.add("hidden");
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: "GET",
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Accept": "application/json"
+                    }
+                });
+
+                if (response.status === 401) {
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("ems_current_user");
+                    window.location.replace("/auth/login");
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error(`Unable to load exams (HTTP ${response.status}).`);
+                }
+
+                const data = await response.json();
+
+                if (!Array.isArray(data)) {
+                    throw new Error("Unexpected API response. Expected an exam list.");
+                }
+
+                exams = data;
+                render();
+
+            } catch (error) {
+                $("errorMessage").textContent =
+                    error.message || "Something went wrong while loading exams.";
+                $("errorState").classList.remove("hidden");
+            } finally {
+                $("loadingState").classList.add("hidden");
+            }
+        }
+
+        $("examList").addEventListener("click", async event => {
+            const button = event.target.closest("button[data-action]");
+            if (!button) return;
+
+            const action = button.dataset.action;
+            const quizId = button.dataset.id;
+
+            if (action === "result") {
+                // Result API/page is a separate integration step.
+                alert("Result page integration is our next step.");
+                return;
+            }
+
+            if (action !== "start" && action !== "resume") return;
+
+            button.disabled = true;
+            button.textContent = action === "start" ? "Starting..." : "Resuming...";
+
+            try {
+                const response = await fetch(
+                    `${API_URL}/${encodeURIComponent(quizId)}/start`,
+                    {
+                        method: "POST",
+                        headers: {
+                            "Authorization": `Bearer ${token}`,
+                            "Accept": "application/json"
+                        }
+                    }
+                );
+
+                if (response.status === 401) {
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("ems_current_user");
+                    window.location.replace("/auth/login");
+                    return;
+                }
+
+                const data = await response.json().catch(() => ({}));
+
+                if (!response.ok) {
+                    throw new Error(data.message || data.detail || "Unable to start this exam.");
+                }
+
+                // The attempt page will be implemented next.
+                // Save only the current session reference for navigation.
+                sessionStorage.setItem("ems_active_session_id", data.sessionId);
+                sessionStorage.setItem("ems_active_quiz_id", data.quizId);
+
+                window.location.href =
+                    `/auth/student/exam?sessionId=${encodeURIComponent(data.sessionId)}`;
+
+            } catch (error) {
+                alert(error.message || "Unable to open this exam.");
+                await loadExams();
+            }
+        });
+
+        $("searchInput").addEventListener("input", render);
+        $("statusFilter").addEventListener("change", render);
+        $("refreshBtn").addEventListener("click", loadExams);
+        $("retryBtn").addEventListener("click", loadExams);
+
+        loadExams();
+    })();
+</script>
+
+</body>
+</html>

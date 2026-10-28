@@ -76,4 +76,13 @@ public class HomeController {
         return "manage-exams";
     }
 
+    @GetMapping("/auth/student/exams")
+    public String studentExams() {
+        return "exams";
+    }
+
+    @GetMapping("/auth/student/exam")
+    public String studentExamPage() {
+        return "student-exam";
+    }
 }

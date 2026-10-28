@@ -1,0 +1,622 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attempt Exam | EMS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="min-h-screen bg-slate-50 text-slate-800">
+<header class="border-b bg-white">
+    <div class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 px-5 py-4">
+        <div>
+            <p class="text-sm text-slate-500">EMS / Student Portal</p>
+            <h1 class="text-xl font-bold">Exam Attempt</h1>
+        </div>
+        <div class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-2">
+            <p class="text-xs text-amber-700">Time remaining</p>
+            <p id="timer" class="text-xl font-bold tabular-nums">--:--</p>
+        </div>
+    </div>
+</header>
+
+<main class="mx-auto max-w-5xl px-5 py-8">
+    <div id="loading" class="rounded-xl border bg-white p-8 text-center">
+        Loading your exam...
+    </div>
+
+    <div id="errorBox" class="hidden rounded-xl border border-red-200 bg-red-50 p-5 text-red-700">
+        <p id="errorText"></p>
+        <button id="retryBtn" class="mt-3 rounded-lg border border-red-300 px-4 py-2">
+            Retry
+        </button>
+    </div>
+
+    <section id="examArea" class="hidden">
+        <div class="mb-5 rounded-xl border bg-white p-5">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                    <h2 class="font-bold">Your Examination</h2>
+                    <p id="questionProgress" class="mt-1 text-sm text-slate-500"></p>
+                </div>
+                <p id="saveStatus" class="text-sm text-slate-500">Answers are saved as you go.</p>
+            </div>
+            <div class="mt-4 h-2 overflow-hidden rounded-full bg-slate-100">
+                <div id="progressBar" class="h-full rounded-full bg-indigo-600" style="width:0%"></div>
+            </div>
+        </div>
+
+        <div class="grid gap-5 md:grid-cols-[minmax(0,1fr)_220px]">
+            <article class="rounded-xl border bg-white p-6">
+                <p id="questionNumber" class="text-sm font-semibold text-indigo-600"></p>
+                <h2 id="questionText" class="mt-3 whitespace-pre-wrap text-lg font-semibold leading-8"></h2>
+                <p id="questionPoints" class="mt-2 text-sm text-slate-500"></p>
+
+                <div id="options" class="mt-6 space-y-3"></div>
+
+                <div class="mt-8 flex flex-wrap justify-between gap-3 border-t pt-5">
+                    <button id="previousBtn"
+                            class="rounded-lg border px-4 py-3 font-semibold hover:bg-slate-50">
+                        Previous
+                    </button>
+                    <button id="nextBtn"
+                            class="rounded-lg bg-indigo-600 px-5 py-3 font-semibold text-white hover:bg-indigo-700">
+                        Next Question
+                    </button>
+                </div>
+            </article>
+
+            <aside class="h-fit rounded-xl border bg-white p-5">
+                <h3 class="font-bold">Question Navigator</h3>
+                <p class="mt-1 text-xs text-slate-500">Select a question to navigate.</p>
+                <div id="questionNav" class="mt-4 grid grid-cols-5 gap-2"></div>
+
+                <div class="mt-5 space-y-2 text-xs text-slate-500">
+                    <p>● Answered</p>
+                    <p>○ Not answered</p>
+                </div>
+
+                <button id="submitBtn"
+                        class="mt-6 w-full rounded-lg bg-rose-600 px-4 py-3 font-semibold text-white hover:bg-rose-700">
+                    Submit Exam
+                </button>
+            </aside>
+        </div>
+    </section>
+
+    <section id="resultArea" class="hidden rounded-xl border bg-white p-8">
+        <h2 class="text-2xl font-bold">Exam Submitted</h2>
+        <p class="mt-2 text-slate-600">Your responses have been submitted.</p>
+        <div id="resultDetails" class="mt-5 space-y-2"></div>
+        <a href="/auth/student/exams"
+           class="mt-6 inline-block rounded-lg bg-indigo-600 px-5 py-3 font-semibold text-white">
+            Back to My Exams
+        </a>
+    </section>
+
+    <section id="reviewArea" class="hidden rounded-xl border border-slate-200 bg-white p-6">
+        <h2 class="text-2xl font-bold">Review Your Answers</h2>
+        <p class="mt-2 text-sm text-slate-500">
+            Check your selected answers before final submission.
+        </p>
+
+        <div class="mt-5 grid grid-cols-2 gap-4 md:grid-cols-3">
+            <div class="rounded-lg bg-slate-50 p-4">
+                <p class="text-sm text-slate-500">Total Questions</p>
+                <p id="reviewTotal" class="mt-1 text-2xl font-bold">0</p>
+            </div>
+            <div class="rounded-lg bg-emerald-50 p-4">
+                <p class="text-sm text-emerald-700">Attempted</p>
+                <p id="reviewAttempted" class="mt-1 text-2xl font-bold text-emerald-700">0</p>
+            </div>
+            <div class="rounded-lg bg-amber-50 p-4">
+                <p class="text-sm text-amber-700">Unanswered</p>
+                <p id="reviewUnanswered" class="mt-1 text-2xl font-bold text-amber-700">0</p>
+            </div>
+        </div>
+
+        <div id="reviewList" class="mt-6 space-y-4"></div>
+
+        <div class="mt-8 flex flex-wrap justify-between gap-3 border-t pt-5">
+<!--            <button id="backToExamBtn"-->
+<!--                    class="rounded-lg border px-5 py-3 font-semibold hover:bg-slate-50">-->
+<!--                Back to Exam-->
+<!--            </button>-->
+
+            <button id="confirmSubmitBtn"
+                    class="rounded-lg bg-rose-600 px-5 py-3 font-semibold text-white hover:bg-rose-700">
+                Confirm Final Submit
+            </button>
+        </div>
+    </section>
+
+    <!-- Submit Confirmation Modal -->
+    <div id="submitConfirmModal"
+         class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm">
+
+        <div class="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl">
+
+            <div class="flex items-center gap-4 border-b border-amber-100 bg-amber-50 px-6 py-5">
+                <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-amber-100 text-amber-700">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                         stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M12 9v3m0 4h.01M10.3 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.7 3.86a2 2 0 0 0-3.4 0Z"/>
+                    </svg>
+                </div>
+
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900">
+                        Submit Examination?
+                    </h2>
+                    <p class="mt-1 text-sm text-amber-800">
+                        Please review before proceeding.
+                    </p>
+                </div>
+            </div>
+
+            <div class="space-y-4 p-6">
+                <p class="text-sm leading-6 text-slate-600">
+                    You are about to leave the examination section and review
+                    your answers before final submission.
+                </p>
+
+                <div class="rounded-xl border border-rose-200 bg-rose-50 p-4">
+                    <p class="font-semibold text-rose-800">
+                        Important Warning
+                    </p>
+                    <p class="mt-2 text-sm leading-6 text-rose-700">
+                        Once you confirm the final submission, your exam attempt
+                        will be permanently submitted. You will not be able to
+                        reopen the exam or change your answers.
+                    </p>
+                </div>
+
+                <p class="text-sm text-slate-600">
+                    You can still return to the exam from the review section
+                    and make changes before final submission.
+                </p>
+
+                <div class="flex gap-3 pt-2">
+                    <button id="cancelSubmitModalBtn"
+                            type="button"
+                            class="flex-1 rounded-xl border border-slate-300 px-4 py-3 font-semibold text-slate-700 transition hover:bg-slate-50">
+                        Continue Exam
+                    </button>
+
+                    <button id="proceedReviewBtn"
+                            type="button"
+                            class="flex-1 rounded-xl bg-indigo-600 px-4 py-3 font-semibold text-white transition hover:bg-indigo-700">
+                        Review Answers
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<script>
+    (() => {
+        const token = localStorage.getItem("token");
+        const params = new URLSearchParams(location.search);
+        const sessionId = params.get("sessionId");
+
+        const $ = id => document.getElementById(id);
+
+        let exam = null;
+        let questions = [];
+        let answers = {};
+        let currentIndex = 0;
+        let deadlineMs = 0;
+        let timerInterval = null;
+        let saveQueue = Promise.resolve();
+        let isSubmitting = false;
+        let isReadOnly = false;
+
+        if (!token || !sessionId) {
+            location.replace("/auth/login");
+            return;
+        }
+
+        function openSubmitConfirmation() {
+            const modal = $("submitConfirmModal");
+
+            modal.classList.remove("hidden");
+            modal.classList.add("flex");
+        }
+
+        function closeSubmitConfirmation() {
+            const modal = $("submitConfirmModal");
+
+            modal.classList.add("hidden");
+            modal.classList.remove("flex");
+        }
+
+        function showError(message) {
+            $("loading").classList.add("hidden");
+            $("examArea").classList.add("hidden");
+            $("errorBox").classList.remove("hidden");
+            $("errorText").textContent = message;
+        }
+
+        async function api(url, options = {}) {
+            const response = await fetch(url, {
+                ...options,
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    ...(options.body ? {"Content-Type": "application/json"} : {}),
+                    ...options.headers
+                }
+            });
+
+            if (response.status === 401) {
+                localStorage.removeItem("token");
+                localStorage.removeItem("ems_current_user");
+                location.replace("/auth/login");
+                throw new Error("Session expired. Please log in again.");
+            }
+
+            if (!response.ok) {
+                const data = await response.json().catch(() => ({}));
+                throw new Error(data.message || data.detail || `Request failed (${response.status}).`);
+            }
+
+            if (response.status === 204) return null;
+            return response.json();
+        }
+
+        function parseLocalDateTime(value) {
+            if (!value) return NaN;
+
+            // Backend LocalDateTime has no timezone; interpret as server-local
+            // only if the server and browser use the same timezone.
+            // Current EMS setup is expected to use India local time.
+            const normalized = value.endsWith("Z") ? value : value;
+            const date = new Date(normalized);
+            return date.getTime();
+        }
+
+        function renderQuestion() {
+            if (!questions.length) {
+                showError("This exam has no questions.");
+                return;
+            }
+
+            const q = questions[currentIndex];
+            $("questionNumber").textContent = `Question ${currentIndex + 1}`;
+            $("questionText").textContent = q.questionText;
+            $("questionPoints").textContent = `${q.points ?? 0} marks`;
+            $("questionProgress").textContent =
+                `Question ${currentIndex + 1} of ${questions.length}`;
+
+            $("progressBar").style.width =
+                `${((currentIndex + 1) / questions.length) * 100}%`;
+
+            $("previousBtn").disabled = currentIndex === 0;
+            $("previousBtn").classList.toggle("opacity-40", currentIndex === 0);
+            $("nextBtn").textContent =
+                currentIndex === questions.length - 1 ? "Last Question" : "Next Question";
+
+            $("options").replaceChildren();
+
+            (q.options || []).forEach((option, index) => {
+                const label = document.createElement("label");
+                label.className =
+                    "flex cursor-pointer items-start gap-3 rounded-xl border p-4 hover:border-indigo-300";
+
+                const radio = document.createElement("input");
+                radio.type = "radio";
+                radio.name = "answer";
+                radio.value = String(index);
+                radio.className = "mt-1 accent-indigo-600";
+                radio.checked = answers[q.id] === String(index);
+                radio.disabled = isReadOnly;
+
+                radio.addEventListener("change", () => {
+                    answers[q.id] = String(index);
+                    updateNavigation();
+                    $("saveStatus").textContent = "Saving answer...";
+
+                    saveQueue = saveQueue.then(() => saveAnswer(q.id, String(index)));
+
+                    saveQueue.catch(error => {
+                        $("saveStatus").textContent = "Save failed: " + error.message;
+                    });
+                });
+
+                const text = document.createElement("span");
+                text.textContent = `${String.fromCharCode(65 + index)}. ${option}`;
+
+                label.append(radio, text);
+                $("options").appendChild(label);
+            });
+
+            updateNavigation();
+        }
+
+        function updateNavigation() {
+            $("questionNav").replaceChildren();
+
+            questions.forEach((q, index) => {
+                const button = document.createElement("button");
+                button.type = "button";
+                button.textContent = String(index + 1);
+
+                const answered = answers[q.id] != null;
+                button.className = "rounded-lg border p-2 text-sm font-semibold " +
+                    (index === currentIndex
+                        ? "border-indigo-600 bg-indigo-600 text-white "
+                        : answered
+                            ? "border-emerald-300 bg-emerald-50 text-emerald-700 "
+                            : "border-slate-200 bg-white text-slate-600 ");
+
+                button.addEventListener("click", () => {
+                    currentIndex = index;
+                    renderQuestion();
+                });
+
+                $("questionNav").appendChild(button);
+            });
+        }
+
+        async function saveAnswer(questionId, selectedOption) {
+            if (isReadOnly || isSubmitting) return;
+
+            await api(`/api/student/exams/sessions/${encodeURIComponent(sessionId)}/answers`, {
+                method: "PUT",
+                body: JSON.stringify({questionId, selectedOption})
+            });
+
+            $("saveStatus").textContent = "All changes saved.";
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+
+            function tick() {
+                const remaining = deadlineMs - Date.now();
+
+                if (remaining <= 0) {
+                    $("timer").textContent = "00:00";
+                    $("timer").classList.add("text-red-600");
+                    clearInterval(timerInterval);
+                    submitExam(true);
+                    return;
+                }
+
+                const totalSeconds = Math.floor(remaining / 1000);
+                const hours = Math.floor(totalSeconds / 3600);
+                const minutes = Math.floor((totalSeconds % 3600) / 60);
+                const seconds = totalSeconds % 60;
+
+                $("timer").textContent = hours > 0
+                    ? `${String(hours).padStart(2,"0")}:${String(minutes).padStart(2,"0")}:${String(seconds).padStart(2,"0")}`
+                    : `${String(minutes).padStart(2,"0")}:${String(seconds).padStart(2,"0")}`;
+            }
+
+            tick();
+            timerInterval = setInterval(tick, 1000);
+        }
+
+        async function submitExam(auto = false) {
+            if (isSubmitting || isReadOnly) return;
+
+            if (!auto && !confirm("Are you sure you want to submit your exam? You cannot change answers afterwards.")) {
+                return;
+            }
+
+            isSubmitting = true;
+            $("submitBtn").disabled = true;
+            $("submitBtn").textContent = "Submitting...";
+
+            try {
+                // Wait for all pending answer saves before submitting.
+                await saveQueue;
+
+                const result = await api(
+                    `/api/student/exams/sessions/${encodeURIComponent(sessionId)}/submit`,
+                    {method: "POST"}
+                );
+                isReadOnly = true;
+                clearInterval(timerInterval);
+
+                $("examArea").classList.add("hidden");
+                $("reviewArea").classList.add("hidden");
+                $("resultArea").classList.remove("hidden");
+
+                $("resultArea").innerHTML = `
+    <div class="text-center">
+        <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
+            <span class="text-2xl">&#10003;</span>
+        </div>
+
+        <h2 class="mt-4 text-2xl font-bold">Exam Submitted Successfully</h2>
+
+        <p class="mt-2 text-slate-600">
+            Your answers have been submitted successfully.
+        </p>
+
+        <p class="mt-2 text-sm text-slate-500">
+            Your result is not displayed here.
+        </p>
+
+        <a href="/auth/student/exams"
+           class="mt-6 inline-block rounded-lg bg-indigo-600 px-5 py-3 font-semibold text-white">
+            Back to My Exams
+        </a>
+    </div>
+`;
+
+            } catch (error) {
+                isSubmitting = false;
+                $("submitBtn").disabled = false;
+                $("submitBtn").textContent = "Submit Exam";
+                showError("Submission failed: " + error.message);
+            }
+        }
+
+        async function loadExam() {
+            $("loading").classList.remove("hidden");
+            $("errorBox").classList.add("hidden");
+
+            try {
+                exam = await api(
+                    `/api/student/exams/sessions/${encodeURIComponent(sessionId)}`
+                );
+
+                questions = exam.questions || [];
+                answers = {...(exam.savedAnswers || {})};
+
+                if (exam.status !== "IN_PROGRESS") {
+                    isReadOnly = true;
+                    showError(`This exam attempt is ${exam.status}. It cannot be resumed.`);
+                    return;
+                }
+
+                deadlineMs = parseLocalDateTime(exam.deadline);
+
+                if (!Number.isFinite(deadlineMs)) {
+                    showError("The exam deadline is missing or invalid.");
+                    return;
+                }
+
+                $("loading").classList.add("hidden");
+                $("examArea").classList.remove("hidden");
+
+                // $("submitBtn").addEventListener("click", () => submitExam(false));
+                $("previousBtn").addEventListener("click", () => {
+                    if (currentIndex > 0) {
+                        currentIndex--;
+                        renderQuestion();
+                    }
+                });
+                $("nextBtn").addEventListener("click", () => {
+                    if (currentIndex < questions.length - 1) {
+                        currentIndex++;
+                        renderQuestion();
+                    }
+                });
+
+                renderQuestion();
+                startTimer();
+
+            } catch (error) {
+                showError(error.message || "Unable to load exam.");
+            }
+        }
+        function showReview() {
+            const attempted = questions.filter(q => answers[q.id] != null).length;
+            const unanswered = questions.length - attempted;
+
+            $("reviewTotal").textContent = questions.length;
+            $("reviewAttempted").textContent = attempted;
+            $("reviewUnanswered").textContent = unanswered;
+
+            const reviewList = $("reviewList");
+            reviewList.replaceChildren();
+
+            questions.forEach((q, index) => {
+                const selected = answers[q.id];
+                const selectedIndex =
+                    selected == null ? -1 : Number(selected);
+
+                const card = document.createElement("article");
+                card.className = "rounded-xl border p-4";
+
+                const heading = document.createElement("h3");
+                heading.className = "font-semibold";
+                heading.textContent = `Q${index + 1}. ${q.questionText}`;
+
+                const answer = document.createElement("p");
+                answer.className = "mt-3 text-sm";
+
+                if (selectedIndex >= 0 && selectedIndex < q.options.length) {
+                    answer.textContent =
+                        `Your answer: ${String.fromCharCode(65 + selectedIndex)}. ${q.options[selectedIndex]}`;
+                    answer.classList.add("text-emerald-700");
+                } else {
+                    answer.textContent = "Not answered";
+                    answer.classList.add("text-amber-700");
+                }
+
+                // const editButton = document.createElement("button");
+                // editButton.type = "button";
+                // editButton.textContent = "Review Question";
+                // editButton.className =
+                //     "mt-3 text-sm font-semibold text-indigo-600 hover:underline";
+
+                // editButton.addEventListener("click", () => {
+                //     $("reviewArea").classList.add("hidden");
+                //     $("examArea").classList.remove("hidden");
+                //     currentIndex = index;
+                //     renderQuestion();
+                // });
+
+                card.append(heading, answer);
+                reviewList.appendChild(card);
+            });
+
+            $("examArea").classList.add("hidden");
+            $("reviewArea").classList.remove("hidden");
+        }
+
+
+        $("submitBtn").addEventListener("click", () => {
+            if (isSubmitting || isReadOnly) return;
+
+            openSubmitConfirmation();
+        });
+
+        $("cancelSubmitModalBtn").addEventListener("click", () => {
+            closeSubmitConfirmation();
+        });
+
+        $("proceedReviewBtn").addEventListener("click", async () => {
+            if (isSubmitting || isReadOnly) return;
+
+            const proceedButton = $("proceedReviewBtn");
+            proceedButton.disabled = true;
+            proceedButton.textContent = "Loading Review...";
+
+            try {
+                $("saveStatus").textContent = "Waiting for answers to save...";
+
+                // Wait for pending answer saves.
+                await saveQueue;
+
+                closeSubmitConfirmation();
+                showReview();
+
+                $("saveStatus").textContent = "Review your answers before submitting.";
+            } catch (error) {
+                alert("Some answers could not be saved. Please retry: " + error.message);
+            } finally {
+                proceedButton.disabled = false;
+                proceedButton.textContent = "Review Answers";
+            }
+        });
+
+        $("retryBtn").addEventListener("click", loadExam);
+
+        // $("backToExamBtn").addEventListener("click", () => {
+        //     $("reviewArea").classList.add("hidden");
+        //     $("examArea").classList.remove("hidden");
+        // });
+
+        $("confirmSubmitBtn").addEventListener("click", () => {
+            submitExam(true);
+        });
+        loadExam();
+    })();
+
+
+
+
+
+</script>
+</body>
+</html>
