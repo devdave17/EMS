@@ -21,7 +21,7 @@ public class QuestionBankQuestion {
 
     @Id
     private String id;
-
+    private String questionBankId;
     @NotBlank(message = "Subject is required")
     @Size(max = 100, message = "Subject cannot exceed 100 characters")
     private String subject;

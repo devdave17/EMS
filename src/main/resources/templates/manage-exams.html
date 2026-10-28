@@ -1,0 +1,596 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Exams | EMS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="min-h-screen bg-slate-50 text-slate-800">
+<header class="border-b bg-white">
+    <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-5">
+        <div>
+            <h1 class="text-2xl font-bold">Manage Exams</h1>
+            <p class="mt-1 text-sm text-slate-500">
+                View, edit, update and delete your examinations.
+            </p>
+        </div>
+
+        <a href="/auth/teacher/exams/new"
+           class="shrink-0 rounded-xl bg-emerald-600 px-5 py-3 font-semibold text-white hover:bg-emerald-700">
+            + Create Exam
+        </a>
+    </div>
+</header>
+
+<main class="mx-auto max-w-6xl px-5 py-8">
+    <a href="/auth/teacher/dashboard"
+       class="text-sm font-medium text-emerald-700 hover:underline">
+        &larr; Back to Dashboard
+    </a>
+
+    <div class="mt-6 rounded-2xl border bg-white p-5">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+            <h2 class="text-lg font-bold">Your Examinations</h2>
+            <button id="refreshButton"
+                    class="rounded-lg border px-4 py-2 text-sm hover:bg-slate-50">
+                Refresh
+            </button>
+        </div>
+
+        <p id="message" role="status" aria-live="polite"
+           class="mt-4 text-sm text-slate-500">
+            Loading exams...
+        </p>
+
+        <div class="mt-4 overflow-x-auto">
+            <table class="w-full min-w-[1050px] text-left text-sm">
+                <thead class="bg-slate-50 text-slate-500">
+                <tr>
+                    <th class="p-3">Exam</th>
+                    <th class="p-3">Start Time</th>
+                    <th class="p-3">Duration</th>
+                    <th class="p-3">Total Marks</th>
+                    <th class="p-3">Status</th>
+                    <th class="p-3">Update Status</th>
+                    <th class="p-3">Actions</th>
+                </tr>
+                </thead>
+                <tbody id="examRows" class="divide-y"></tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<!-- Edit Exam Modal -->
+<div id="editModal"
+     class="fixed inset-0 z-50 hidden items-center justify-center overflow-y-auto bg-slate-900/50 p-4">
+    <div class="my-auto w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl">
+        <div class="flex items-center justify-between gap-3">
+            <h2 class="text-xl font-bold">Edit Exam</h2>
+            <button id="closeEditButton"
+                    type="button"
+                    class="rounded-lg px-3 py-2 text-slate-500 hover:bg-slate-100">
+                ✕
+            </button>
+        </div>
+
+        <form id="editForm" class="mt-5 space-y-4">
+            <input id="editId" type="hidden">
+
+            <div>
+                <label for="editTitle" class="mb-1 block text-sm font-medium">Exam Title</label>
+                <input id="editTitle" required maxlength="200"
+                       class="w-full rounded-lg border px-3 py-2 outline-none focus:border-emerald-500">
+            </div>
+
+            <div>
+                <label for="editSubject" class="mb-1 block text-sm font-medium">Subject</label>
+                <input id="editSubject" required maxlength="150"
+                       class="w-full rounded-lg border px-3 py-2 outline-none focus:border-emerald-500">
+            </div>
+
+            <div>
+                <label for="editDescription" class="mb-1 block text-sm font-medium">Description</label>
+                <textarea id="editDescription" rows="3"
+                          class="w-full rounded-lg border px-3 py-2 outline-none focus:border-emerald-500"></textarea>
+            </div>
+
+            <div>
+                <label for="editStartTime" class="mb-1 block text-sm font-medium">Start Time</label>
+                <input id="editStartTime" type="datetime-local" required
+                       class="w-full rounded-lg border px-3 py-2 outline-none focus:border-emerald-500">
+            </div>
+
+            <div>
+                <label for="editDuration" class="mb-1 block text-sm font-medium">Duration (minutes)</label>
+                <input id="editDuration" type="number" min="1" max="600" required
+                       class="w-full rounded-lg border px-3 py-2 outline-none focus:border-emerald-500">
+            </div>
+
+            <p id="editMessage" role="status" class="text-sm text-rose-600"></p>
+
+            <div class="flex justify-end gap-3">
+                <button id="cancelEditButton" type="button"
+                        class="rounded-lg border px-4 py-2 hover:bg-slate-50">
+                    Cancel
+                </button>
+                <button id="saveEditButton" type="submit"
+                        class="rounded-lg bg-emerald-600 px-5 py-2 font-semibold text-white hover:bg-emerald-700">
+                    Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal"
+     class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/50 p-4">
+    <div class="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+        <h2 class="text-xl font-bold text-rose-700">Delete Exam</h2>
+        <p class="mt-3 text-sm text-slate-600">
+            This action cannot be undone. Type the exact exam title below to confirm deletion.
+        </p>
+
+        <p id="deleteExamTitle"
+           class="mt-3 break-words rounded-lg bg-slate-100 p-3 font-semibold"></p>
+
+        <form id="deleteForm" class="mt-4 space-y-4">
+            <input id="deleteConfirmInput"
+                   type="text"
+                   autocomplete="off"
+                   placeholder="Type the exact exam title"
+                   required
+                   class="w-full rounded-lg border px-3 py-2 outline-none focus:border-rose-500">
+
+            <p id="deleteMessage" role="status" class="text-sm text-rose-600"></p>
+
+            <div class="flex justify-end gap-3">
+                <button id="cancelDeleteButton" type="button"
+                        class="rounded-lg border px-4 py-2 hover:bg-slate-50">
+                    Cancel
+                </button>
+                <button id="confirmDeleteButton" type="submit"
+                        class="rounded-lg bg-rose-600 px-4 py-2 font-semibold text-white hover:bg-rose-700 disabled:cursor-not-allowed disabled:opacity-50">
+                    Delete Exam
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    const message = document.getElementById("message");
+    const examRows = document.getElementById("examRows");
+
+    const editModal = document.getElementById("editModal");
+    const editForm = document.getElementById("editForm");
+    const editMessage = document.getElementById("editMessage");
+    const saveEditButton = document.getElementById("saveEditButton");
+
+    const deleteModal = document.getElementById("deleteModal");
+    const deleteForm = document.getElementById("deleteForm");
+    const deleteMessage = document.getElementById("deleteMessage");
+    const deleteConfirmInput = document.getElementById("deleteConfirmInput");
+    const confirmDeleteButton = document.getElementById("confirmDeleteButton");
+
+    let exams = [];
+    let selectedDeleteExam = null;
+    let loading = false;
+    let savingEdit = false;
+    let deleting = false;
+
+    function getSession() {
+        const token = localStorage.getItem("token");
+        const userJson = localStorage.getItem("ems_current_user");
+
+        if (!token || !userJson) {
+            window.location.replace("/auth/login");
+            return null;
+        }
+
+        try {
+            const user = JSON.parse(userJson);
+
+            if (user.role !== "TEACHER") {
+                window.location.replace("/auth/login");
+                return null;
+            }
+        } catch {
+            localStorage.removeItem("ems_current_user");
+            window.location.replace("/auth/login");
+            return null;
+        }
+
+        return token;
+    }
+
+    async function apiRequest(url, options = {}) {
+        const token = getSession();
+        if (!token) throw new Error("Please log in again.");
+
+        const response = await fetch(url, {
+            ...options,
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                ...(options.body ? { "Content-Type": "application/json" } : {}),
+                ...options.headers
+            }
+        });
+
+        if (response.status === 401) {
+            localStorage.removeItem("token");
+            localStorage.removeItem("ems_current_user");
+            window.location.replace("/auth/login");
+            throw new Error("Session expired. Please log in again.");
+        }
+
+        if (!response.ok) {
+            let errorMessage = `Request failed (${response.status}).`;
+
+            try {
+                const data = await response.json();
+                errorMessage = data.detail || data.message || data.error || errorMessage;
+            } catch {
+                // Keep the fallback message if the response is not JSON.
+            }
+
+            throw new Error(errorMessage);
+        }
+
+        if (response.status === 204) return null;
+        return response.json();
+    }
+
+    function makeButton(text, classes, onClick) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = text;
+        button.className = classes;
+        button.addEventListener("click", onClick);
+        return button;
+    }
+
+    function formatDate(value) {
+        if (!value) return "Not scheduled";
+
+        const date = new Date(value);
+        return Number.isNaN(date.getTime())
+            ? "Invalid date"
+            : date.toLocaleString();
+    }
+
+    function appendCell(row, value) {
+        const cell = document.createElement("td");
+        cell.className = "p-3";
+        cell.textContent = value == null ? "—" : String(value);
+        row.appendChild(cell);
+        return cell;
+    }
+
+    function renderExams() {
+        examRows.replaceChildren();
+
+        exams.forEach(exam => {
+            const row = document.createElement("tr");
+            row.className = "align-top";
+
+            appendCell(row, exam.title || "Untitled");
+            appendCell(row, formatDate(exam.startTime));
+
+            appendCell(
+                row,
+                exam.durationMinutes != null
+                    ? `${exam.durationMinutes} min`
+                    : "—"
+            );
+
+            appendCell(row, exam.totalMarks ?? "—");
+
+            const statusCell = document.createElement("td");
+            statusCell.className = "p-3";
+
+            const badge = document.createElement("span");
+            badge.className =
+                "inline-block rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold";
+            badge.textContent = exam.status || "DRAFT";
+
+            statusCell.appendChild(badge);
+            row.appendChild(statusCell);
+
+            // Status transition dropdown
+            const statusCellActions = document.createElement("td");
+            statusCellActions.className = "p-3";
+
+            const statusSelect = document.createElement("select");
+            statusSelect.className =
+                "rounded-lg border bg-white px-2 py-2 text-sm";
+
+            const transitions = ["DRAFT", "PUBLISHED", "CLOSED"]
+                .filter(status => status !== exam.status);
+
+            if (transitions.length === 0) {
+                const option = document.createElement("option");
+                option.value = "";
+                option.textContent = "No transitions";
+                statusSelect.appendChild(option);
+                statusSelect.disabled = true;
+            } else {
+                const placeholder = document.createElement("option");
+                placeholder.value = "";
+                placeholder.textContent = "Change to...";
+                statusSelect.appendChild(placeholder);
+
+                transitions.forEach(status => {
+                    const option = document.createElement("option");
+                    option.value = status;
+                    option.textContent = status;
+                    statusSelect.appendChild(option);
+                });
+            }
+
+            const updateStatusButton = makeButton(
+                "Update",
+                "mt-2 rounded-lg bg-indigo-600 px-3 py-2 text-xs font-semibold text-white hover:bg-indigo-700 disabled:opacity-50",
+                async () => {
+                    const newStatus = statusSelect.value;
+                    if (!newStatus) {
+                        message.textContent = "Select a status first.";
+                        return;
+                    }
+
+                    updateStatusButton.disabled = true;
+                    try {
+                        await apiRequest(
+                            `/api/quizzes/${encodeURIComponent(exam.id)}/status`,
+                            {
+                                method: "PUT",
+                                body: JSON.stringify(newStatus)
+                            }
+                        );
+
+                        message.textContent = "Exam status updated successfully.";
+                        await loadExams();
+                    } catch (error) {
+                        message.textContent = error.message;
+                    } finally {
+                        updateStatusButton.disabled = false;
+                    }
+                }
+            );
+
+            statusCellActions.append(statusSelect, updateStatusButton);
+            row.appendChild(statusCellActions);
+
+            // Edit and Delete actions
+            const actionsCell = document.createElement("td");
+            actionsCell.className = "p-3";
+
+            if (exam.status === "DRAFT") {
+                const editButton = makeButton(
+                    "Edit",
+                    "mr-2 mb-2 rounded-lg bg-amber-500 px-3 py-2 text-xs font-semibold text-white hover:bg-amber-600",
+                    () => openEditModal(exam)
+                );
+
+                const deleteButton = makeButton(
+                    "Delete",
+                    "mb-2 rounded-lg bg-rose-600 px-3 py-2 text-xs font-semibold text-white hover:bg-rose-700",
+                    () => openDeleteModal(exam)
+                );
+
+                actionsCell.append(editButton, deleteButton);
+            } else {
+                actionsCell.textContent = "Editing/deletion unavailable";
+                actionsCell.className += " text-xs text-slate-400";
+            }
+
+            row.appendChild(actionsCell);
+            examRows.appendChild(row);
+        });
+    }
+
+    async function loadExams() {
+        if (loading) return;
+
+        const token = getSession();
+        if (!token) return;
+
+        loading = true;
+        document.getElementById("refreshButton").disabled = true;
+        message.textContent = "Loading exams...";
+
+        try {
+            const data = await apiRequest("/api/quizzes/mine");
+            exams = Array.isArray(data) ? data : [];
+
+            if (exams.length === 0) {
+                examRows.replaceChildren();
+                message.textContent =
+                    "You haven't created any exams yet. Click Create Exam to get started.";
+                return;
+            }
+
+            renderExams();
+            message.textContent = `${exams.length} exam(s) found.`;
+        } catch (error) {
+            message.textContent = error.message || "Unable to load exams.";
+        } finally {
+            loading = false;
+            document.getElementById("refreshButton").disabled = false;
+        }
+    }
+
+    function openEditModal(exam) {
+        if (exam.status !== "DRAFT") {
+            message.textContent = "Only draft exams can be edited.";
+            return;
+        }
+
+        document.getElementById("editId").value = exam.id;
+        document.getElementById("editTitle").value = exam.title || "";
+        document.getElementById("editSubject").value = exam.subject || "";
+        document.getElementById("editDescription").value = exam.description || "";
+        document.getElementById("editDuration").value = exam.durationMinutes || 60;
+
+        const startTime = exam.startTime ? new Date(exam.startTime) : null;
+        document.getElementById("editStartTime").value =
+            startTime && !Number.isNaN(startTime.getTime())
+                ? `${startTime.getFullYear()}-${String(startTime.getMonth() + 1).padStart(2, "0")}-${String(startTime.getDate()).padStart(2, "0")}T${String(startTime.getHours()).padStart(2, "0")}:${String(startTime.getMinutes()).padStart(2, "0")}`
+                : "";
+
+        editMessage.textContent = "";
+        editModal.classList.remove("hidden");
+        editModal.classList.add("flex");
+    }
+
+    function closeEditModal() {
+        if (savingEdit) return;
+        editModal.classList.add("hidden");
+        editModal.classList.remove("flex");
+        editForm.reset();
+    }
+
+    editForm.addEventListener("submit", async event => {
+        event.preventDefault();
+        if (savingEdit) return;
+
+        const examId = document.getElementById("editId").value;
+        const title = document.getElementById("editTitle").value.trim();
+        const subject = document.getElementById("editSubject").value.trim();
+        const description = document.getElementById("editDescription").value.trim();
+        const durationMinutes = Number(document.getElementById("editDuration").value);
+        const startValue = document.getElementById("editStartTime").value;
+
+        if (!title || !subject || !startValue ||
+            !Number.isInteger(durationMinutes) ||
+            durationMinutes < 1 || durationMinutes > 600) {
+            editMessage.textContent = "Please enter valid exam details.";
+            return;
+        }
+
+        const startDate = new Date(startValue);
+        if (Number.isNaN(startDate.getTime())) {
+            editMessage.textContent = "Please provide a valid start time.";
+            return;
+        }
+
+        const endDate = new Date(
+            startDate.getTime() + durationMinutes * 60 * 1000
+        );
+
+        savingEdit = true;
+        saveEditButton.disabled = true;
+        saveEditButton.textContent = "Saving...";
+
+        try {
+            await apiRequest(
+                `/api/quizzes/${encodeURIComponent(examId)}/edit`,
+                {
+                    method: "PUT",
+                    body: JSON.stringify({
+                        title,
+                        subject,
+                        description,
+                        durationMinutes,
+                        startTime: startDate.toISOString().slice(0, 19),
+                        endTime: endDate.toISOString().slice(0, 19)
+                    })
+                }
+            );
+
+            closeEditModal();
+            message.textContent = "Exam updated successfully.";
+            await loadExams();
+        } catch (error) {
+            editMessage.textContent = error.message;
+        } finally {
+            savingEdit = false;
+            saveEditButton.disabled = false;
+            saveEditButton.textContent = "Save Changes";
+        }
+    });
+
+    function openDeleteModal(exam) {
+        if (exam.status !== "DRAFT") {
+            message.textContent = "Only draft exams can be deleted.";
+            return;
+        }
+
+        selectedDeleteExam = exam;
+        document.getElementById("deleteExamTitle").textContent = exam.title || "Untitled";
+        deleteConfirmInput.value = "";
+        deleteMessage.textContent = "";
+        confirmDeleteButton.disabled = false;
+
+        deleteModal.classList.remove("hidden");
+        deleteModal.classList.add("flex");
+        deleteConfirmInput.focus();
+    }
+
+    function closeDeleteModal() {
+        if (deleting) return;
+        deleteModal.classList.add("hidden");
+        deleteModal.classList.remove("flex");
+        selectedDeleteExam = null;
+        deleteForm.reset();
+    }
+
+    deleteConfirmInput.addEventListener("input", () => {
+        deleteMessage.textContent = "";
+    });
+
+    deleteForm.addEventListener("submit", async event => {
+        event.preventDefault();
+
+        if (deleting || !selectedDeleteExam) return;
+
+        const exactTitle = selectedDeleteExam.title || "Untitled";
+
+        if (deleteConfirmInput.value !== exactTitle) {
+            deleteMessage.textContent =
+                "The title does not match. Enter the exact exam title.";
+            return;
+        }
+
+        deleting = true;
+        confirmDeleteButton.disabled = true;
+        confirmDeleteButton.textContent = "Deleting...";
+
+        try {
+            await apiRequest(
+                `/api/quizzes/${encodeURIComponent(selectedDeleteExam.id)}`,
+                { method: "DELETE" }
+            );
+
+            closeDeleteModal();
+            message.textContent = "Exam deleted successfully.";
+            await loadExams();
+        } catch (error) {
+            deleteMessage.textContent = error.message;
+        } finally {
+            deleting = false;
+            confirmDeleteButton.disabled = false;
+            confirmDeleteButton.textContent = "Delete Exam";
+        }
+    });
+
+    document.getElementById("refreshButton")
+        .addEventListener("click", loadExams);
+
+    document.getElementById("closeEditButton")
+        .addEventListener("click", closeEditModal);
+
+    document.getElementById("cancelEditButton")
+        .addEventListener("click", closeEditModal);
+
+    document.getElementById("cancelDeleteButton")
+        .addEventListener("click", closeDeleteModal);
+
+    loadExams();
+</script>
+</body>
+</html>

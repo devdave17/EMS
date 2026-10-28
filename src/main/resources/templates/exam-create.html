@@ -1,0 +1,405 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Exam | EMS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-800">
+
+<header class="bg-white border-b">
+    <div class="max-w-5xl mx-auto px-5 py-5 flex justify-between items-center gap-4">
+        <div>
+            <p class="text-sm text-slate-500">EMS / Teacher / Exams</p>
+            <h1 class="text-2xl font-bold mt-1">Create Exam</h1>
+        </div>
+        <a href="/auth/teacher/dashboard"
+           class="border rounded-lg px-4 py-2 hover:bg-slate-50">Dashboard</a>
+    </div>
+</header>
+
+<main class="max-w-5xl mx-auto px-5 py-8">
+    <div id="message" class="hidden rounded-lg p-4 mb-5 text-sm"></div>
+
+    <form id="examForm" class="space-y-7">
+        <section class="bg-white border rounded-2xl p-6">
+            <h2 class="text-lg font-bold mb-5">Exam Details</h2>
+
+            <div class="grid sm:grid-cols-2 gap-5">
+                <div class="sm:col-span-2">
+                    <label class="block text-sm font-semibold mb-2" for="title">
+                        Exam Title *
+                    </label>
+                    <input id="title" required maxlength="150"
+                           class="w-full border rounded-lg p-3"
+                           placeholder="e.g. Data Structures Mid-Semester Exam">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold mb-2" for="subject">
+                        Subject *
+                    </label>
+                    <input id="subject" required maxlength="100"
+                           class="w-full border rounded-lg p-3"
+                           placeholder="e.g. Data Structures">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold mb-2" for="duration">
+                        Duration (minutes) *
+                    </label>
+                    <input id="duration" type="number" min="1" max="600"
+                           required class="w-full border rounded-lg p-3"
+                           value="60">
+                </div>
+
+                <div class="sm:col-span-2">
+                    <label class="block text-sm font-semibold mb-2" for="description">
+                        Description
+                    </label>
+                    <textarea id="description" rows="3" maxlength="2000"
+                              class="w-full border rounded-lg p-3"
+                              placeholder="Instructions or exam description"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold mb-2" for="startTime">
+                        Start Date & Time *
+                    </label>
+                    <input id="startTime" type="datetime-local" required
+                           class="w-full border rounded-lg p-3">
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-white border rounded-2xl p-6">
+            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+                <div>
+                    <h2 class="text-lg font-bold">Select Question Banks</h2>
+                    <p class="text-sm text-slate-500 mt-1">
+                        Choose one or more banks. All questions from each selected bank will be included.
+                    </p>
+                </div>
+                <button type="button" onclick="loadBanks()"
+                        class="border rounded-lg px-4 py-2 hover:bg-slate-50">
+                    Refresh
+                </button>
+            </div>
+
+            <div id="banks" class="mt-5 space-y-3">
+                <p class="text-slate-500">Loading question banks...</p>
+            </div>
+
+            <div class="mt-5 border-t pt-5 flex flex-wrap gap-6">
+                <div>
+                    <p class="text-sm text-slate-500">Selected banks</p>
+                    <p id="selectedCount" class="text-2xl font-bold">0</p>
+                </div>
+                <div>
+                    <p class="text-sm text-slate-500">Total questions</p>
+                    <p id="totalQuestions" class="text-2xl font-bold">0</p>
+                </div>
+                <div>
+                    <p class="text-sm text-slate-500">Total marks</p>
+                    <p id="totalMarks" class="text-2xl font-bold">0</p>
+                </div>
+            </div>
+            <p class="text-xs text-slate-500 mt-3">
+                Totals are estimates based on the current question-bank contents.
+                The server must validate the final total when saving.
+            </p>
+        </section>
+
+        <div class="flex flex-wrap gap-3">
+            <button id="submitButton" type="submit"
+                    class="bg-indigo-600 text-white font-semibold rounded-lg px-6 py-3 hover:bg-indigo-700">
+                Create Exam as Draft
+            </button>
+            <a href="/auth/teacher/dashboard"
+               class="border rounded-lg px-6 py-3 hover:bg-slate-100">
+                Cancel
+            </a>
+        </div>
+    </form>
+</main>
+
+<script>
+    const token = localStorage.getItem("token");
+    const user = JSON.parse(localStorage.getItem("ems_current_user") || "null");
+
+    if (!token || !user || user.role !== "TEACHER") {
+        localStorage.removeItem("token");
+        localStorage.removeItem("ems_current_user");
+        window.location.replace("/auth/login");
+    }
+
+    const $ = id => document.getElementById(id);
+    let banks = [];
+    let saving = false;
+
+    function showMessage(message, error = false) {
+        const el = $("message");
+        el.textContent = message;
+        el.className = "rounded-lg p-4 mb-5 text-sm " +
+            (error ? "bg-red-50 text-red-700" : "bg-green-50 text-green-700");
+        el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+
+    async function api(url, options = {}) {
+        const response = await fetch(url, {
+            ...options,
+            headers: {
+                Authorization: "Bearer " + token,
+                ...(options.body ? { "Content-Type": "application/json" } : {}),
+                ...(options.headers || {})
+            }
+        });
+
+        if (response.status === 401) {
+            localStorage.removeItem("token");
+            localStorage.removeItem("ems_current_user");
+            window.location.replace("/auth/login");
+            throw new Error("Session expired. Please log in again.");
+        }
+
+        if (!response.ok) {
+            const text = await response.text();
+            let message = text || `Request failed (${response.status})`;
+            try {
+                const data = JSON.parse(text);
+                message = data.detail || data.message || text;
+            } catch (_) {}
+            throw new Error(message);
+        }
+
+        if (response.status === 204) return null;
+        const text = await response.text();
+        return text ? JSON.parse(text) : null;
+    }
+
+    function escapeHtml(value) {
+        return String(value ?? "").replace(/[&<>"']/g, c => ({
+            "&": "&amp;", "<": "&lt;", ">": "&gt;",
+            '"': "&quot;", "'": "&#39;"
+        })[c]);
+    }
+
+    async function loadBanks() {
+        $("banks").innerHTML = '<p class="text-slate-500">Loading banks...</p>';
+
+        try {
+            banks = await api("/api/question-banks") || [];
+
+            if (!banks.length) {
+                $("banks").innerHTML = `
+                <div class="rounded-lg bg-amber-50 text-amber-800 p-4">
+                    No question banks found. Create a question bank before creating an exam.
+                    <a class="underline font-semibold"
+                       href="/auth/teacher/questions">Open Question Banks</a>
+                </div>`;
+                updateTotals();
+                return;
+            }
+
+            const details = await Promise.all(banks.map(async bank => {
+                try {
+                    const questions = await api(
+                        `/api/question-banks/${encodeURIComponent(bank.id)}/questions`
+                    );
+                    return { ...bank, questions: questions || [] };
+                } catch (_) {
+                    return { ...bank, questions: [], loadFailed: true };
+                }
+            }));
+
+            banks = details;
+
+            $("banks").innerHTML = banks.map((bank, index) => `
+            <label class="flex items-start gap-3 border rounded-xl p-4 cursor-pointer hover:border-indigo-400">
+                <input type="checkbox" class="bank-checkbox mt-1 h-4 w-4 accent-indigo-600"
+                       value="${escapeHtml(bank.id)}" onchange="updateTotals()"
+                       ${bank.loadFailed ? "disabled" : ""}>
+                <span class="flex-1 min-w-0">
+                    <span class="font-semibold block">${escapeHtml(bank.name)}</span>
+                    <span class="text-sm text-slate-500 block mt-1">
+                        ${escapeHtml(bank.subject || "No subject")}
+                    </span>
+                    <span class="text-sm text-slate-600 block mt-2">
+                        ${bank.loadFailed ? "Could not load questions" :
+                `${bank.questions.length} questions · ${
+                    bank.questions.reduce((sum, q) => sum + (Number(q.points) || 0), 0)
+                } marks`}
+                    </span>
+                </span>
+            </label>
+        `).join("");
+
+            updateTotals();
+        } catch (error) {
+            $("banks").innerHTML =
+                '<p class="text-red-600">Could not load question banks. ' +
+                escapeHtml(error.message) + '</p>';
+        }
+    }
+
+    function updateTotals() {
+        const selectedIds = [...document.querySelectorAll(".bank-checkbox:checked")]
+            .map(input => input.value);
+
+        const selected = banks.filter(bank => selectedIds.includes(bank.id));
+        $("selectedCount").textContent = selected.length;
+        $("totalQuestions").textContent =
+            selected.reduce((sum, bank) => sum + (bank.questions || []).length, 0);
+        $("totalMarks").textContent = selected.reduce(
+            (sum, bank) => sum + (bank.questions || []).reduce(
+                (total, question) => total + (Number(question.points) || 0), 0
+            ), 0
+        );
+    }
+
+    $("examForm").addEventListener("submit", async event => {
+        event.preventDefault();
+        if (saving) return;
+
+        const title = $("title").value.trim();
+        const subject = $("subject").value.trim();
+        const description = $("description").value.trim();
+        const durationMinutes = Number($("duration").value);
+        const startTime = $("startTime").value;
+        const questionBankIds = [...document.querySelectorAll(".bank-checkbox:checked")]
+            .map(input => input.value);
+
+        if (!title || !subject) {
+            showMessage("Exam title and subject are required.", true);
+            return;
+        }
+
+        if (!Number.isInteger(durationMinutes) ||
+            durationMinutes < 1 || durationMinutes > 600) {
+            showMessage("Duration must be between 1 and 600 minutes.", true);
+            return;
+        }
+
+        if (!startTime || isNaN(new Date(startTime).getTime())) {
+            showMessage("Please select a valid start date and time.", true);
+            return;
+        }
+        if (!questionBankIds.length) {
+            showMessage("Select at least one question bank.", true);
+            return;
+        }
+
+        const selectedBanks = banks.filter(bank => questionBankIds.includes(bank.id));
+        if (selectedBanks.some(bank => bank.loadFailed || !bank.questions.length)) {
+            showMessage("A selected bank has no questions or failed to load. Refresh and check your selection.", true);
+            return;
+        }
+
+        const startDate = new Date(startTime);
+
+        const endDate = new Date(
+            startDate.getTime() + durationMinutes * 60 * 1000
+        );
+
+// Convert to LocalDateTime-compatible format:
+// yyyy-MM-ddTHH:mm:ss
+        const pad = value => String(value).padStart(2, "0");
+
+        const endTime =
+            `${endDate.getFullYear()}-${pad(endDate.getMonth() + 1)}-${pad(endDate.getDate())}` +
+            `T${pad(endDate.getHours())}:${pad(endDate.getMinutes())}:${pad(endDate.getSeconds())}`;
+
+        const payload = {
+            title,
+            subject,
+            description,
+            durationMinutes,
+            startTime: startTime + ":00",
+            endTime,
+            questionBankIds
+        };
+
+        if (saving) return;
+
+        saving = true;
+
+        const submitButton = $("examForm").querySelector(
+            'button[type="submit"]'
+        );
+
+        if (submitButton) {
+            submitButton.disabled = true;
+            submitButton.textContent = "Creating Exam...";
+        }
+
+        try {
+            const token = localStorage.getItem("token");
+
+            if (!token) {
+                window.location.href = "/auth/login";
+                return;
+            }
+
+            // Keep the same key for retries of this request.
+            const idempotencyKey = crypto.randomUUID();
+
+            showMessage("Creating your exam...", false);
+
+            const response = await fetch(
+                "/api/quizzes/with-question-banks",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`,
+                        "Idempotency-Key": idempotencyKey
+                    },
+                    body: JSON.stringify(payload)
+                }
+            );
+
+            const result = await response.json().catch(() => ({}));
+
+            if (!response.ok) {
+                throw new Error(
+                    result.message ||
+                    result.error ||
+                    `Request failed (${response.status})`
+                );
+            }
+
+            showMessage(
+                `Exam created successfully! Exam ID: ${result.id}`,
+                false
+            );
+
+            // Redirect after successful creation.
+            setTimeout(() => {
+                window.location.href = "/auth/teacher/dashboard";
+            }, 1200);
+
+        } catch (error) {
+            console.error("Create exam error:", error);
+
+            showMessage(
+                error.message || "Failed to create exam.",
+                true
+            );
+
+        } finally {
+            saving = false;
+
+            if (submitButton) {
+                submitButton.disabled = false;
+                submitButton.textContent = "Create Exam";
+            }
+        }
+    });
+
+    loadBanks();
+</script>
+
+</body>
+</html>
