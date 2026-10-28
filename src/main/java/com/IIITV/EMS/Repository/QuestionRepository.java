@@ -9,7 +9,7 @@ import com.IIITV.EMS.Model.Questions;
 public interface QuestionRepository extends MongoRepository<Questions, String> {
 
     List<Questions> findByQuizId(String quizId);
-
+    void deleteByQuizId(String quizId);
     boolean existsByQuizIdAndSourceBankQuestionId(
             String quizId,
             String sourceBankQuestionId);

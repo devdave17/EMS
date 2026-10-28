@@ -6,6 +6,7 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Document(collection = "quizzes")
@@ -26,4 +27,9 @@ public class Quiz {
     private QuizStatus status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private String subject;
+    private Integer durationMinutes;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
+    private BigDecimal totalMarks;
 }

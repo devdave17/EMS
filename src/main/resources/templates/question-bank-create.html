@@ -1,0 +1,295 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Question Bank | EMS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-800">
+<main class="mx-auto max-w-4xl p-5 sm:p-8">
+    <a href="/auth/teacher/questions" class="text-sm text-emerald-700">← Back to Question Banks</a>
+
+    <h1 class="mt-4 text-3xl font-bold">Create Question Bank</h1>
+    <p class="mt-2 text-sm text-slate-500">Enter bank details and add your questions.</p>
+
+    <div id="message" class="mt-5 text-sm" role="status"></div>
+
+    <form id="bank-form" class="mt-6 space-y-6">
+        <section class="space-y-4 rounded-2xl border bg-white p-6">
+            <h2 class="text-lg font-bold">Bank Details</h2>
+
+            <div>
+                <label for="name" class="mb-1 block text-sm font-medium">Bank Name *</label>
+                <input id="name" required maxlength="100"
+                       placeholder="e.g. Java Unit 1"
+                       class="w-full rounded-lg border p-3 outline-none focus:border-emerald-600">
+            </div>
+
+            <div>
+                <label for="subject" class="mb-1 block text-sm font-medium">Subject *</label>
+                <input id="subject" required maxlength="100"
+                       placeholder="e.g. Java"
+                       class="w-full rounded-lg border p-3 outline-none focus:border-emerald-600">
+            </div>
+
+            <div>
+                <label for="description" class="mb-1 block text-sm font-medium">Description</label>
+                <textarea id="description" maxlength="1000" rows="3"
+                          placeholder="Describe this question bank..."
+                          class="w-full rounded-lg border p-3 outline-none focus:border-emerald-600"></textarea>
+            </div>
+        </section>
+
+        <section class="rounded-2xl border bg-white p-6">
+            <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
+                <div>
+                    <h2 class="text-lg font-bold">Questions</h2>
+                    <p class="mt-1 text-sm text-slate-500">Each question needs 2–6 options.</p>
+                </div>
+                <button type="button" id="add-question"
+                        class="rounded-lg border border-emerald-700 px-4 py-2 text-sm font-semibold text-emerald-700">
+                    + Add Question
+                </button>
+            </div>
+
+            <div id="questions" class="space-y-5"></div>
+        </section>
+
+        <button id="save-button" type="submit"
+                class="w-full rounded-xl bg-emerald-700 px-5 py-3 font-semibold text-white hover:bg-emerald-800 disabled:opacity-50">
+            Save Question Bank
+        </button>
+    </form>
+</main>
+
+<script>
+    const token = localStorage.getItem("token");
+    const user = JSON.parse(localStorage.getItem("ems_current_user") || "null");
+
+    if (!token || !user || user.role !== "TEACHER") {
+        localStorage.removeItem("token");
+        localStorage.removeItem("ems_current_user");
+        window.location.replace("/auth/login");
+    }
+
+    const form = document.getElementById("bank-form");
+    const questionList = document.getElementById("questions");
+    const message = document.getElementById("message");
+    const saveButton = document.getElementById("save-button");
+
+    function showMessage(text, isError = true) {
+        message.textContent = text;
+        message.className = "mt-5 text-sm " + (isError ? "text-red-600" : "text-emerald-700");
+    }
+
+    function addQuestion() {
+        const card = document.createElement("article");
+        card.className = "question-card rounded-xl border border-slate-200 p-4 sm:p-5";
+
+        card.innerHTML = `
+        <div class="mb-4 flex items-center justify-between">
+            <h3 class="font-semibold question-title">Question</h3>
+            <button type="button" class="remove-question text-sm font-medium text-red-600">Remove</button>
+        </div>
+
+        <label class="mb-1 block text-sm font-medium">Question Text *</label>
+        <textarea class="question-text mb-4 w-full rounded-lg border p-3"
+                  required maxlength="2000" rows="3"
+                  placeholder="Enter your question"></textarea>
+
+        <div class="options space-y-2"></div>
+
+        <button type="button" class="add-option mt-3 text-sm font-semibold text-emerald-700">
+            + Add Option
+        </button>
+
+        <div class="mt-4 grid gap-4 sm:grid-cols-2">
+            <div>
+                <label class="mb-1 block text-sm font-medium">Correct Answer *</label>
+                <select class="correct-option w-full rounded-lg border p-3" required></select>
+            </div>
+            <div>
+                <label class="mb-1 block text-sm font-medium">Points *</label>
+                <input class="points w-full rounded-lg border p-3"
+                       type="number" min="0.01" step="any" value="1" required>
+            </div>
+        </div>`;
+
+        const optionsContainer = card.querySelector(".options");
+        const correctSelect = card.querySelector(".correct-option");
+
+        function refreshOptions() {
+            const inputs = [...optionsContainer.querySelectorAll(".option-input")];
+            const previous = correctSelect.value;
+
+            correctSelect.innerHTML = "";
+            inputs.forEach((input, index) => {
+                const option = document.createElement("option");
+                option.value = index;
+                option.textContent = `Option ${index + 1}`;
+                correctSelect.appendChild(option);
+            });
+
+            if (inputs.some((_, index) => String(index) === previous)) {
+                correctSelect.value = previous;
+            }
+        }
+
+        function addOption(value = "") {
+            if (optionsContainer.children.length >= 6) {
+                showMessage("A question can have at most 6 options.");
+                return;
+            }
+
+            const row = document.createElement("div");
+            row.className = "flex gap-2";
+
+            const input = document.createElement("input");
+            input.className = "option-input min-w-0 flex-1 rounded-lg border p-3";
+            input.required = true;
+            input.maxLength = 500;
+            input.placeholder = `Option ${optionsContainer.children.length + 1}`;
+            input.value = value;
+
+            const remove = document.createElement("button");
+            remove.type = "button";
+            remove.textContent = "Remove";
+            remove.className = "px-2 text-sm text-red-600";
+
+            remove.addEventListener("click", () => {
+                if (optionsContainer.children.length <= 2) {
+                    showMessage("Each question must have at least 2 options.");
+                    return;
+                }
+                row.remove();
+                refreshOptions();
+            });
+
+            row.append(input, remove);
+            optionsContainer.appendChild(row);
+            refreshOptions();
+        }
+
+        card.querySelector(".add-option").addEventListener("click", () => addOption());
+        card.querySelector(".remove-question").addEventListener("click", () => {
+            if (questionList.children.length <= 1) {
+                showMessage("Add at least one question to the bank.");
+                return;
+            }
+            card.remove();
+            updateQuestionTitles();
+        });
+
+        addOption();
+        addOption();
+        questionList.appendChild(card);
+        updateQuestionTitles();
+    }
+
+    function updateQuestionTitles() {
+        [...questionList.querySelectorAll(".question-card")].forEach((card, index) => {
+            card.querySelector(".question-title").textContent = `Question ${index + 1}`;
+        });
+    }
+
+    document.getElementById("add-question").addEventListener("click", addQuestion);
+    addQuestion();
+
+    async function api(url, method, body) {
+        const response = await fetch(url, {
+            method,
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            },
+            body: body === undefined ? undefined : JSON.stringify(body)
+        });
+
+        if (response.status === 401) {
+            localStorage.removeItem("token");
+            localStorage.removeItem("ems_current_user");
+            window.location.replace("/auth/login");
+            throw new Error("Please log in again.");
+        }
+
+        if (!response.ok) {
+            const text = await response.text();
+            throw new Error(text || `Request failed (${response.status})`);
+        }
+
+        return response.status === 204 ? null : response.json();
+    }
+
+    form.addEventListener("submit", async event => {
+        event.preventDefault();
+        showMessage("");
+
+        const cards = [...questionList.querySelectorAll(".question-card")];
+
+
+        const bankSubject = document.getElementById("subject").value.trim();
+
+        const questions = cards.map(card => ({
+            subject: bankSubject,
+            questionText: card.querySelector(".question-text").value.trim(),
+            options: [...card.querySelectorAll(".option-input")].map(input => input.value.trim()),
+            correctOptionIndex: Number(card.querySelector(".correct-option").value),
+            points: Number(card.querySelector(".points").value)
+        }));
+
+
+        if (questions.some(q =>
+            !q.questionText ||
+            q.options.length < 2 ||
+            q.options.length > 6 ||
+            q.options.some(option => !option) ||
+            !Number.isFinite(q.points) ||
+            q.points <= 0 ||
+            q.correctOptionIndex < 0 ||
+            q.correctOptionIndex >= q.options.length
+        )) {
+            showMessage("Please check each question, its options, correct answer and points.");
+            return;
+        }
+
+        saveButton.disabled = true;
+        saveButton.textContent = "Saving...";
+
+        let createdBank = null;
+        let savedCount = 0;
+
+        try {
+            createdBank = await api("/api/question-banks", "POST", {
+                name: document.getElementById("name").value.trim(),
+                subject: document.getElementById("subject").value.trim(),
+                description: document.getElementById("description").value.trim()
+            });
+
+            for (const question of questions) {
+                await api(
+                    `/api/question-banks/${encodeURIComponent(createdBank.id)}/questions`,
+                    "POST",
+                    question
+                );
+                savedCount++;
+            }
+
+            window.location.replace("/auth/teacher/questions");
+        } catch (error) {
+            if (createdBank) {
+                showMessage(
+                    `Bank created. ${savedCount}/${questions.length} questions saved. ${error.message} You can open the bank and retry missing questions.`
+                );
+            } else {
+                showMessage(error.message);
+            }
+        } finally {
+            saveButton.disabled = false;
+            saveButton.textContent = "Save Question Bank";
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,7 +1,9 @@
 package com.IIITV.EMS.Controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
 public class HomeController {
@@ -41,5 +43,32 @@ public class HomeController {
         return "reset-password";
     }
 
+    @GetMapping("/auth/teacher/questions")
+    public String questionBankPage() {
+        return "question-bank";
+    }
+
+    @GetMapping("/auth/teacher/questions/new")
+    public String createQuestionBankPage() {
+        return "question-bank-create";
+    }
+
+    @GetMapping("/auth/teacher/questions/{bankId}")
+    public String questionBankDetailPage(
+            @PathVariable String bankId,
+            Model model) {
+
+        model.addAttribute("bankId", bankId);
+        return "question-bank-detail";
+    }
+
+    @GetMapping("/auth/teacher/exams/new")
+    public String createExamPage() {
+        return "exam-create";
+    }
+    @GetMapping("/auth/teacher/exams")
+    public String manageExamsPage() {
+        return "manage-exams";
+    }
 
 }

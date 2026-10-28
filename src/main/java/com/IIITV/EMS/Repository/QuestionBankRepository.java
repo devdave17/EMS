@@ -4,10 +4,14 @@ import java.util.List;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import com.IIITV.EMS.Model.QuestionBankQuestion;
+import com.IIITV.EMS.Model.QuestionBank;
 
 public interface QuestionBankRepository
-        extends MongoRepository<QuestionBankQuestion, String> {
+        extends MongoRepository<QuestionBank, String> {
 
-    List<QuestionBankQuestion> findBySubjectIgnoreCase(String subject);
+    List<QuestionBank> findByCreatedBy(String createdBy);
+
+    List<QuestionBank> findByCreatedByAndSubjectIgnoreCase(
+            String createdBy, String subject
+    );
 }
