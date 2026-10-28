@@ -1,15 +1,18 @@
+
 package com.IIITV.EMS.Repository;
 
-
+import com.IIITV.EMS.Model.Role;
 import com.IIITV.EMS.Model.User;
+import com.IIITV.EMS.Model.UserStatus;
 import org.springframework.data.mongodb.repository.MongoRepository;
-
-import java.util.Optional;
 
 public interface UserRepository extends MongoRepository<User, String> {
 
-    Optional<User> findByEmail(String email);
-
+    java.util.Optional<User> findByEmail(String email);
 
     boolean existsByEmail(String email);
+
+    long countByRole(Role role);
+
+    long countByStatus(UserStatus status);
 }

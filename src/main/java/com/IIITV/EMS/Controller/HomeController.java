@@ -13,22 +13,32 @@ public class HomeController {
 
     @GetMapping("auth/login")
     public String login(){
-        return "pages/auth/login";
+        return "login";
     }
 
     @GetMapping("auth/student/dashboard")
     public String studentDashboard(){
-        return "pages/student/dashboard";
+        return "student-dashboard";
     }
 
     @GetMapping("auth/teacher/dashboard")
     public String teacherDashboard(){
-        return "pages/teacher/dashboard";
+        return "teacher-dashboard";
     }
 
     @GetMapping("auth/admin/dashboard")
     public String adminDashboard(){
-        return "pages/admin/dashboard";
+        return "admin-dashboard";
+    }
+
+    @GetMapping("/auth/forgot-password")
+    public String forgotPasswordPage() {
+        return "forget-password";
+    }
+
+    @GetMapping("/auth/reset-password")
+    public String resetPasswordPage() {
+        return "reset-password";
     }
 
 

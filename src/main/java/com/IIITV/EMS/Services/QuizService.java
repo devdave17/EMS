@@ -19,8 +19,17 @@ public class QuizService {
         this.quizRepository = quizRepository;
     }
 
-    public Quiz createQuiz(Quiz quiz) {
+    public Quiz createQuiz(Quiz quiz, String teacherId) {
+
+        if (teacherId == null || teacherId.isBlank()) {
+            throw new ResponseStatusException(
+                    HttpStatus.UNAUTHORIZED,
+                    "Authenticated teacher is required"
+            );
+        }
+
         quiz.setId(null);
+        quiz.setCreatedBy(teacherId);
         quiz.setStatus(QuizStatus.DRAFT);
         quiz.setCreatedAt(LocalDateTime.now());
         quiz.setUpdatedAt(LocalDateTime.now());

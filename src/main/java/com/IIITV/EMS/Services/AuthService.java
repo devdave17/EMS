@@ -20,10 +20,10 @@ public class AuthService {
 
     public AuthService(
             UserRepository userRepository,
-            JwtService jwtService, JwtService jwtService1) {
+            JwtService jwtService) {
 
         this.userRepository = userRepository;
-        this.jwtService = jwtService1;
+        this.jwtService = jwtService;
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
 

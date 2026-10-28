@@ -12,7 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import java.net.URI;
 import java.util.List;
 
@@ -63,8 +64,26 @@ public class QuizController {
 
             return ResponseEntity.ok(existingQuiz);
         }
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
 
-        Quiz savedQuiz = quizService.createQuiz(quiz);
+        if (authentication == null
+                || !authentication.isAuthenticated()
+                || authentication.getPrincipal() == null
+                || !(authentication.getPrincipal() instanceof String teacherId)) {
+            throw new ResponseStatusException(
+                    HttpStatus.UNAUTHORIZED,
+                    "Authenticated teacher is required"
+            );
+        }
+        if (!authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_TEACHER"))) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "Only teachers can create exams"
+            );
+        }
+        Quiz savedQuiz = quizService.createQuiz(quiz, teacherId);
 
         idempotencyService.save(
                 key,
