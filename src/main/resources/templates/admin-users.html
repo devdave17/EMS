@@ -1,53 +1,109 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>User Management | EMS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
-        dialog::backdrop { background: rgb(15 23 42 / 45%); }
+        body {
+            font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+        }
+        dialog::backdrop {
+            background: rgb(15 23 42 / 45%);
+        }
     </style>
 </head>
 <body class="min-h-screen bg-slate-50 text-slate-800">
 <header class="border-b border-slate-200 bg-white">
-    <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-        <div>
-            <a class="text-sm font-semibold text-violet-700" href="/auth/admin/dashboard">EMS Administration</a>
-            <h1 class="mt-1 text-2xl font-bold text-slate-950">User management</h1>
+    <div
+            class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8"
+    >
+        <div class="flex items-center gap-3">
+            <img
+                    class="h-14 w-14 shrink-0 rounded-lg object-contain"
+                    src="/EMSlogo.png"
+                    alt="EMS logo"
+            />
+            <div>
+                <a
+                        class="text-sm font-semibold text-violet-700"
+                        href="/auth/admin/dashboard"
+                >EMS Administration</a
+                >
+                <h1 class="mt-1 text-2xl font-bold text-slate-950">
+                    User management
+                </h1>
+            </div>
         </div>
         <div class="flex items-center gap-3">
-            <a class="rounded-md px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100" href="/auth/admin/dashboard">Dashboard</a>
-            <button id="logout-button" class="rounded-md border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50" type="button">Log out</button>
+            <a
+                    class="rounded-md px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100"
+                    href="/auth/admin/dashboard"
+            >Dashboard</a
+            >
+            <button
+                    id="logout-button"
+                    class="rounded-md border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                    type="button"
+            >
+                Log out
+            </button>
         </div>
     </div>
 </header>
 
 <main class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
     <section aria-labelledby="users-heading">
-        <div class="flex flex-col gap-4 border-b border-slate-200 pb-5 sm:flex-row sm:items-end sm:justify-between">
+        <div
+                class="flex flex-col gap-4 border-b border-slate-200 pb-5 sm:flex-row sm:items-end sm:justify-between"
+        >
             <div>
-                <h2 id="users-heading" class="text-lg font-semibold text-slate-900">Users</h2>
-                <p id="user-count" class="mt-1 text-sm text-slate-500">Loading users...</p>
+                <h2 id="users-heading" class="text-lg font-semibold text-slate-900">
+                    Users
+                </h2>
+                <p id="user-count" class="mt-1 text-sm text-slate-500">
+                    Loading users...
+                </p>
             </div>
             <div class="flex flex-col gap-3 sm:flex-row">
                 <label class="sr-only" for="user-search">Search users</label>
-                <input id="user-search" class="min-w-56 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-violet-600 focus:ring-2 focus:ring-violet-100" type="search" placeholder="Search name or email">
+                <input
+                        id="user-search"
+                        class="min-w-56 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-violet-600 focus:ring-2 focus:ring-violet-100"
+                        type="search"
+                        placeholder="Search name or email"
+                />
                 <label class="sr-only" for="role-filter">Filter by role</label>
-                <select id="role-filter" class="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-violet-600 focus:ring-2 focus:ring-violet-100">
+                <select
+                        id="role-filter"
+                        class="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-violet-600 focus:ring-2 focus:ring-violet-100"
+                >
                     <option value="">All roles</option>
                     <option value="STUDENT">Student</option>
                     <option value="TEACHER">Teacher</option>
                     <option value="ADMIN">Admin</option>
                 </select>
-                <button id="add-user-button" class="rounded-md bg-violet-700 px-4 py-2 text-sm font-semibold text-white hover:bg-violet-800" type="button">Add user</button>
+                <button
+                        id="add-user-button"
+                        class="rounded-md bg-violet-700 px-4 py-2 text-sm font-semibold text-white hover:bg-violet-800"
+                        type="button"
+                >
+                    Add user
+                </button>
             </div>
         </div>
 
-        <p id="users-message" class="my-4 hidden rounded-md border px-4 py-3 text-sm" role="status" aria-live="polite"></p>
+        <p
+                id="users-message"
+                class="my-4 hidden rounded-md border px-4 py-3 text-sm"
+                role="status"
+                aria-live="polite"
+        ></p>
 
-        <div class="mt-5 overflow-x-auto rounded-md border border-slate-200 bg-white">
+        <div
+                class="mt-5 overflow-x-auto rounded-md border border-slate-200 bg-white"
+        >
             <table class="w-full min-w-[720px] border-collapse text-left text-sm">
                 <thead class="bg-slate-50 text-xs uppercase text-slate-500">
                 <tr>
@@ -55,51 +111,124 @@
                     <th class="px-5 py-3 font-semibold" scope="col">Email</th>
                     <th class="px-5 py-3 font-semibold" scope="col">Role</th>
                     <th class="px-5 py-3 font-semibold" scope="col">Status</th>
-                    <th class="px-5 py-3 text-right font-semibold" scope="col">Actions</th>
+                    <th class="px-5 py-3 text-right font-semibold" scope="col">
+                        Actions
+                    </th>
                 </tr>
                 </thead>
                 <tbody id="users-table" class="divide-y divide-slate-100"></tbody>
             </table>
-            <p id="empty-state" class="hidden px-5 py-12 text-center text-sm text-slate-500">No users match these filters.</p>
+            <p
+                    id="empty-state"
+                    class="hidden px-5 py-12 text-center text-sm text-slate-500"
+            >
+                No users match these filters.
+            </p>
         </div>
     </section>
 </main>
 
-<dialog id="user-dialog" class="w-[min(100%-2rem,34rem)] rounded-md p-0 shadow-2xl">
+<dialog
+        id="user-dialog"
+        class="w-[min(100%-2rem,34rem)] rounded-md p-0 shadow-2xl"
+>
     <form id="user-form" class="p-6">
         <div class="flex items-start justify-between gap-4">
             <div>
-                <h2 id="dialog-title" class="text-lg font-semibold text-slate-950">Add user</h2>
-                <p class="mt-1 text-sm text-slate-500">Set the account details and access level.</p>
+                <h2 id="dialog-title" class="text-lg font-semibold text-slate-950">
+                    Add user
+                </h2>
+                <p class="mt-1 text-sm text-slate-500">
+                    Set the account details and access level.
+                </p>
             </div>
-            <button id="close-dialog" class="rounded p-1 text-xl leading-none text-slate-500 hover:bg-slate-100" type="button" aria-label="Close dialog">&times;</button>
+            <button
+                    id="close-dialog"
+                    class="rounded p-1 text-xl leading-none text-slate-500 hover:bg-slate-100"
+                    type="button"
+                    aria-label="Close dialog"
+            >
+                &times;
+            </button>
         </div>
-        <p id="form-error" class="mt-4 hidden rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700" role="alert"></p>
+        <p
+                id="form-error"
+                class="mt-4 hidden rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
+                role="alert"
+        ></p>
         <div class="mt-5 grid gap-4">
-            <label class="grid gap-1.5 text-sm font-medium text-slate-700" for="user-name">
+            <label
+                    class="grid gap-1.5 text-sm font-medium text-slate-700"
+                    for="user-name"
+            >
                 Name
-                <input id="user-name" name="name" class="rounded-md border border-slate-300 px-3 py-2 font-normal outline-none focus:border-violet-600 focus:ring-2 focus:ring-violet-100" minlength="2" maxlength="100" required>
+                <input
+                        id="user-name"
+                        name="name"
+                        class="rounded-md border border-slate-300 px-3 py-2 font-normal outline-none focus:border-violet-600 focus:ring-2 focus:ring-violet-100"
+                        minlength="2"
+                        maxlength="100"
+                        required
+                />
             </label>
-            <label class="grid gap-1.5 text-sm font-medium text-slate-700" for="user-email">
+            <label
+                    class="grid gap-1.5 text-sm font-medium text-slate-700"
+                    for="user-email"
+            >
                 Email
-                <input id="user-email" name="email" type="email" class="rounded-md border border-slate-300 px-3 py-2 font-normal outline-none focus:border-violet-600 focus:ring-2 focus:ring-violet-100" required>
+                <input
+                        id="user-email"
+                        name="email"
+                        type="email"
+                        class="rounded-md border border-slate-300 px-3 py-2 font-normal outline-none focus:border-violet-600 focus:ring-2 focus:ring-violet-100"
+                        required
+                />
             </label>
-            <label class="grid gap-1.5 text-sm font-medium text-slate-700" for="user-password">
-                Password <span id="password-hint" class="font-normal text-slate-500">(required, at least 8 characters)</span>
-                <input id="user-password" name="password" type="password" class="rounded-md border border-slate-300 px-3 py-2 font-normal outline-none focus:border-violet-600 focus:ring-2 focus:ring-violet-100" minlength="8" autocomplete="new-password">
+            <label
+                    class="grid gap-1.5 text-sm font-medium text-slate-700"
+                    for="user-password"
+            >
+                Password
+                <span id="password-hint" class="font-normal text-slate-500"
+                >(required, at least 8 characters)</span
+                >
+                <input
+                        id="user-password"
+                        name="password"
+                        type="password"
+                        class="rounded-md border border-slate-300 px-3 py-2 font-normal outline-none focus:border-violet-600 focus:ring-2 focus:ring-violet-100"
+                        minlength="8"
+                        autocomplete="new-password"
+                />
             </label>
             <div class="grid gap-4 sm:grid-cols-2">
-                <label class="grid gap-1.5 text-sm font-medium text-slate-700" for="user-role">
+                <label
+                        class="grid gap-1.5 text-sm font-medium text-slate-700"
+                        for="user-role"
+                >
                     Role
-                    <select id="user-role" name="role" class="rounded-md border border-slate-300 bg-white px-3 py-2 font-normal outline-none focus:border-violet-600 focus:ring-2 focus:ring-violet-100" required>
+                    <select
+                            id="user-role"
+                            name="role"
+                            class="rounded-md border border-slate-300 bg-white px-3 py-2 font-normal outline-none focus:border-violet-600 focus:ring-2 focus:ring-violet-100"
+                            required
+                    >
                         <option value="STUDENT">Student</option>
                         <option value="TEACHER">Teacher</option>
                         <option value="ADMIN">Admin</option>
                     </select>
                 </label>
-                <label class="grid gap-1.5 text-sm font-medium text-slate-700" for="user-status">
+                <label
+                        class="grid gap-1.5 text-sm font-medium text-slate-700"
+                        for="user-status"
+                >
                     Status
-                    <select id="user-status" name="status" class="rounded-md border border-slate-300 bg-white px-3 py-2 font-normal outline-none focus:border-violet-600 focus:ring-2 focus:ring-violet-100" required>
+                    <select
+                            id="user-status"
+                            name="status"
+                            class="rounded-md border border-slate-300 bg-white px-3 py-2 font-normal outline-none focus:border-violet-600 focus:ring-2 focus:ring-violet-100"
+                            required
+                    >
                         <option value="ACTIVE">Active</option>
                         <option value="INACTIVE">Inactive</option>
                         <option value="BLOCKED">Blocked</option>
@@ -108,45 +237,57 @@
             </div>
         </div>
         <div class="mt-6 flex justify-end gap-3 border-t border-slate-100 pt-4">
-            <button id="cancel-dialog" class="rounded-md border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50" type="button">Cancel</button>
-            <button id="save-user-button" class="rounded-md bg-violet-700 px-4 py-2 text-sm font-semibold text-white hover:bg-violet-800" type="submit">Save user</button>
+            <button
+                    id="cancel-dialog"
+                    class="rounded-md border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                    type="button"
+            >
+                Cancel
+            </button>
+            <button
+                    id="save-user-button"
+                    class="rounded-md bg-violet-700 px-4 py-2 text-sm font-semibold text-white hover:bg-violet-800"
+                    type="submit"
+            >
+                Save user
+            </button>
         </div>
     </form>
 </dialog>
 
 <script>
-    const token = localStorage.getItem("token");
-    const usersTable = document.getElementById("users-table");
-    const userDialog = document.getElementById("user-dialog");
-    const userForm = document.getElementById("user-form");
+    const token = localStorage.getItem('token');
+    const usersTable = document.getElementById('users-table');
+    const userDialog = document.getElementById('user-dialog');
+    const userForm = document.getElementById('user-form');
     let users = [];
 
     if (!token) {
-        window.location.replace("/auth/login");
+        window.location.replace('/auth/login');
     }
 
-    document.getElementById("logout-button").addEventListener("click", () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("ems_current_user");
-        window.location.replace("/auth/login");
+    document.getElementById('logout-button').addEventListener('click', () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('ems_current_user');
+        window.location.replace('/auth/login');
     });
 
     async function apiRequest(path, options = {}) {
         const response = await fetch(path, {
             ...options,
             headers: {
-                Accept: "application/json",
+                Accept: 'application/json',
                 Authorization: `Bearer ${token}`,
-                ...(options.body ? { "Content-Type": "application/json" } : {}),
-                ...options.headers
-            }
+                ...(options.body ? { 'Content-Type': 'application/json' } : {}),
+                ...options.headers,
+            },
         });
 
         if (response.status === 401) {
-            localStorage.removeItem("token");
-            localStorage.removeItem("ems_current_user");
-            window.location.replace("/auth/login");
-            throw new Error("Your session has expired. Please sign in again.");
+            localStorage.removeItem('token');
+            localStorage.removeItem('ems_current_user');
+            window.location.replace('/auth/login');
+            throw new Error('Your session has expired. Please sign in again.');
         }
 
         if (!response.ok) {
@@ -164,40 +305,61 @@
     }
 
     function showMessage(message, isError = false) {
-        const element = document.getElementById("users-message");
+        const element = document.getElementById('users-message');
         element.textContent = message;
-        element.className = `my-4 rounded-md border px-4 py-3 text-sm ${isError
-            ? "border-red-200 bg-red-50 text-red-700"
-            : "border-emerald-200 bg-emerald-50 text-emerald-800"}`;
+        element.className = `my-4 rounded-md border px-4 py-3 text-sm ${
+            isError
+                ? 'border-red-200 bg-red-50 text-red-700'
+                : 'border-emerald-200 bg-emerald-50 text-emerald-800'
+        }`;
     }
 
     function renderUsers() {
-        const search = document.getElementById("user-search").value.trim().toLowerCase();
-        const role = document.getElementById("role-filter").value;
-        const filteredUsers = users.filter(user => {
-            const matchesSearch = `${user.name} ${user.email}`.toLowerCase().includes(search);
+        const search = document
+            .getElementById('user-search')
+            .value.trim()
+            .toLowerCase();
+        const role = document.getElementById('role-filter').value;
+        const filteredUsers = users.filter((user) => {
+            const matchesSearch = `${user.name} ${user.email}`
+                .toLowerCase()
+                .includes(search);
             return matchesSearch && (!role || user.role === role);
         });
 
         usersTable.replaceChildren();
-        document.getElementById("user-count").textContent = `${filteredUsers.length} of ${users.length} users`;
-        document.getElementById("empty-state").classList.toggle("hidden", filteredUsers.length > 0);
+        document.getElementById('user-count').textContent =
+            `${filteredUsers.length} of ${users.length} users`;
+        document
+            .getElementById('empty-state')
+            .classList.toggle('hidden', filteredUsers.length > 0);
 
-        filteredUsers.forEach(user => {
-            const row = document.createElement("tr");
-            [user.name, user.email, formatLabel(user.role), formatLabel(user.status)].forEach(value => {
-                const cell = document.createElement("td");
-                cell.className = "px-5 py-4 text-slate-700";
+        filteredUsers.forEach((user) => {
+            const row = document.createElement('tr');
+            [
+                user.name,
+                user.email,
+                formatLabel(user.role),
+                formatLabel(user.status),
+            ].forEach((value) => {
+                const cell = document.createElement('td');
+                cell.className = 'px-5 py-4 text-slate-700';
                 cell.textContent = value;
                 row.append(cell);
             });
 
-            const actions = document.createElement("td");
-            actions.className = "px-5 py-4 text-right";
-            const editButton = actionButton("Edit", "text-violet-700 hover:text-violet-900");
-            editButton.addEventListener("click", () => openEditDialog(user));
-            const deleteButton = actionButton("Delete", "ml-4 text-red-700 hover:text-red-900");
-            deleteButton.addEventListener("click", () => deleteUser(user));
+            const actions = document.createElement('td');
+            actions.className = 'px-5 py-4 text-right';
+            const editButton = actionButton(
+                'Edit',
+                'text-violet-700 hover:text-violet-900',
+            );
+            editButton.addEventListener('click', () => openEditDialog(user));
+            const deleteButton = actionButton(
+                'Delete',
+                'ml-4 text-red-700 hover:text-red-900',
+            );
+            deleteButton.addEventListener('click', () => deleteUser(user));
             actions.append(editButton, deleteButton);
             row.append(actions);
             usersTable.append(row);
@@ -205,93 +367,119 @@
     }
 
     function actionButton(label, className) {
-        const button = document.createElement("button");
-        button.type = "button";
+        const button = document.createElement('button');
+        button.type = 'button';
         button.className = `${className} font-medium`;
         button.textContent = label;
         return button;
     }
 
     function formatLabel(value) {
+        if (typeof value !== 'string' || value.length === 0) {
+            return 'Unknown';
+        }
         return value.charAt(0) + value.slice(1).toLowerCase();
     }
 
     async function loadUsers() {
         try {
-            users = await apiRequest("/api/users");
+            users = await apiRequest('/api/users');
             renderUsers();
         } catch (error) {
             showMessage(error.message, true);
-            document.getElementById("user-count").textContent = "Unable to load users";
+            document.getElementById('user-count').textContent =
+                'Unable to load users';
         }
     }
 
     function openCreateDialog() {
         userForm.reset();
-        userForm.dataset.userId = "";
-        document.getElementById("dialog-title").textContent = "Add user";
-        document.getElementById("password-hint").textContent = "(required, at least 8 characters)";
-        document.getElementById("user-password").required = true;
-        document.getElementById("form-error").classList.add("hidden");
+        userForm.dataset.userId = '';
+        document.getElementById('dialog-title').textContent = 'Add user';
+        document.getElementById('password-hint').textContent =
+            '(required, at least 8 characters)';
+        document.getElementById('user-password').required = true;
+        document.getElementById('form-error').classList.add('hidden');
         userDialog.showModal();
     }
 
     function openEditDialog(user) {
         userForm.reset();
         userForm.dataset.userId = user.id;
-        document.getElementById("dialog-title").textContent = "Edit user";
-        document.getElementById("password-hint").textContent = "(leave blank to keep current password)";
-        document.getElementById("user-password").required = false;
-        document.getElementById("user-name").value = user.name;
-        document.getElementById("user-email").value = user.email;
-        document.getElementById("user-role").value = user.role;
-        document.getElementById("user-status").value = user.status;
-        document.getElementById("form-error").classList.add("hidden");
+        document.getElementById('dialog-title').textContent = 'Edit user';
+        document.getElementById('password-hint').textContent =
+            '(leave blank to keep current password)';
+        document.getElementById('user-password').required = false;
+        document.getElementById('user-name').value = user.name;
+        document.getElementById('user-email').value = user.email;
+        document.getElementById('user-role').value = user.role;
+        document.getElementById('user-status').value = user.status;
+        document.getElementById('form-error').classList.add('hidden');
         userDialog.showModal();
     }
 
-    userForm.addEventListener("submit", async event => {
+    userForm.addEventListener('submit', async (event) => {
         event.preventDefault();
         const formData = new FormData(userForm);
         const payload = Object.fromEntries(formData.entries());
         const id = userForm.dataset.userId;
         if (id && !payload.password) delete payload.password;
-        const saveButton = document.getElementById("save-user-button");
+        const saveButton = document.getElementById('save-user-button');
         saveButton.disabled = true;
 
         try {
-            await apiRequest(id ? `/api/users/${encodeURIComponent(id)}` : "/api/users", {
-                method: id ? "PUT" : "POST",
-                body: JSON.stringify(payload)
-            });
+            await apiRequest(
+                id ? `/api/users/${encodeURIComponent(id)}` : '/api/users',
+                {
+                    method: id ? 'PUT' : 'POST',
+                    body: JSON.stringify(payload),
+                },
+            );
             userDialog.close();
-            showMessage(id ? "User updated." : "User created.");
+            showMessage(id ? 'User updated.' : 'User created.');
             await loadUsers();
         } catch (error) {
-            const formError = document.getElementById("form-error");
+            const formError = document.getElementById('form-error');
             formError.textContent = error.message;
-            formError.classList.remove("hidden");
+            formError.classList.remove('hidden');
         } finally {
             saveButton.disabled = false;
         }
     });
 
     async function deleteUser(user) {
-        if (!window.confirm(`Delete ${user.name} (${user.email})? This cannot be undone.`)) return;
+        if (
+            !window.confirm(
+                `Delete ${user.name} (${user.email})? This cannot be undone.`,
+            )
+        )
+            return;
         try {
-            await apiRequest(`/api/users/${encodeURIComponent(user.id)}`, { method: "DELETE" });
-            showMessage("User deleted.");
+            await apiRequest(`/api/users/${encodeURIComponent(user.id)}`, {
+                method: 'DELETE',
+            });
+            showMessage('User deleted.');
             await loadUsers();
         } catch (error) {
             showMessage(error.message, true);
         }
     }
 
-    document.getElementById("add-user-button").addEventListener("click", openCreateDialog);
-    document.getElementById("close-dialog").addEventListener("click", () => userDialog.close());
-    document.getElementById("cancel-dialog").addEventListener("click", () => userDialog.close());
-    document.getElementById("user-search").addEventListener("input", renderUsers);
-    document.getElementById("role-filter").addEventListener("change", renderUsers);
+    document
+        .getElementById('add-user-button')
+        .addEventListener('click', openCreateDialog);
+    document
+        .getElementById('close-dialog')
+        .addEventListener('click', () => userDialog.close());
+    document
+        .getElementById('cancel-dialog')
+        .addEventListener('click', () => userDialog.close());
+    document
+        .getElementById('user-search')
+        .addEventListener('input', renderUsers);
+    document
+        .getElementById('role-filter')
+        .addEventListener('change', renderUsers);
     loadUsers();
 </script>
 </body>
