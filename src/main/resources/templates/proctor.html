@@ -1,24 +1,20 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>Proctor Dashboard</title>
 
-    <link rel="stylesheet" th:href="@{/css/proctor.css}">
+    <link rel="stylesheet" th:href="@{/css/proctor.css}" />
 </head>
 
 <body>
-
 <div class="layout">
-
     <!-- SIDEBAR -->
     <aside class="sidebar">
-
         <div class="brand">
-            <div class="brand-logo">EMS</div>
+            <img class="brand-logo" src="/EMSlogo.png" alt="EMS logo" />
 
             <div>
                 <h2>Exam Management</h2>
@@ -29,7 +25,6 @@
         <div class="menu-title">MAIN MENU</div>
 
         <nav class="menu">
-
             <a href="/proctor" class="menu-item active">
                 <span>▣</span>
                 Dashboard
@@ -64,42 +59,32 @@
                 <span>⚙</span>
                 Settings
             </a>
-
         </nav>
 
         <div class="sidebar-bottom">
-
             <div class="user-box">
-
                 <div class="user-avatar">P</div>
 
                 <div>
                     <strong>Proctor</strong>
                     <small>Administrator</small>
                 </div>
-
             </div>
 
             <a href="#" class="logout">Logout</a>
-
         </div>
-
     </aside>
-
 
     <!-- MAIN CONTENT -->
     <main class="main">
-
         <!-- HEADER -->
         <header class="header">
-
             <div>
                 <h1>Dashboard</h1>
                 <p>Welcome back. Here's today's examination overview.</p>
             </div>
 
             <div class="header-right">
-
                 <div class="date-box">
                     <span>Today</span>
                     <strong>09 September 2026</strong>
@@ -109,17 +94,12 @@
                     🔔
                     <span class="notification-dot"></span>
                 </div>
-
             </div>
-
         </header>
-
 
         <!-- SUMMARY CARDS -->
         <section class="stats">
-
             <div class="stat-card">
-
                 <div class="stat-icon blue">E</div>
 
                 <div>
@@ -127,12 +107,9 @@
                     <h2>24</h2>
                     <small>6 this month</small>
                 </div>
-
             </div>
 
-
             <div class="stat-card">
-
                 <div class="stat-icon green">A</div>
 
                 <div>
@@ -140,12 +117,9 @@
                     <h2>2</h2>
                     <small>Currently running</small>
                 </div>
-
             </div>
 
-
             <div class="stat-card">
-
                 <div class="stat-icon purple">S</div>
 
                 <div>
@@ -153,12 +127,9 @@
                     <h2>252</h2>
                     <small>Across all exams</small>
                 </div>
-
             </div>
 
-
             <div class="stat-card">
-
                 <div class="stat-icon orange">!</div>
 
                 <div>
@@ -166,51 +137,35 @@
                     <h2>4</h2>
                     <small>Needs attention</small>
                 </div>
-
             </div>
-
         </section>
-
 
         <!-- CONTENT GRID -->
         <section class="dashboard-grid">
-
             <!-- EXAMS -->
             <div class="panel exams-panel">
-
                 <div class="panel-header">
-
                     <div>
                         <h2>Today's Exams</h2>
                         <p>Examination schedule for today</p>
                     </div>
 
-                    <a href="/proctor/exams" class="view-link">
-                        View all
-                    </a>
-
+                    <a href="/proctor/exams" class="view-link"> View all </a>
                 </div>
 
-
                 <div class="table-wrapper">
-
                     <table>
-
                         <thead>
-
                         <tr>
                             <th>Exam</th>
                             <th>Time</th>
                             <th>Students</th>
                             <th>Status</th>
                         </tr>
-
                         </thead>
 
                         <tbody>
-
                         <tr>
-
                             <td>
                                 <strong>Computer Networks</strong>
                                 <span>CN Mid-Term</span>
@@ -221,16 +176,11 @@
                             <td>96</td>
 
                             <td>
-                                <span class="status active-status">
-                                    Active
-                                </span>
+                                <span class="status active-status"> Active </span>
                             </td>
-
                         </tr>
 
-
                         <tr>
-
                             <td>
                                 <strong>Database Management</strong>
                                 <span>DBMS Internal</span>
@@ -241,16 +191,11 @@
                             <td>72</td>
 
                             <td>
-                                <span class="status upcoming-status">
-                                    Upcoming
-                                </span>
+                                <span class="status upcoming-status"> Upcoming </span>
                             </td>
-
                         </tr>
 
-
                         <tr>
-
                             <td>
                                 <strong>Software Engineering</strong>
                                 <span>Unit Test</span>
@@ -261,16 +206,11 @@
                             <td>84</td>
 
                             <td>
-                                <span class="status upcoming-status">
-                                    Upcoming
-                                </span>
+                                <span class="status upcoming-status"> Upcoming </span>
                             </td>
-
                         </tr>
 
-
                         <tr>
-
                             <td>
                                 <strong>Operating Systems</strong>
                                 <span>OS Internal Exam</span>
@@ -281,157 +221,99 @@
                             <td>52</td>
 
                             <td>
-                                <span class="status completed-status">
-                                    Completed
-                                </span>
+                                <span class="status completed-status"> Completed </span>
                             </td>
-
                         </tr>
-
                         </tbody>
-
                     </table>
-
                 </div>
-
             </div>
-
 
             <!-- ALERTS -->
             <div class="panel alerts-panel">
-
                 <div class="panel-header">
-
                     <div>
                         <h2>Recent Alerts</h2>
                         <p>Activities requiring attention</p>
                     </div>
 
-                    <a href="/proctor/alerts" class="view-link">
-                        View all
-                    </a>
-
+                    <a href="/proctor/alerts" class="view-link"> View all </a>
                 </div>
 
-
                 <div class="alert-list">
-
                     <div class="alert-item">
-
-                        <div class="alert-icon warning-icon">
-                            !
-                        </div>
+                        <div class="alert-icon warning-icon">!</div>
 
                         <div class="alert-content">
-
                             <strong>Tab switching detected</strong>
 
                             <p>Aman Singh • CN Mid-Term</p>
 
                             <small>10:42 AM</small>
-
                         </div>
-
                     </div>
 
-
                     <div class="alert-item">
-
-                        <div class="alert-icon danger-icon">
-                            !
-                        </div>
+                        <div class="alert-icon danger-icon">!</div>
 
                         <div class="alert-content">
-
                             <strong>Face not detected</strong>
 
                             <p>Rahul Kumar • CN Mid-Term</p>
 
                             <small>10:38 AM</small>
-
                         </div>
-
                     </div>
 
-
                     <div class="alert-item">
-
-                        <div class="alert-icon warning-icon">
-                            !
-                        </div>
+                        <div class="alert-icon warning-icon">!</div>
 
                         <div class="alert-content">
-
                             <strong>Multiple login attempt</strong>
 
                             <p>Rohit Das • DBMS Internal</p>
 
                             <small>10:26 AM</small>
-
                         </div>
-
                     </div>
 
-
                     <div class="alert-item">
-
-                        <div class="alert-icon info-icon">
-                            i
-                        </div>
+                        <div class="alert-icon info-icon">i</div>
 
                         <div class="alert-content">
-
                             <strong>Student disconnected</strong>
 
                             <p>Priya Sharma • CN Mid-Term</p>
 
                             <small>10:18 AM</small>
-
                         </div>
-
                     </div>
-
                 </div>
-
             </div>
-
         </section>
-
 
         <!-- SECOND ROW -->
         <section class="bottom-grid">
-
             <!-- ACTIVE EXAMS -->
             <div class="panel">
-
                 <div class="panel-header">
-
                     <div>
                         <h2>Active Examinations</h2>
                         <p>Currently running examinations</p>
                     </div>
-
                 </div>
 
-
                 <div class="active-exam">
-
                     <div class="exam-info">
-
-                        <div class="exam-circle">
-                            CN
-                        </div>
+                        <div class="exam-circle">CN</div>
 
                         <div>
                             <strong>Computer Networks Mid-Term</strong>
                             <p>10:00 AM - 11:00 AM</p>
                         </div>
-
                     </div>
 
-
                     <div class="exam-progress">
-
                         <div class="progress-text">
                             <span>64 students completed</span>
                             <strong>67%</strong>
@@ -440,30 +322,20 @@
                         <div class="progress-bar">
                             <div class="progress-fill"></div>
                         </div>
-
                     </div>
-
                 </div>
 
-
                 <div class="active-exam">
-
                     <div class="exam-info">
-
-                        <div class="exam-circle db">
-                            DB
-                        </div>
+                        <div class="exam-circle db">DB</div>
 
                         <div>
                             <strong>Database Management</strong>
                             <p>09:30 AM - 10:30 AM</p>
                         </div>
-
                     </div>
 
-
                     <div class="exam-progress">
-
                         <div class="progress-text">
                             <span>41 students completed</span>
                             <strong>57%</strong>
@@ -472,29 +344,20 @@
                         <div class="progress-bar">
                             <div class="progress-fill progress-db"></div>
                         </div>
-
                     </div>
-
                 </div>
-
             </div>
-
 
             <!-- QUICK ACTIONS -->
             <div class="panel">
-
                 <div class="panel-header">
-
                     <div>
                         <h2>Quick Actions</h2>
                         <p>Common proctor tasks</p>
                     </div>
-
                 </div>
 
-
                 <div class="quick-actions">
-
                     <a href="/proctor/exams">
                         <span>+</span>
                         View Exams
@@ -514,16 +377,10 @@
                         <span>↗</span>
                         Generate Report
                     </a>
-
                 </div>
-
             </div>
-
         </section>
-
     </main>
-
 </div>
-
 </body>
 </html>

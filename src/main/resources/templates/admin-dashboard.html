@@ -1,9 +1,8 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin Dashboard | EMS</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -14,16 +13,16 @@
                 extend: {
                     colors: {
                         brand: {
-                            50: "#f5f3ff",
-                            100: "#ede9fe",
-                            500: "#8b5cf6",
-                            600: "#7c3aed",
-                            700: "#6d28d9",
-                            900: "#3b0764"
-                        }
-                    }
-                }
-            }
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                            900: '#3b0764',
+                        },
+                    },
+                },
+            },
         };
     </script>
 
@@ -33,8 +32,14 @@
         }
 
         body {
-            font-family: Inter, ui-sans-serif, system-ui, -apple-system,
-            BlinkMacSystemFont, "Segoe UI", sans-serif;
+            font-family:
+                    Inter,
+                    ui-sans-serif,
+                    system-ui,
+                    -apple-system,
+                    BlinkMacSystemFont,
+                    'Segoe UI',
+                    sans-serif;
             background: #f8fafc;
         }
 
@@ -57,7 +62,9 @@
         }
 
         .stat-card {
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            transition:
+                    transform 0.2s ease,
+                    box-shadow 0.2s ease;
         }
 
         .stat-card:hover {
@@ -86,88 +93,116 @@
 </head>
 
 <body class="min-h-screen text-slate-800">
-
-<div id="mobile-overlay"
-     class="mobile-overlay fixed inset-0 z-40 hidden bg-slate-950/40 md:hidden">
-</div>
+<div
+        id="mobile-overlay"
+        class="mobile-overlay fixed inset-0 z-40 hidden bg-slate-950/40 md:hidden"
+></div>
 
 <div class="min-h-screen md:flex">
-
     <!-- Sidebar -->
-    <aside id="sidebar"
-           class="sidebar flex w-full shrink-0 flex-col border-r border-slate-200 bg-white md:sticky md:top-0 md:h-screen md:w-64 md:translate-x-0">
-
-        <div class="flex h-20 items-center gap-3 border-b border-slate-100 px-6">
-            <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-600 text-xl font-bold text-white">
-                E
-            </div>
+    <aside
+            id="sidebar"
+            class="sidebar flex w-full shrink-0 flex-col border-r border-slate-200 bg-white md:sticky md:top-0 md:h-screen md:w-64 md:translate-x-0"
+    >
+        <div
+                class="flex h-20 items-center gap-3 border-b border-slate-100 px-6"
+        >
+            <img
+                    class="h-12 w-12 shrink-0 rounded-lg object-contain"
+                    src="/EMSlogo.png"
+                    alt="EMS logo"
+            />
 
             <div>
                 <h1 class="text-xl font-bold tracking-tight text-slate-900">EMS</h1>
                 <p class="text-xs text-slate-500">Examination Management</p>
             </div>
 
-            <button id="close-sidebar"
+            <button
+                    id="close-sidebar"
                     class="ml-auto rounded-lg p-2 text-slate-500 hover:bg-slate-100 md:hidden"
-                    aria-label="Close menu">
+                    aria-label="Close menu"
+            >
                 ✕
             </button>
         </div>
 
         <div class="px-4 py-6">
-            <p class="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-slate-400">
+            <p
+                    class="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-slate-400"
+            >
                 Administration
             </p>
 
             <nav class="space-y-1">
-                <a href="/auth/admin/dashboard"
-                   class="nav-link active flex items-center gap-3 rounded-xl px-3 py-3 text-sm">
+                <a
+                        href="/auth/admin/dashboard"
+                        class="nav-link active flex items-center gap-3 rounded-xl px-3 py-3 text-sm"
+                >
                     <span>▦</span> Dashboard
                 </a>
 
-                <a href="/auth/admin/users"
-                   class="nav-link flex items-center gap-3 rounded-xl px-3 py-3 text-sm text-slate-600">
+                <a
+                        href="/auth/admin/users"
+                        class="nav-link flex items-center gap-3 rounded-xl px-3 py-3 text-sm text-slate-600"
+                >
                     <span>♙</span> User Management
                 </a>
 
-                <a href="/auth/admin/students"
-                   class="nav-link flex items-center gap-3 rounded-xl px-3 py-3 text-sm text-slate-600">
+                <a
+                        href="/auth/admin/students"
+                        class="nav-link flex items-center gap-3 rounded-xl px-3 py-3 text-sm text-slate-600"
+                >
                     <span>♧</span> Students
                 </a>
 
-                <a href="/auth/admin/teachers"
-                   class="nav-link flex items-center gap-3 rounded-xl px-3 py-3 text-sm text-slate-600">
+                <a
+                        href="/auth/admin/teachers"
+                        class="nav-link flex items-center gap-3 rounded-xl px-3 py-3 text-sm text-slate-600"
+                >
                     <span>♙</span> Teachers
                 </a>
 
-                <a href="/auth/admin/courses"
-                   class="nav-link flex items-center gap-3 rounded-xl px-3 py-3 text-sm text-slate-600">
+                <a
+                        href="/auth/admin/courses"
+                        class="nav-link flex items-center gap-3 rounded-xl px-3 py-3 text-sm text-slate-600"
+                >
                     <span>▤</span> Courses & Subjects
                 </a>
 
-                <a href="/auth/admin/exams"
-                   class="nav-link flex items-center gap-3 rounded-xl px-3 py-3 text-sm text-slate-600">
+                <a
+                        href="/auth/admin/exams"
+                        class="nav-link flex items-center gap-3 rounded-xl px-3 py-3 text-sm text-slate-600"
+                >
                     <span>▧</span> Examinations
                 </a>
 
-                <a href="/auth/admin/results"
-                   class="nav-link flex items-center gap-3 rounded-xl px-3 py-3 text-sm text-slate-600">
+                <a
+                        href="/auth/admin/results"
+                        class="nav-link flex items-center gap-3 rounded-xl px-3 py-3 text-sm text-slate-600"
+                >
                     <span>◷</span> Results
                 </a>
             </nav>
 
-            <p class="mb-3 mt-8 px-3 text-xs font-semibold uppercase tracking-wider text-slate-400">
+            <p
+                    class="mb-3 mt-8 px-3 text-xs font-semibold uppercase tracking-wider text-slate-400"
+            >
                 System
             </p>
 
             <nav class="space-y-1">
-                <a href="/auth/admin/activity"
-                   class="nav-link flex items-center gap-3 rounded-xl px-3 py-3 text-sm text-slate-600">
+                <a
+                        href="/auth/admin/activity"
+                        class="nav-link flex items-center gap-3 rounded-xl px-3 py-3 text-sm text-slate-600"
+                >
                     <span>◴</span> Activity Logs
                 </a>
 
-                <a href="/auth/admin/settings"
-                   class="nav-link flex items-center gap-3 rounded-xl px-3 py-3 text-sm text-slate-600">
+                <a
+                        href="/auth/admin/settings"
+                        class="nav-link flex items-center gap-3 rounded-xl px-3 py-3 text-sm text-slate-600"
+                >
                     <span>⚙</span> Settings
                 </a>
             </nav>
@@ -185,14 +220,16 @@
 
     <!-- Main content -->
     <main class="min-w-0 flex-1">
-
         <!-- Topbar -->
-        <header class="sticky top-0 z-30 flex h-20 items-center justify-between border-b border-slate-200 bg-white/95 px-4 backdrop-blur sm:px-6 lg:px-8">
-
+        <header
+                class="sticky top-0 z-30 flex h-20 items-center justify-between border-b border-slate-200 bg-white/95 px-4 backdrop-blur sm:px-6 lg:px-8"
+        >
             <div class="flex items-center gap-3">
-                <button id="open-sidebar"
+                <button
+                        id="open-sidebar"
                         class="rounded-lg border border-slate-200 p-2 hover:bg-slate-50 md:hidden"
-                        aria-label="Open menu">
+                        aria-label="Open menu"
+                >
                     ☰
                 </button>
 
@@ -210,23 +247,30 @@
                     <p class="text-xs text-slate-500">Administrator Account</p>
                 </div>
 
-                <div id="avatar"
-                     class="flex h-10 w-10 items-center justify-center rounded-full bg-brand-100 font-bold text-brand-700">
+                <div
+                        id="avatar"
+                        class="flex h-10 w-10 items-center justify-center rounded-full bg-brand-100 font-bold text-brand-700"
+                >
                     A
                 </div>
 
-                <button id="logout-button"
-                        class="rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-600 hover:bg-red-50 hover:text-red-600">
+                <button
+                        id="logout-button"
+                        class="rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-600 hover:bg-red-50 hover:text-red-600"
+                >
                     Logout
                 </button>
             </div>
         </header>
 
         <div class="mx-auto max-w-7xl space-y-8 p-4 sm:p-6 lg:p-8">
-
             <!-- Welcome banner -->
-            <section class="overflow-hidden rounded-2xl bg-gradient-to-r from-purple-900 to-violet-600 p-6 text-white sm:p-8">
-                <div class="flex flex-col justify-between gap-6 sm:flex-row sm:items-center">
+            <section
+                    class="overflow-hidden rounded-2xl bg-gradient-to-r from-purple-900 to-violet-600 p-6 text-white sm:p-8"
+            >
+                <div
+                        class="flex flex-col justify-between gap-6 sm:flex-row sm:items-center"
+                >
                     <div>
                         <p class="text-sm font-medium text-violet-200">
                             SYSTEM OVERVIEW
@@ -242,8 +286,10 @@
                         </p>
                     </div>
 
-                    <a href="/auth/admin/users"
-                       class="inline-flex shrink-0 items-center justify-center rounded-xl bg-white px-5 py-3 text-sm font-semibold text-brand-700 hover:bg-violet-50">
+                    <a
+                            href="/auth/admin/users"
+                            class="inline-flex shrink-0 items-center justify-center rounded-xl bg-white px-5 py-3 text-sm font-semibold text-brand-700 hover:bg-violet-50"
+                    >
                         Manage Users →
                     </a>
                 </div>
@@ -257,50 +303,87 @@
                 </div>
 
                 <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-
-                    <article class="stat-card rounded-2xl border border-slate-200 bg-white p-5">
+                    <article
+                            class="stat-card rounded-2xl border border-slate-200 bg-white p-5"
+                    >
                         <div class="flex items-center justify-between">
-                            <span class="text-sm font-medium text-slate-500">Total Users</span>
+                  <span class="text-sm font-medium text-slate-500"
+                  >Total Users</span
+                  >
                             <span class="rounded-xl bg-blue-50 p-3 text-lg">♙</span>
                         </div>
-                        <p id="total-users" class="mt-4 text-3xl font-bold text-slate-900">1,250</p>
-                        <p class="mt-2 text-xs text-slate-500">Registered system users</p>
+                        <p
+                                id="total-users"
+                                class="mt-4 text-3xl font-bold text-slate-900"
+                        >
+                            1,250
+                        </p>
+                        <p class="mt-2 text-xs text-slate-500">
+                            Registered system users
+                        </p>
                     </article>
 
-                    <article class="stat-card rounded-2xl border border-slate-200 bg-white p-5">
+                    <article
+                            class="stat-card rounded-2xl border border-slate-200 bg-white p-5"
+                    >
                         <div class="flex items-center justify-between">
-                            <span class="text-sm font-medium text-slate-500">Students</span>
+                  <span class="text-sm font-medium text-slate-500"
+                  >Students</span
+                  >
                             <span class="rounded-xl bg-emerald-50 p-3 text-lg">♧</span>
                         </div>
-                        <p id="total-students" class="mt-4 text-3xl font-bold text-slate-900">1,100</p>
+                        <p
+                                id="total-students"
+                                class="mt-4 text-3xl font-bold text-slate-900"
+                        >
+                            1,100
+                        </p>
                         <p class="mt-2 text-xs text-slate-500">Student accounts</p>
                     </article>
 
-                    <article class="stat-card rounded-2xl border border-slate-200 bg-white p-5">
+                    <article
+                            class="stat-card rounded-2xl border border-slate-200 bg-white p-5"
+                    >
                         <div class="flex items-center justify-between">
-                            <span class="text-sm font-medium text-slate-500">Teachers</span>
+                  <span class="text-sm font-medium text-slate-500"
+                  >Teachers</span
+                  >
                             <span class="rounded-xl bg-amber-50 p-3 text-lg">♙</span>
                         </div>
-                        <p id="total-teachers" class="mt-4 text-3xl font-bold text-slate-900">125</p>
+                        <p
+                                id="total-teachers"
+                                class="mt-4 text-3xl font-bold text-slate-900"
+                        >
+                            125
+                        </p>
                         <p class="mt-2 text-xs text-slate-500">Teacher accounts</p>
                     </article>
 
-                    <article class="stat-card rounded-2xl border border-slate-200 bg-white p-5">
+                    <article
+                            class="stat-card rounded-2xl border border-slate-200 bg-white p-5"
+                    >
                         <div class="flex items-center justify-between">
-                            <span class="text-sm font-medium text-slate-500">Total Exams</span>
+                  <span class="text-sm font-medium text-slate-500"
+                  >Total Exams</span
+                  >
                             <span class="rounded-xl bg-violet-50 p-3 text-lg">▤</span>
                         </div>
-                        <p id="total-exams" class="mt-4 text-3xl font-bold text-slate-900">48</p>
+                        <p
+                                id="total-exams"
+                                class="mt-4 text-3xl font-bold text-slate-900"
+                        >
+                            48
+                        </p>
                         <p class="mt-2 text-xs text-slate-500">Created examinations</p>
                     </article>
-
                 </div>
             </section>
 
             <!-- User distribution and exam status -->
             <section class="grid grid-cols-1 gap-6 xl:grid-cols-3">
-
-                <div class="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 xl:col-span-1">
+                <div
+                        class="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 xl:col-span-1"
+                >
                     <h3 class="font-bold text-slate-900">User Distribution</h3>
                     <p class="mt-1 text-sm text-slate-500">Accounts by role</p>
 
@@ -311,7 +394,10 @@
                                 <span class="text-slate-500">88%</span>
                             </div>
                             <div class="h-2 overflow-hidden rounded-full bg-slate-100">
-                                <div class="h-full rounded-full bg-emerald-500" style="width: 88%"></div>
+                                <div
+                                        class="h-full rounded-full bg-emerald-500"
+                                        style="width: 88%"
+                                ></div>
                             </div>
                         </div>
 
@@ -321,29 +407,41 @@
                                 <span class="text-slate-500">10%</span>
                             </div>
                             <div class="h-2 overflow-hidden rounded-full bg-slate-100">
-                                <div class="h-full rounded-full bg-blue-500" style="width: 10%"></div>
+                                <div
+                                        class="h-full rounded-full bg-blue-500"
+                                        style="width: 10%"
+                                ></div>
                             </div>
                         </div>
 
                         <div>
                             <div class="mb-2 flex justify-between text-sm">
-                                <span class="font-medium text-slate-700">Administrators</span>
+                    <span class="font-medium text-slate-700"
+                    >Administrators</span
+                    >
                                 <span class="text-slate-500">2%</span>
                             </div>
                             <div class="h-2 overflow-hidden rounded-full bg-slate-100">
-                                <div class="h-full rounded-full bg-violet-500" style="width: 2%"></div>
+                                <div
+                                        class="h-full rounded-full bg-violet-500"
+                                        style="width: 2%"
+                                ></div>
                             </div>
                         </div>
                     </div>
 
-                    <a href="/auth/admin/users"
-                       class="mt-7 block rounded-xl border border-slate-200 px-4 py-3 text-center text-sm font-semibold text-slate-700 hover:bg-slate-50">
+                    <a
+                            href="/auth/admin/users"
+                            class="mt-7 block rounded-xl border border-slate-200 px-4 py-3 text-center text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                    >
                         View User Accounts →
                     </a>
                 </div>
 
                 <!-- Exam overview -->
-                <div class="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 xl:col-span-2">
+                <div
+                        class="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 xl:col-span-2"
+                >
                     <div class="flex items-center justify-between gap-3">
                         <div>
                             <h3 class="font-bold text-slate-900">Examination Status</h3>
@@ -351,8 +449,10 @@
                                 Overview of examination activity.
                             </p>
                         </div>
-                        <a href="/auth/admin/exams"
-                           class="text-sm font-semibold text-brand-700 hover:text-brand-900">
+                        <a
+                                href="/auth/admin/exams"
+                                class="text-sm font-semibold text-brand-700 hover:text-brand-900"
+                        >
                             View all →
                         </a>
                     </div>
@@ -360,29 +460,53 @@
                     <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
                         <div class="rounded-xl bg-emerald-50 p-4">
                             <p class="text-sm font-medium text-emerald-800">Published</p>
-                            <p id="published-exams" class="mt-3 text-3xl font-bold text-emerald-900">28</p>
-                            <p class="mt-1 text-xs text-emerald-700">Available to students</p>
+                            <p
+                                    id="published-exams"
+                                    class="mt-3 text-3xl font-bold text-emerald-900"
+                            >
+                                28
+                            </p>
+                            <p class="mt-1 text-xs text-emerald-700">
+                                Available to students
+                            </p>
                         </div>
 
                         <div class="rounded-xl bg-amber-50 p-4">
                             <p class="text-sm font-medium text-amber-800">Scheduled</p>
-                            <p id="scheduled-exams" class="mt-3 text-3xl font-bold text-amber-900">12</p>
-                            <p class="mt-1 text-xs text-amber-700">Upcoming examinations</p>
+                            <p
+                                    id="scheduled-exams"
+                                    class="mt-3 text-3xl font-bold text-amber-900"
+                            >
+                                12
+                            </p>
+                            <p class="mt-1 text-xs text-amber-700">
+                                Upcoming examinations
+                            </p>
                         </div>
 
                         <div class="rounded-xl bg-blue-50 p-4">
                             <p class="text-sm font-medium text-blue-800">Completed</p>
-                            <p id="completed-exams" class="mt-3 text-3xl font-bold text-blue-900">8</p>
-                            <p class="mt-1 text-xs text-blue-700">Finished examinations</p>
+                            <p
+                                    id="completed-exams"
+                                    class="mt-3 text-3xl font-bold text-blue-900"
+                            >
+                                8
+                            </p>
+                            <p class="mt-1 text-xs text-blue-700">
+                                Finished examinations
+                            </p>
                         </div>
                     </div>
                 </div>
-
             </section>
 
             <!-- Recent activity -->
-            <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white">
-                <div class="flex items-center justify-between border-b border-slate-100 p-5 sm:p-6">
+            <section
+                    class="overflow-hidden rounded-2xl border border-slate-200 bg-white"
+            >
+                <div
+                        class="flex items-center justify-between border-b border-slate-100 p-5 sm:p-6"
+                >
                     <div>
                         <h3 class="font-bold text-slate-900">Recent System Activity</h3>
                         <p class="mt-1 text-sm text-slate-500">
@@ -390,15 +514,19 @@
                         </p>
                     </div>
 
-                    <a href="/auth/admin/activity"
-                       class="text-sm font-semibold text-brand-700 hover:text-brand-900">
+                    <a
+                            href="/auth/admin/activity"
+                            class="text-sm font-semibold text-brand-700 hover:text-brand-900"
+                    >
                         View logs →
                     </a>
                 </div>
 
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-sm">
-                        <thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
+                        <thead
+                                class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500"
+                        >
                         <tr>
                             <th class="px-5 py-4 font-semibold">Activity</th>
                             <th class="px-5 py-4 font-semibold">Category</th>
@@ -409,40 +537,58 @@
                         <tbody id="activity-table" class="divide-y divide-slate-100">
                         <tr>
                             <td class="px-5 py-5">
-                                <p class="font-semibold text-slate-800">New user registered</p>
-                                <p class="mt-1 text-xs text-slate-500">Example activity</p>
+                                <p class="font-semibold text-slate-800">
+                                    New user registered
+                                </p>
+                                <p class="mt-1 text-xs text-slate-500">
+                                    Example activity
+                                </p>
                             </td>
                             <td class="px-5 py-5 text-slate-600">User Management</td>
                             <td class="px-5 py-5">
-                                    <span class="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
-                                        Completed
-                                    </span>
+                      <span
+                              class="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700"
+                      >
+                        Completed
+                      </span>
                             </td>
                         </tr>
 
                         <tr>
                             <td class="px-5 py-5">
-                                <p class="font-semibold text-slate-800">Examination scheduled</p>
-                                <p class="mt-1 text-xs text-slate-500">Example activity</p>
+                                <p class="font-semibold text-slate-800">
+                                    Examination scheduled
+                                </p>
+                                <p class="mt-1 text-xs text-slate-500">
+                                    Example activity
+                                </p>
                             </td>
                             <td class="px-5 py-5 text-slate-600">Examinations</td>
                             <td class="px-5 py-5">
-                                    <span class="rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
-                                        Scheduled
-                                    </span>
+                      <span
+                              class="rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700"
+                      >
+                        Scheduled
+                      </span>
                             </td>
                         </tr>
 
                         <tr>
                             <td class="px-5 py-5">
-                                <p class="font-semibold text-slate-800">Results published</p>
-                                <p class="mt-1 text-xs text-slate-500">Example activity</p>
+                                <p class="font-semibold text-slate-800">
+                                    Results published
+                                </p>
+                                <p class="mt-1 text-xs text-slate-500">
+                                    Example activity
+                                </p>
                             </td>
                             <td class="px-5 py-5 text-slate-600">Results</td>
                             <td class="px-5 py-5">
-                                    <span class="rounded-full bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-700">
-                                        Published
-                                    </span>
+                      <span
+                              class="rounded-full bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-700"
+                      >
+                        Published
+                      </span>
                             </td>
                         </tr>
                         </tbody>
@@ -455,45 +601,70 @@
                 <h3 class="mb-4 text-lg font-bold text-slate-900">Quick Actions</h3>
 
                 <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-
-                    <a href="/auth/admin/users"
-                       class="rounded-2xl border border-slate-200 bg-white p-5 transition hover:border-brand-200 hover:shadow-md">
-                        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-xl">♙</div>
+                    <a
+                            href="/auth/admin/users"
+                            class="rounded-2xl border border-slate-200 bg-white p-5 transition hover:border-brand-200 hover:shadow-md"
+                    >
+                        <div
+                                class="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-xl"
+                        >
+                            ♙
+                        </div>
                         <h4 class="mt-4 font-bold text-slate-900">Manage Users</h4>
                         <p class="mt-2 text-sm leading-6 text-slate-500">
                             Review accounts and manage user roles and status.
                         </p>
-                        <p class="mt-4 text-sm font-semibold text-brand-700">Open users →</p>
+                        <p class="mt-4 text-sm font-semibold text-brand-700">
+                            Open users →
+                        </p>
                     </a>
 
-                    <a href="/auth/admin/courses"
-                       class="rounded-2xl border border-slate-200 bg-white p-5 transition hover:border-brand-200 hover:shadow-md">
-                        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-violet-50 text-xl">▤</div>
+                    <a
+                            href="/auth/admin/courses"
+                            class="rounded-2xl border border-slate-200 bg-white p-5 transition hover:border-brand-200 hover:shadow-md"
+                    >
+                        <div
+                                class="flex h-12 w-12 items-center justify-center rounded-xl bg-violet-50 text-xl"
+                        >
+                            ▤
+                        </div>
                         <h4 class="mt-4 font-bold text-slate-900">Manage Courses</h4>
                         <p class="mt-2 text-sm leading-6 text-slate-500">
                             Organize courses and subjects used by the system.
                         </p>
-                        <p class="mt-4 text-sm font-semibold text-brand-700">Open courses →</p>
+                        <p class="mt-4 text-sm font-semibold text-brand-700">
+                            Open courses →
+                        </p>
                     </a>
 
-                    <a href="/auth/admin/exams"
-                       class="rounded-2xl border border-slate-200 bg-white p-5 transition hover:border-brand-200 hover:shadow-md">
-                        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-50 text-xl">▧</div>
-                        <h4 class="mt-4 font-bold text-slate-900">Manage Examinations</h4>
+                    <a
+                            href="/auth/admin/exams"
+                            class="rounded-2xl border border-slate-200 bg-white p-5 transition hover:border-brand-200 hover:shadow-md"
+                    >
+                        <div
+                                class="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-50 text-xl"
+                        >
+                            ▧
+                        </div>
+                        <h4 class="mt-4 font-bold text-slate-900">
+                            Manage Examinations
+                        </h4>
                         <p class="mt-2 text-sm leading-6 text-slate-500">
                             Monitor examination schedules and publication status.
                         </p>
-                        <p class="mt-4 text-sm font-semibold text-brand-700">Open exams →</p>
+                        <p class="mt-4 text-sm font-semibold text-brand-700">
+                            Open exams →
+                        </p>
                     </a>
-
                 </div>
             </section>
 
-            <footer class="border-t border-slate-200 py-5 text-center text-xs text-slate-500">
+            <footer
+                    class="border-t border-slate-200 py-5 text-center text-xs text-slate-500"
+            >
                 EMS · Examination Management System
                 <span id="footer-year"></span>
             </footer>
-
         </div>
     </main>
 </div>
@@ -502,23 +673,23 @@
     // Authentication and role check.
     // Backend authorization is still required for actual security.
     function redirectToLogin() {
-        localStorage.removeItem("token");
-        localStorage.removeItem("ems_current_user");
-        window.location.replace("/auth/login");
+        localStorage.removeItem('token');
+        localStorage.removeItem('ems_current_user');
+        window.location.replace('/auth/login');
     }
 
     let currentUser = null;
 
     try {
-        const token = localStorage.getItem("token");
-        const userJson = localStorage.getItem("ems_current_user");
+        const token = localStorage.getItem('token');
+        const userJson = localStorage.getItem('ems_current_user');
 
         if (!token || !userJson) {
             redirectToLogin();
         } else {
             currentUser = JSON.parse(userJson);
 
-            if (!currentUser || currentUser.role !== "ADMIN") {
+            if (!currentUser || currentUser.role !== 'ADMIN') {
                 redirectToLogin();
             }
         }
@@ -527,113 +698,112 @@
     }
 
     // Display administrator information.
-    if (currentUser && currentUser.role === "ADMIN") {
+    if (currentUser && currentUser.role === 'ADMIN') {
         const fullName =
             currentUser.name ||
             currentUser.fullName ||
             currentUser.email ||
-            "Administrator";
+            'Administrator';
 
-        document.getElementById("header-name").textContent = fullName;
-        document.getElementById("welcome-name").textContent =
-            fullName.trim().split(/\s+/)[0];
+        document.getElementById('header-name').textContent = fullName;
+        document.getElementById('welcome-name').textContent = fullName
+            .trim()
+            .split(/\s+/)[0];
 
-        document.getElementById("avatar").textContent =
-            fullName.trim().charAt(0).toUpperCase();
+        document.getElementById('avatar').textContent = fullName
+            .trim()
+            .charAt(0)
+            .toUpperCase();
     }
 
     // Mobile sidebar.
-    const sidebar = document.getElementById("sidebar");
-    const overlay = document.getElementById("mobile-overlay");
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('mobile-overlay');
 
     function openSidebar() {
-        sidebar.classList.add("open");
-        overlay.classList.add("show");
+        sidebar.classList.add('open');
+        overlay.classList.add('show');
     }
 
     function closeSidebar() {
-        sidebar.classList.remove("open");
-        overlay.classList.remove("show");
+        sidebar.classList.remove('open');
+        overlay.classList.remove('show');
     }
 
-    document.getElementById("open-sidebar")
-        .addEventListener("click", openSidebar);
+    document
+        .getElementById('open-sidebar')
+        .addEventListener('click', openSidebar);
 
-    document.getElementById("close-sidebar")
-        .addEventListener("click", closeSidebar);
+    document
+        .getElementById('close-sidebar')
+        .addEventListener('click', closeSidebar);
 
-    overlay.addEventListener("click", closeSidebar);
+    overlay.addEventListener('click', closeSidebar);
 
     // Logout.
-    document.getElementById("logout-button")
-        .addEventListener("click", function () {
-            localStorage.removeItem("token");
-            localStorage.removeItem("ems_current_user");
-            window.location.replace("/auth/login");
+    document
+        .getElementById('logout-button')
+        .addEventListener('click', function () {
+            localStorage.removeItem('token');
+            localStorage.removeItem('ems_current_user');
+            window.location.replace('/auth/login');
         });
 
     // Footer year.
-    document.getElementById("footer-year").textContent =
-        " © " + new Date().getFullYear();
-
+    document.getElementById('footer-year').textContent =
+        ' © ' + new Date().getFullYear();
 
     async function loadAdminDashboard() {
-        const token = localStorage.getItem("token");
+        const token = localStorage.getItem('token');
 
         if (!token) {
-            window.location.replace("/auth/login");
+            window.location.replace('/auth/login');
             return;
         }
 
         try {
-            const response = await fetch(
-                "/api/admin/dashboard/summary",
-                {
-                    method: "GET",
-                    headers: {
-                        "Authorization": `Bearer ${token}`,
-                        "Accept": "application/json"
-                    },
-                    cache: "no-store"
-                }
-            );
+            const response = await fetch('/api/admin/dashboard/summary', {
+                method: 'GET',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    Accept: 'application/json',
+                },
+                cache: 'no-store',
+            });
 
             if (response.status === 401) {
-                localStorage.removeItem("token");
-                localStorage.removeItem("ems_current_user");
-                window.location.replace("/auth/login");
+                localStorage.removeItem('token');
+                localStorage.removeItem('ems_current_user');
+                window.location.replace('/auth/login');
                 return;
             }
 
             if (!response.ok) {
-                throw new Error(
-                    `Dashboard API failed: ${response.status}`
-                );
+                throw new Error(`Dashboard API failed: ${response.status}`);
             }
 
             const data = await response.json();
 
             // Main statistics
-            setText("total-users", data.totalUsers);
-            setText("total-students", data.totalStudents);
-            setText("total-teachers", data.totalTeachers);
-            setText("total-exams", data.totalQuizzes);
+            setText('total-users', data.totalUsers);
+            setText('total-students', data.totalStudents);
+            setText('total-teachers', data.totalTeachers);
+            setText('total-exams', data.totalQuizzes);
 
             // Quiz statuses
-            setText("published-exams", data.publishedQuizzes);
-            setText("scheduled-exams", data.draftQuizzes);
-            setText("completed-exams", data.closedQuizzes);
+            setText('published-exams', data.publishedQuizzes);
+            setText('scheduled-exams', data.draftQuizzes);
+            setText('completed-exams', data.closedQuizzes);
 
             // Update labels to match actual QuizStatus values.
             updateStatusLabels();
 
             // Live user distribution
             updateUserDistribution(data);
-
         } catch (error) {
-            console.error("Could not load admin dashboard:", error);
+            console.error('Could not load admin dashboard:', error);
             showDashboardError(
-                "Unable to load live dashboard data. Please try again."
+                'Unable to load live dashboard data. Please try again.',
             );
         }
     }
@@ -642,23 +812,23 @@
         const element = document.getElementById(id);
 
         if (element) {
-            element.textContent = Number(value).toLocaleString("en-IN");
+            element.textContent = Number(value).toLocaleString('en-IN');
         }
     }
 
     function updateStatusLabels() {
         const labels = {
-            "published-exams": "Published",
-            "scheduled-exams": "Draft",
-            "completed-exams": "Closed"
+            'published-exams': 'Published',
+            'scheduled-exams': 'Draft',
+            'completed-exams': 'Closed',
         };
 
         Object.entries(labels).forEach(([id, label]) => {
             const element = document.getElementById(id);
-            const card = element?.closest("div");
+            const card = element?.closest('div');
 
             if (card) {
-                const heading = card.querySelector("p");
+                const heading = card.querySelector('p');
                 if (heading) heading.textContent = label;
             }
         });
@@ -667,44 +837,33 @@
     function updateUserDistribution(data) {
         const total = data.totalUsers || 0;
 
-        const studentPercent = total
-            ? (data.totalStudents / total) * 100
-            : 0;
+        const studentPercent = total ? (data.totalStudents / total) * 100 : 0;
 
-        const teacherPercent = total
-            ? (data.totalTeachers / total) * 100
-            : 0;
+        const teacherPercent = total ? (data.totalTeachers / total) * 100 : 0;
 
-        const adminPercent = total
-            ? (data.totalAdmins / total) * 100
-            : 0;
+        const adminPercent = total ? (data.totalAdmins / total) * 100 : 0;
 
-        const section = document.querySelector(
-            ".xl\\:col-span-1 .mt-6"
-        );
+        const section = document.querySelector('.xl\\:col-span-1 .mt-6');
 
         if (!section) return;
 
-        const rows = section.querySelectorAll(":scope > div");
+        const rows = section.querySelectorAll(':scope > div');
 
         const values = [
             [data.totalStudents, studentPercent],
             [data.totalTeachers, teacherPercent],
-            [data.totalAdmins, adminPercent]
+            [data.totalAdmins, adminPercent],
         ];
 
         rows.forEach((row, index) => {
             const [count, percent] = values[index];
 
-            const valueLabel = row.querySelector(
-                ".mb-2 span:last-child"
-            );
+            const valueLabel = row.querySelector('.mb-2 span:last-child');
 
-            const bar = row.querySelector(".h-full");
+            const bar = row.querySelector('.h-full');
 
             if (valueLabel) {
-                valueLabel.textContent =
-                    `${count.toLocaleString("en-IN")} (${percent.toFixed(1)}%)`;
+                valueLabel.textContent = `${count.toLocaleString('en-IN')} (${percent.toFixed(1)}%)`;
             }
 
             if (bar) {
@@ -714,15 +873,15 @@
     }
 
     function showDashboardError(message) {
-        let alert = document.getElementById("dashboard-error");
+        let alert = document.getElementById('dashboard-error');
 
         if (!alert) {
-            alert = document.createElement("p");
-            alert.id = "dashboard-error";
+            alert = document.createElement('p');
+            alert.id = 'dashboard-error';
             alert.className =
-                "mb-4 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700";
+                'mb-4 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700';
 
-            const main = document.querySelector("main > div");
+            const main = document.querySelector('main > div');
 
             if (main) {
                 main.prepend(alert);
@@ -737,6 +896,5 @@
     // All dashboard figures and activity rows are sample data.
     // Replace with real authenticated backend API responses later.
 </script>
-
 </body>
 </html>

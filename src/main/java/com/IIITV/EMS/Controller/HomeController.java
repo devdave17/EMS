@@ -1,9 +1,7 @@
 package com.IIITV.EMS.Controller;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
 public class HomeController {
@@ -19,23 +17,28 @@ public class HomeController {
     }
 
     @GetMapping("auth/student/dashboard")
-    public String studentDashboard(){
+    public String studentDashboard() {
         return "student-dashboard";
     }
 
     @GetMapping("auth/teacher/dashboard")
-    public String teacherDashboard(){
+    public String teacherDashboard() {
         return "teacher-dashboard";
     }
 
     @GetMapping("auth/admin/dashboard")
-    public String adminDashboard(){
+    public String adminDashboard() {
         return "admin-dashboard";
     }
 
     @GetMapping("auth/admin/users")
     public String adminUsers() {
         return "admin-users";
+    }
+
+    @GetMapping("/auth/admin/settings")
+    public String adminSettings() {
+        return "admin-settings";
     }
 
     @GetMapping("/auth/forgot-password")

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><!doctype html>
+        <html lang="en">
+        <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Settings | EMS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-800">
+<header class="border-b border-slate-200 bg-white">
+    <div
+            class="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-4 sm:px-6"
+    >
+        <div class="flex items-center gap-3">
+            <img
+                    class="h-12 w-12 rounded-lg object-contain"
+                    src="/EMSlogo.png"
+                    alt="EMS logo"
+            />
+            <div>
+                <a
+                        class="text-sm font-semibold text-violet-700"
+                        href="/auth/admin/dashboard"
+                >EMS Administration</a
+                >
+                <h1 class="mt-1 text-xl font-bold text-slate-950">Settings</h1>
+            </div>
+        </div>
+        <nav class="flex items-center gap-4 text-sm">
+            <a
+                    class="font-medium text-slate-600 hover:text-violet-700"
+                    href="/auth/admin/users"
+            >User management</a
+            >
+            <button
+                    id="logout-button"
+                    class="font-medium text-red-700 hover:text-red-900"
+                    type="button"
+            >
+                Sign out
+            </button>
+        </nav>
+    </div>
+</header>
+
+<main class="mx-auto max-w-5xl px-4 py-8 sm:px-6">
+    <section
+            class="border-b border-slate-200 pb-8"
+            aria-labelledby="account-heading"
+    >
+        <h2 id="account-heading" class="text-lg font-semibold text-slate-950">
+            Account
+        </h2>
+        <p class="mt-1 text-sm text-slate-600">
+            Signed-in administrator details.
+        </p>
+        <dl class="mt-6 grid gap-5 sm:grid-cols-2">
+            <div>
+                <dt class="text-sm font-medium text-slate-500">Name</dt>
+                <dd id="account-name" class="mt-1 text-sm text-slate-900"></dd>
+            </div>
+            <div>
+                <dt class="text-sm font-medium text-slate-500">Email</dt>
+                <dd
+                        id="account-email"
+                        class="mt-1 break-all text-sm text-slate-900"
+                ></dd>
+            </div>
+            <div>
+                <dt class="text-sm font-medium text-slate-500">Role</dt>
+                <dd class="mt-1 text-sm text-slate-900">Administrator</dd>
+            </div>
+        </dl>
+    </section>
+
+    <section class="py-8" aria-labelledby="security-heading">
+        <h2 id="security-heading" class="text-lg font-semibold text-slate-950">
+            Security
+        </h2>
+        <div
+                class="mt-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+        >
+            <div>
+                <h3 class="text-sm font-medium text-slate-900">Password</h3>
+                <p class="mt-1 text-sm text-slate-600">
+                    Request a password reset link for your account.
+                </p>
+            </div>
+            <a
+                    class="inline-flex min-h-10 items-center justify-center rounded-md bg-violet-700 px-4 py-2 text-sm font-semibold text-white hover:bg-violet-800"
+                    href="/auth/forgot-password"
+            >
+                Reset password
+            </a>
+        </div>
+    </section>
+</main>
+
+<script>
+    function signOut() {
+        localStorage.removeItem('token');
+        localStorage.removeItem('ems_current_user');
+        window.location.replace('/auth/login');
+    }
+
+    let currentUser;
+    try {
+        const token = localStorage.getItem('token');
+        currentUser = JSON.parse(localStorage.getItem('ems_current_user'));
+        if (!token || !currentUser || currentUser.role !== 'ADMIN') {
+            signOut();
+        }
+    } catch (error) {
+        signOut();
+    }
+
+    if (currentUser && currentUser.role === 'ADMIN') {
+        document.getElementById('account-name').textContent =
+            currentUser.name || currentUser.fullName || 'Administrator';
+        document.getElementById('account-email').textContent =
+            currentUser.email || 'Not available';
+    }
+
+    document
+        .getElementById('logout-button')
+        .addEventListener('click', signOut);
+</script>
+</body>
+</html>
+</title>
+</head>
+<body>
+
+</body>
+</html>

@@ -1,14 +1,12 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#3730A3">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#3730A3" />
 
     <title>Sign In | EMS</title>
-    <meta name="description"
-          content="Sign in to the Exam Management System.">
+    <meta name="description" content="Sign in to the Exam Management System." />
 
     <!-- Tailwind CSS: utility-first styling -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -19,14 +17,14 @@
                 extend: {
                     colors: {
                         ems: {
-                            primary: "#3730A3",
-                            hover: "#312E81",
-                            light: "#EEF2FF",
-                            ink: "#0F172A"
-                        }
-                    }
-                }
-            }
+                            primary: '#3730A3',
+                            hover: '#312E81',
+                            light: '#EEF2FF',
+                            ink: '#0F172A',
+                        },
+                    },
+                },
+            },
         };
     </script>
 
@@ -39,61 +37,71 @@
         body {
             margin: 0;
             min-height: 100vh;
-            font-family: Inter, ui-sans-serif, system-ui, -apple-system,
-            BlinkMacSystemFont, "Segoe UI", sans-serif;
+            font-family:
+                    Inter,
+                    ui-sans-serif,
+                    system-ui,
+                    -apple-system,
+                    BlinkMacSystemFont,
+                    'Segoe UI',
+                    sans-serif;
         }
 
         .brand-pattern {
             background-image:
-                    radial-gradient(circle at 90% 10%,
-                    rgba(255,255,255,.12) 0, transparent 28%),
-                    radial-gradient(circle at 10% 90%,
-                    rgba(255,255,255,.09) 0, transparent 32%);
+                    radial-gradient(
+                            circle at 90% 10%,
+                            rgba(255, 255, 255, 0.12) 0,
+                            transparent 28%
+                    ),
+                    radial-gradient(
+                            circle at 10% 90%,
+                            rgba(255, 255, 255, 0.09) 0,
+                            transparent 32%
+                    );
         }
 
         .login-input:focus {
             outline: 2px solid transparent;
             outline-offset: 2px;
-            border-color: #3730A3;
-            box-shadow: 0 0 0 3px rgba(55,48,163,.12);
+            border-color: #3730a3;
+            box-shadow: 0 0 0 3px rgba(55, 48, 163, 0.12);
         }
 
         .login-button:disabled {
             cursor: not-allowed;
-            opacity: .7;
+            opacity: 0.7;
         }
 
         @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
+            *,
+            *::before,
+            *::after {
                 scroll-behavior: auto !important;
-                transition-duration: .01ms !important;
-                animation-duration: .01ms !important;
+                transition-duration: 0.01ms !important;
+                animation-duration: 0.01ms !important;
             }
         }
     </style>
 </head>
 
 <body class="bg-slate-50 text-slate-900 antialiased">
-
 <main class="min-h-screen grid lg:grid-cols-2">
-
     <!-- Brand panel -->
     <section
-            class="brand-pattern relative hidden overflow-hidden
-               bg-ems-primary px-12 py-16 text-white
-               lg:flex lg:items-center xl:px-20"
-            aria-label="EMS information">
-
+            class="brand-pattern relative hidden overflow-hidden bg-ems-primary px-12 py-16 text-white lg:flex lg:items-center xl:px-20"
+            aria-label="EMS information"
+    >
         <div class="relative z-10 mx-auto max-w-xl">
+            <img
+                    class="h-24 w-24 rounded-2xl bg-white object-contain p-1 shadow-lg"
+                    src="/EMSlogo.png"
+                    alt="EMS Exam Management System logo"
+            />
 
-            <div class="flex h-14 w-14 items-center justify-center
-                        rounded-2xl bg-white text-lg font-extrabold
-                        tracking-tight text-ems-primary shadow-lg">
-                EMS
-            </div>
-
-            <p class="mt-10 text-sm font-semibold uppercase
-                      tracking-[0.2em] text-indigo-200">
+            <p
+                    class="mt-10 text-sm font-semibold uppercase tracking-[0.2em] text-indigo-200"
+            >
                 Exam Management System
             </p>
 
@@ -102,22 +110,19 @@
             </h1>
 
             <p class="mt-6 max-w-lg text-base leading-7 text-indigo-100">
-                A centralized platform for examination management,
-                scheduling, candidate access, monitoring and results.
+                A centralized platform for examination management, scheduling,
+                candidate access, monitoring and results.
             </p>
 
             <div class="mt-10 space-y-5">
-
                 <div class="flex items-start gap-4">
-                    <span class="flex h-7 w-7 shrink-0 items-center
-                                 justify-center rounded-full
-                                 border border-white/30 text-sm">
-                        ✓
-                    </span>
+              <span
+                      class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-white/30 text-sm"
+              >
+                ✓
+              </span>
                     <div>
-                        <h2 class="font-semibold">
-                            Role-based access
-                        </h2>
+                        <h2 class="font-semibold">Role-based access</h2>
                         <p class="mt-1 text-sm leading-6 text-indigo-100">
                             Dedicated workspaces for authorized users.
                         </p>
@@ -125,15 +130,13 @@
                 </div>
 
                 <div class="flex items-start gap-4">
-                    <span class="flex h-7 w-7 shrink-0 items-center
-                                 justify-center rounded-full
-                                 border border-white/30 text-sm">
-                        ✓
-                    </span>
+              <span
+                      class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-white/30 text-sm"
+              >
+                ✓
+              </span>
                     <div>
-                        <h2 class="font-semibold">
-                            Organized examinations
-                        </h2>
+                        <h2 class="font-semibold">Organized examinations</h2>
                         <p class="mt-1 text-sm leading-6 text-indigo-100">
                             Access exam information and manage exam activities.
                         </p>
@@ -141,61 +144,56 @@
                 </div>
 
                 <div class="flex items-start gap-4">
-                    <span class="flex h-7 w-7 shrink-0 items-center
-                                 justify-center rounded-full
-                                 border border-white/30 text-sm">
-                        ✓
-                    </span>
+              <span
+                      class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-white/30 text-sm"
+              >
+                ✓
+              </span>
                     <div>
-                        <h2 class="font-semibold">
-                            Results and reporting
-                        </h2>
+                        <h2 class="font-semibold">Results and reporting</h2>
                         <p class="mt-1 text-sm leading-6 text-indigo-100">
                             Support examination workflows from one platform.
                         </p>
                     </div>
                 </div>
-
             </div>
         </div>
 
-        <div class="pointer-events-none absolute -bottom-32 -right-20
-                    h-96 w-96 rounded-full border border-white/10"></div>
+        <div
+                class="pointer-events-none absolute -bottom-32 -right-20 h-96 w-96 rounded-full border border-white/10"
+        ></div>
 
-        <div class="pointer-events-none absolute -bottom-20 -right-8
-                    h-64 w-64 rounded-full border border-white/10"></div>
+        <div
+                class="pointer-events-none absolute -bottom-20 -right-8 h-64 w-64 rounded-full border border-white/10"
+        ></div>
     </section>
 
     <!-- Login panel -->
-    <section class="flex min-h-screen items-center justify-center
-                    px-5 py-10 sm:px-10 lg:px-12">
-
+    <section
+            class="flex min-h-screen items-center justify-center px-5 py-10 sm:px-10 lg:px-12"
+    >
         <div class="w-full max-w-md">
-
             <!-- Mobile branding -->
             <div class="mb-10 flex items-center gap-3 lg:hidden">
-                <div class="flex h-11 w-11 items-center justify-center
-                            rounded-xl bg-ems-primary font-extrabold
-                            text-white shadow-sm">
-                    E
-                </div>
+                <img
+                        class="h-12 w-12 rounded-lg object-contain"
+                        src="/EMSlogo.png"
+                        alt="EMS logo"
+                />
 
                 <div>
                     <p class="text-lg font-bold tracking-tight">EMS</p>
-                    <p class="text-xs text-slate-500">
-                        Exam Management System
-                    </p>
+                    <p class="text-xs text-slate-500">Exam Management System</p>
                 </div>
             </div>
 
             <!-- Header -->
             <header class="mb-8">
-                <p class="text-sm font-semibold text-ems-primary">
-                    Welcome back
-                </p>
+                <p class="text-sm font-semibold text-ems-primary">Welcome back</p>
 
-                <h2 class="mt-2 text-3xl font-bold tracking-tight
-                           text-slate-900 sm:text-4xl">
+                <h2
+                        class="mt-2 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl"
+                >
                     Sign in to EMS
                 </h2>
 
@@ -207,20 +205,19 @@
             <!-- Error/status message -->
             <div
                     id="login-error"
-                    class="mb-6 hidden rounded-xl border border-red-200
-                       bg-red-50 px-4 py-3 text-sm leading-6 text-red-700"
+                    class="mb-6 hidden rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm leading-6 text-red-700"
                     role="alert"
-                    aria-live="polite">
-            </div>
+                    aria-live="polite"
+            ></div>
 
             <!-- Login form -->
             <form id="login-form" class="space-y-5" novalidate>
-
                 <!-- Email -->
                 <div>
-                    <label for="email"
-                           class="mb-2 block text-sm font-semibold
-                                  text-slate-700">
+                    <label
+                            for="email"
+                            class="mb-2 block text-sm font-semibold text-slate-700"
+                    >
                         Email address
                         <span class="text-red-600" aria-hidden="true">*</span>
                     </label>
@@ -232,19 +229,17 @@
                             placeholder="you@example.com"
                             autocomplete="email"
                             required
-                            class="login-input block w-full rounded-xl
-                               border border-slate-300 bg-white px-4 py-3
-                               text-sm text-slate-900 placeholder:text-slate-400
-                               transition"
-                    >
+                            class="login-input block w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 transition"
+                    />
                 </div>
 
                 <!-- Password -->
                 <div>
                     <div class="mb-2 flex items-center justify-between gap-3">
-                        <label for="password"
-                               class="block text-sm font-semibold
-                                      text-slate-700">
+                        <label
+                                for="password"
+                                class="block text-sm font-semibold text-slate-700"
+                        >
                             Password
                             <span class="text-red-600" aria-hidden="true">*</span>
                         </label>
@@ -258,22 +253,16 @@
                                 placeholder="Enter your password"
                                 autocomplete="current-password"
                                 required
-                                class="login-input block w-full rounded-xl
-                                   border border-slate-300 bg-white px-4 py-3
-                                   pr-20 text-sm text-slate-900
-                                   placeholder:text-slate-400 transition"
-                        >
+                                class="login-input block w-full rounded-xl border border-slate-300 bg-white px-4 py-3 pr-20 text-sm text-slate-900 placeholder:text-slate-400 transition"
+                        />
 
                         <button
                                 type="button"
                                 id="toggle-password"
-                                class="absolute inset-y-0 right-3 my-auto
-                                   h-9 px-2 text-xs font-semibold
-                                   text-slate-500 hover:text-ems-primary
-                                   focus:outline-none focus:ring-2
-                                   focus:ring-ems-primary rounded-md"
+                                class="absolute inset-y-0 right-3 my-auto h-9 px-2 text-xs font-semibold text-slate-500 hover:text-ems-primary focus:outline-none focus:ring-2 focus:ring-ems-primary rounded-md"
                                 aria-label="Show password"
-                                aria-pressed="false">
+                                aria-pressed="false"
+                        >
                             Show
                         </button>
                     </div>
@@ -281,21 +270,22 @@
 
                 <!-- Options -->
                 <div class="flex items-center justify-between gap-4">
-
-                    <label class="flex cursor-pointer items-center gap-2
-                                  text-sm text-slate-600">
+                    <label
+                            class="flex cursor-pointer items-center gap-2 text-sm text-slate-600"
+                    >
                         <input
                                 type="checkbox"
                                 id="remember-me"
                                 name="rememberMe"
-                                class="h-4 w-4 rounded border-slate-300
-                                   accent-ems-primary focus:ring-ems-primary"
-                        >
+                                class="h-4 w-4 rounded border-slate-300 accent-ems-primary focus:ring-ems-primary"
+                        />
                         Remember me
                     </label>
 
-                    <a href="/auth/forgot-password"
-                       class="text-sm text-indigo-600 hover:underline">
+                    <a
+                            href="/auth/forgot-password"
+                            class="text-sm text-indigo-600 hover:underline"
+                    >
                         Forgot password?
                     </a>
                 </div>
@@ -304,25 +294,29 @@
                 <button
                         type="submit"
                         id="login-submit"
-                        class="login-button flex w-full items-center
-                           justify-center gap-2 rounded-xl
-                           bg-ems-primary px-4 py-3.5 text-sm
-                           font-semibold text-white shadow-sm
-                           transition hover:bg-ems-hover
-                           focus:outline-none focus:ring-4
-                           focus:ring-indigo-200">
-
+                        class="login-button flex w-full items-center justify-center gap-2 rounded-xl bg-ems-primary px-4 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-ems-hover focus:outline-none focus:ring-4 focus:ring-indigo-200"
+                >
                     <svg
                             id="loading-spinner"
                             class="hidden h-4 w-4 animate-spin"
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
                             viewBox="0 0 24 24"
-                            aria-hidden="true">
-                        <circle class="opacity-25" cx="12" cy="12" r="10"
-                                stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor"
-                              d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                            aria-hidden="true"
+                    >
+                        <circle
+                                class="opacity-25"
+                                cx="12"
+                                cy="12"
+                                r="10"
+                                stroke="currentColor"
+                                stroke-width="4"
+                        ></circle>
+                        <path
+                                class="opacity-75"
+                                fill="currentColor"
+                                d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                        ></path>
                     </svg>
 
                     <span id="login-button-text">Sign In</span>
@@ -330,21 +324,24 @@
             </form>
 
             <!-- Security note -->
-            <div class="mt-7 flex items-start gap-3 rounded-xl
-                        border border-indigo-100 bg-indigo-50
-                        p-4 text-xs leading-5 text-indigo-950">
-
-                <svg class="mt-0.5 h-4 w-4 shrink-0 text-ems-primary"
-                     viewBox="0 0 24 24" fill="none"
-                     stroke="currentColor" stroke-width="2"
-                     aria-hidden="true">
+            <div
+                    class="mt-7 flex items-start gap-3 rounded-xl border border-indigo-100 bg-indigo-50 p-4 text-xs leading-5 text-indigo-950"
+            >
+                <svg
+                        class="mt-0.5 h-4 w-4 shrink-0 text-ems-primary"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        aria-hidden="true"
+                >
                     <rect x="4" y="10" width="16" height="11" rx="2"></rect>
                     <path d="M8 10V7a4 4 0 018 0v3"></path>
                 </svg>
 
                 <p>
-                    Access to examination features is restricted to
-                    authenticated and authorized users.
+                    Access to examination features is restricted to authenticated and
+                    authorized users.
                 </p>
             </div>
 
@@ -357,21 +354,21 @@
 
 <!-- All login JavaScript lives in this HTML file -->
 <script>
-    "use strict";
+    'use strict';
 
     /*
      * Existing EMS session storage contract.
      * Keep these keys consistent with the rest of the frontend.
      */
-    const EMS_STORAGE_KEY = "ems_current_user";
+    const EMS_STORAGE_KEY = 'ems_current_user';
 
-    const loginForm = document.getElementById("login-form");
-    const emailInput = document.getElementById("email");
-    const passwordInput = document.getElementById("password");
-    const submitButton = document.getElementById("login-submit");
-    const buttonText = document.getElementById("login-button-text");
-    const spinner = document.getElementById("loading-spinner");
-    const errorElement = document.getElementById("login-error");
+    const loginForm = document.getElementById('login-form');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const submitButton = document.getElementById('login-submit');
+    const buttonText = document.getElementById('login-button-text');
+    const spinner = document.getElementById('loading-spinner');
+    const errorElement = document.getElementById('login-error');
 
     /*
      * Match roles to routes already mapped in HomeController.
@@ -379,24 +376,26 @@
      */
     function getDashboardPath(role) {
         const dashboardMap = {
-            STUDENT: "/auth/student/dashboard",
-            TEACHER: "/auth/teacher/dashboard",
-            ADMIN: "/auth/admin/dashboard"
+            STUDENT: '/auth/student/dashboard',
+            TEACHER: '/auth/teacher/dashboard',
+            ADMIN: '/auth/admin/dashboard',
         };
 
-        const normalizedRole = String(role ?? "").toUpperCase();
+        const normalizedRole = String(role ?? '').toUpperCase();
 
         return Object.prototype.hasOwnProperty.call(
             dashboardMap,
-            normalizedRole
-        ) ? dashboardMap[normalizedRole] : null;
+            normalizedRole,
+        )
+            ? dashboardMap[normalizedRole]
+            : null;
     }
 
     /*
      * Save the user in the existing session key.
      */
     function setCurrentUser(user) {
-        if (!user || typeof user !== "object" || Array.isArray(user)) {
+        if (!user || typeof user !== 'object' || Array.isArray(user)) {
             return false;
         }
 
@@ -404,28 +403,28 @@
             localStorage.setItem(EMS_STORAGE_KEY, JSON.stringify(user));
             return true;
         } catch (error) {
-            console.error("Unable to save EMS session:", error);
+            console.error('Unable to save EMS session:', error);
             return false;
         }
     }
 
     function showLoginError(message) {
         errorElement.textContent = message;
-        errorElement.classList.remove("hidden");
+        errorElement.classList.remove('hidden');
     }
 
     function clearLoginError() {
-        errorElement.textContent = "";
-        errorElement.classList.add("hidden");
+        errorElement.textContent = '';
+        errorElement.classList.add('hidden');
     }
 
     function setLoginLoading(isLoading) {
         submitButton.disabled = isLoading;
-        spinner.classList.toggle("hidden", !isLoading);
+        spinner.classList.toggle('hidden', !isLoading);
 
-        buttonText.textContent = isLoading ? "Signing in..." : "Sign In";
+        buttonText.textContent = isLoading ? 'Signing in...' : 'Sign In';
 
-        submitButton.setAttribute("aria-busy", String(isLoading));
+        submitButton.setAttribute('aria-busy', String(isLoading));
     }
 
     /*
@@ -434,16 +433,16 @@
      */
     async function authenticateUser(email, password) {
         try {
-            const response = await fetch("/api/auth/login", {
-                method: "POST",
+            const response = await fetch('/api/auth/login', {
+                method: 'POST',
                 headers: {
-                    "Content-Type": "application/json",
-                    "Accept": "application/json"
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
                 },
                 body: JSON.stringify({
                     email: email.trim(),
-                    password: password
-                })
+                    password: password,
+                }),
             });
 
             let responseData = null;
@@ -455,69 +454,69 @@
             }
 
             if (!response.ok) {
-                const serverMessage =
-                    responseData?.message || responseData?.error;
+                const serverMessage = responseData?.message || responseData?.error;
 
                 if (response.status === 401) {
                     return {
                         success: false,
-                        message: "Invalid email or password."
+                        message: 'Invalid email or password.',
                     };
                 }
 
                 if (response.status === 403) {
                     return {
                         success: false,
-                        message: serverMessage ||
-                            "Access denied. Your account may be inactive."
+                        message:
+                            serverMessage ||
+                            'Access denied. Your account may be inactive.',
                     };
                 }
 
                 if (response.status >= 500) {
                     return {
                         success: false,
-                        message: "A server error occurred. Please try again later."
+                        message: 'A server error occurred. Please try again later.',
                     };
                 }
 
                 return {
                     success: false,
-                    message: serverMessage ||
-                        "Sign in failed. Please check your details and try again."
+                    message:
+                        serverMessage ||
+                        'Sign in failed. Please check your details and try again.',
                 };
             }
 
             if (
                 !responseData ||
-                typeof responseData !== "object" ||
+                typeof responseData !== 'object' ||
                 Array.isArray(responseData) ||
                 !responseData.token ||
                 !responseData.user ||
-                typeof responseData.user !== "object"
+                typeof responseData.user !== 'object'
             ) {
                 return {
                     success: false,
-                    message: "Invalid sign-in response from server."
+                    message: 'Invalid sign-in response from server.',
                 };
             }
 
             return {
                 success: true,
                 user: responseData.user,
-                token: responseData.token
+                token: responseData.token,
             };
-
         } catch (error) {
-            console.error("EMS login request failed:", error);
+            console.error('EMS login request failed:', error);
 
             return {
                 success: false,
-                message: "Unable to connect to the server. Please try again."
+                message: 'Unable to connect to the server. Please try again.',
             };
         }
     }
 
-    loginForm.addEventListener("submit", async function (event) {
+    loginForm.addEventListener('submit', async function (event) {
         event.preventDefault();
         clearLoginError();
 
@@ -525,12 +524,12 @@
         const password = passwordInput.value;
 
         if (!email || !password) {
-            showLoginError("Please enter your email and password.");
+            showLoginError('Please enter your email and password.');
             return;
         }
 
         if (!emailInput.validity.valid) {
-            showLoginError("Please enter a valid email address.");
+            showLoginError('Please enter a valid email address.');
             emailInput.focus();
             return;
         }
@@ -551,7 +550,7 @@
 
             if (!dashboardPath) {
                 showLoginError(
-                    "Your account role is not supported by this application yet."
+                    'Your account role is not supported by this application yet.',
                 );
                 return;
             }
@@ -561,11 +560,11 @@
              * If saving the user fails, do not leave a token behind.
              */
             try {
-                localStorage.setItem("token", token);
+                localStorage.setItem('token', token);
             } catch (error) {
-                console.error("Unable to save EMS token:", error);
+                console.error('Unable to save EMS token:', error);
                 showLoginError(
-                    "Unable to create your session. Please check browser storage settings."
+                    'Unable to create your session. Please check browser storage settings.',
                 );
                 return;
             }
@@ -573,16 +572,13 @@
             const sessionSaved = setCurrentUser(user);
 
             if (!sessionSaved) {
-                localStorage.removeItem("token");
+                localStorage.removeItem('token');
 
-                showLoginError(
-                    "Unable to create your session. Please try again."
-                );
+                showLoginError('Unable to create your session. Please try again.');
                 return;
             }
 
             window.location.assign(dashboardPath);
-
         } finally {
             setLoginLoading(false);
         }
@@ -591,16 +587,17 @@
     /*
      * Show/hide password.
      */
-    document.getElementById("toggle-password")
-        .addEventListener("click", function () {
-            const isPassword = passwordInput.type === "password";
+    document
+        .getElementById('toggle-password')
+        .addEventListener('click', function () {
+            const isPassword = passwordInput.type === 'password';
 
-            passwordInput.type = isPassword ? "text" : "password";
-            this.textContent = isPassword ? "Hide" : "Show";
-            this.setAttribute("aria-pressed", String(isPassword));
+            passwordInput.type = isPassword ? 'text' : 'password';
+            this.textContent = isPassword ? 'Hide' : 'Show';
+            this.setAttribute('aria-pressed', String(isPassword));
             this.setAttribute(
-                "aria-label",
-                isPassword ? "Hide password" : "Show password"
+                'aria-label',
+                isPassword ? 'Hide password' : 'Show password',
             );
         });
 
@@ -608,51 +605,51 @@
      * Password recovery is not implemented in the current backend.
      * Do not pretend a recovery email was sent.
      */
-    document.getElementById("forgot-password-link")
-        .addEventListener("click", function () {
+    document
+        .getElementById('forgot-password-link')
+        .addEventListener('click', function () {
             clearLoginError();
             showLoginError(
-                "Password recovery is not available yet. Please contact your EMS administrator."
+                'Password recovery is not available yet. Please contact your EMS administrator.',
             );
         });
 </script>
 
-
 <script>
-    const loginForm = document.getElementById("login-form");
-    const emailInput = document.getElementById("email");
-    const passwordInput = document.getElementById("password");
-    const loginButton = document.getElementById("login-submit");
-    const errorBox = document.getElementById("login-error");
+    const loginForm = document.getElementById('login-form');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const loginButton = document.getElementById('login-submit');
+    const errorBox = document.getElementById('login-error');
 
-    loginForm.addEventListener("submit", async function (event) {
+    loginForm.addEventListener('submit', async function (event) {
         event.preventDefault();
 
         const email = emailInput.value.trim();
         const password = passwordInput.value;
 
         // Clear previous errors
-        errorBox.textContent = "";
-        errorBox.classList.add("hidden");
+        errorBox.textContent = '';
+        errorBox.classList.add('hidden');
 
         if (!email || !password) {
-            showError("Please enter your email and password.");
+            showError('Please enter your email and password.');
             return;
         }
 
         loginButton.disabled = true;
-        loginButton.textContent = "Signing in...";
+        loginButton.textContent = 'Signing in...';
 
         try {
-            const response = await fetch("/api/auth/login", {
-                method: "POST",
+            const response = await fetch('/api/auth/login', {
+                method: 'POST',
                 headers: {
-                    "Content-Type": "application/json"
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
                     email: email,
-                    password: password
-                })
+                    password: password,
+                }),
             });
 
             const data = await response.json().catch(() => ({}));
@@ -661,88 +658,81 @@
                 throw new Error(
                     data.message ||
                     data.error ||
-                    "Login failed. Please check your credentials."
+                    'Login failed. Please check your credentials.',
                 );
             }
 
             // Expected backend response: { token, user }
             if (!data.token || !data.user || !data.user.role) {
-                throw new Error("Invalid login response from server.");
+                throw new Error('Invalid login response from server.');
             }
 
             const role = String(data.user.role).toUpperCase();
 
             const dashboardRoutes = {
-                STUDENT: "/auth/student/dashboard",
-                TEACHER: "/auth/teacher/dashboard",
-                ADMIN: "/auth/admin/dashboard"
+                STUDENT: '/auth/student/dashboard',
+                TEACHER: '/auth/teacher/dashboard',
+                ADMIN: '/auth/admin/dashboard',
             };
 
             const dashboard = dashboardRoutes[role];
 
             if (!dashboard) {
-                throw new Error("Your account role is not supported.");
+                throw new Error('Your account role is not supported.');
             }
 
             // Store the login session
-            localStorage.setItem("token", data.token);
-            localStorage.setItem(
-                "ems_current_user",
-                JSON.stringify(data.user)
-            );
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('ems_current_user', JSON.stringify(data.user));
 
             // Redirect according to role
             window.location.replace(dashboard);
-
         } catch (error) {
-            showError(error.message || "Something went wrong.");
+            showError(error.message || 'Something went wrong.');
         } finally {
             loginButton.disabled = false;
-            loginButton.textContent = "Sign In";
+            loginButton.textContent = 'Sign In';
         }
     });
 
     function showError(message) {
         errorBox.textContent = message;
-        errorBox.classList.remove("hidden");
+        errorBox.classList.remove('hidden');
     }
-
 </script>
 <script>
-    const loginForm = document.getElementById("login-form");
-    const emailInput = document.getElementById("email");
-    const passwordInput = document.getElementById("password");
-    const loginButton = document.getElementById("login-submit");
-    const errorBox = document.getElementById("login-error");
+    const loginForm = document.getElementById('login-form');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const loginButton = document.getElementById('login-submit');
+    const errorBox = document.getElementById('login-error');
 
     function showError(message) {
         errorBox.textContent = message;
-        errorBox.classList.remove("hidden");
+        errorBox.classList.remove('hidden');
     }
 
     function hideError() {
-        errorBox.textContent = "";
-        errorBox.classList.add("hidden");
+        errorBox.textContent = '';
+        errorBox.classList.add('hidden');
     }
 
     function setLoading(isLoading) {
         loginButton.disabled = isLoading;
-        loginButton.textContent = isLoading
-            ? "Signing in..."
-            : "Login";
+        loginButton.textContent = isLoading ? 'Signing in...' : 'Login';
     }
 
     function getDashboard(role) {
         const dashboards = {
-            STUDENT: "/auth/student/dashboard",
-            TEACHER: "/auth/teacher/dashboard",
-            ADMIN: "/auth/admin/dashboard"
+            STUDENT: '/auth/student/dashboard',
+            TEACHER: '/auth/teacher/dashboard',
+            ADMIN: '/auth/admin/dashboard',
         };
 
         return dashboards[role?.toUpperCase()] || null;
     }
 
-    loginForm.addEventListener("submit", async function (event) {
+    loginForm.addEventListener('submit', async function (event) {
         event.preventDefault();
         hideError();
 
@@ -750,77 +740,77 @@
         const password = passwordInput.value;
 
         if (!email || !password) {
-            showError("Please enter both email and password.");
+            showError('Please enter both email and password.');
             return;
         }
 
         setLoading(true);
 
         try {
-            const response = await fetch("/api/auth/login", {
-                method: "POST",
+            const response = await fetch('/api/auth/login', {
+                method: 'POST',
                 headers: {
-                    "Content-Type": "application/json",
-                    "Accept": "application/json"
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
                 },
-                body: JSON.stringify({ email, password })
+                body: JSON.stringify({ email, password }),
             });
 
             const result = await response.json().catch(() => ({}));
 
             if (!response.ok) {
                 if (response.status === 401) {
-                    throw new Error("Invalid email or password.");
+                    throw new Error('Invalid email or password.');
                 }
 
                 if (response.status === 403) {
                     throw new Error(
-                        result.message || "Your account is not active. Please contact the administrator."
+                        result.message ||
+                        'Your account is not active. Please contact the administrator.',
                     );
                 }
 
                 if (response.status >= 500) {
-                    throw new Error("Server error. Please try again later.");
+                    throw new Error('Server error. Please try again later.');
                 }
 
                 throw new Error(
-                    result.message || result.error || "Login failed. Please try again."
+                    result.message ||
+                    result.error ||
+                    'Login failed. Please try again.',
                 );
             }
 
             if (!result.token || !result.user || !result.user.role) {
-                throw new Error("Invalid response received from the server.");
+                throw new Error('Invalid response received from the server.');
             }
 
             const dashboard = getDashboard(result.user.role);
 
             if (!dashboard) {
-                throw new Error("Your account has an unrecognized role.");
+                throw new Error('Your account has an unrecognized role.');
             }
 
             // Save the authenticated session.
-            localStorage.setItem("token", result.token);
-            localStorage.setItem(
-                "ems_current_user",
-                JSON.stringify(result.user)
-            );
+            localStorage.setItem('token', result.token);
+            localStorage.setItem('ems_current_user', JSON.stringify(result.user));
 
             // Redirect according to the user's role.
             window.location.assign(dashboard);
-
         } catch (error) {
             if (error instanceof TypeError) {
                 showError(
-                    "Unable to connect to the server. Check your connection and try again."
+                    'Unable to connect to the server. Check your connection and try again.',
                 );
             } else {
-                showError(error.message || "Something went wrong. Please try again.");
+                showError(
+                    error.message || 'Something went wrong. Please try again.',
+                );
             }
         } finally {
             setLoading(false);
         }
     });
 </script>
-
 </body>
 </html>
