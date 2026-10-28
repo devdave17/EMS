@@ -1,23 +1,36 @@
 package com.IIITV.EMS.Controller;
 
-import com.IIITV.EMS.Model.IdempotencyRecord;
-import com.IIITV.EMS.Model.User;
-import com.IIITV.EMS.Repository.IdempotencyRepository;
-import com.IIITV.EMS.Services.UserService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.time.LocalDateTime;
 import java.util.HexFormat;
 import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import com.IIITV.EMS.Model.IdempotencyRecord;
+import com.IIITV.EMS.Model.User;
+import com.IIITV.EMS.Repository.IdempotencyRepository;
+import com.IIITV.EMS.Services.UserService;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/users")
@@ -31,13 +44,11 @@ public class UserController {
         this.idempotencyRepository = idempotencyRepository;
     }
 
-
     @PostMapping
     public ResponseEntity<User> createUser(
-            @Valid
-            @RequestBody User user,
-            @RequestHeader(value = "Idempotency-Key", required = false)
-            String idempotencyKey) {
+            @Valid @RequestBody User user,
+            @RequestHeader(value = "Idempotency-Key", required = false) String idempotencyKey) {
+        requireAdmin();
 
         if (idempotencyKey == null || idempotencyKey.isBlank()) {
             User savedUser = userService.saveUser(user);
@@ -107,9 +118,9 @@ public class UserController {
         return ResponseEntity.created(location).body(savedUser);
     }
 
-
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers(HttpServletRequest request) {
+        requireAdmin();
         if (!acceptsJson(
                 request.getHeader("Accept"))) {
             return ResponseEntity.status(406).build();
@@ -117,13 +128,12 @@ public class UserController {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
-
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(
-            @Valid
             @PathVariable String id,
-            @RequestBody User user,
+            @Valid @RequestBody User user,
             @RequestHeader(value = "If-Match", required = false) String ifMatch) {
+        requireAdmin();
 
         User currentUser = userService.getUserById(id);
 
@@ -133,9 +143,8 @@ public class UserController {
                         currentUser.getName(),
                         currentUser.getEmail(),
                         currentUser.getRole(),
-                        currentUser.getStatus()
-                )
-        ) + "\"";
+                        currentUser.getStatus()))
+                + "\"";
 
         if (ifMatch != null && !ifMatch.equals(currentEtag)) {
             return ResponseEntity.status(412)
@@ -151,23 +160,20 @@ public class UserController {
                         updatedUser.getName(),
                         updatedUser.getEmail(),
                         updatedUser.getRole(),
-                        updatedUser.getStatus()
-                )
-        ) + "\"";
+                        updatedUser.getStatus()))
+                + "\"";
 
         return ResponseEntity.ok()
                 .eTag(updatedEtag)
                 .body(updatedUser);
     }
 
-
-
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(
             @PathVariable String id,
-            @RequestHeader(value = "If-None-Match", required = false)
-            String ifNoneMatch,
-    HttpServletRequest request) {
+            @RequestHeader(value = "If-None-Match", required = false) String ifNoneMatch,
+            HttpServletRequest request) {
+        requireAdmin();
         if (!acceptsJson(
                 request.getHeader("Accept"))) {
             return ResponseEntity.status(406).build();
@@ -180,9 +186,8 @@ public class UserController {
                         user.getName(),
                         user.getEmail(),
                         user.getRole(),
-                        user.getStatus()
-                )
-        ) + "\"";
+                        user.getStatus()))
+                + "\"";
 
         if (etag.equals(ifNoneMatch)) {
             return ResponseEntity.status(304)
@@ -212,8 +217,17 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable String id) {
+        requireAdmin();
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
+    }
+
+    private void requireAdmin() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.getAuthorities().stream()
+                .anyMatch(authority -> "ROLE_ADMIN".equals(authority.getAuthority()))) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Admin access required");
+        }
     }
 
 }

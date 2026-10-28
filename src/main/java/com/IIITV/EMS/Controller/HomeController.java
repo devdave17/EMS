@@ -7,28 +7,33 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class HomeController {
 
     @GetMapping("/")
-    public String index(){
+    public String index() {
         return "index";
     }
 
     @GetMapping("auth/login")
-    public String login(){
+    public String login() {
         return "login";
     }
 
     @GetMapping("auth/student/dashboard")
-    public String studentDashboard(){
+    public String studentDashboard() {
         return "student-dashboard";
     }
 
     @GetMapping("auth/teacher/dashboard")
-    public String teacherDashboard(){
+    public String teacherDashboard() {
         return "teacher-dashboard";
     }
 
     @GetMapping("auth/admin/dashboard")
-    public String adminDashboard(){
+    public String adminDashboard() {
         return "admin-dashboard";
+    }
+
+    @GetMapping("auth/admin/users")
+    public String adminUsers() {
+        return "admin-users";
     }
 
     @GetMapping("/auth/forgot-password")
@@ -40,6 +45,5 @@ public class HomeController {
     public String resetPasswordPage() {
         return "reset-password";
     }
-
 
 }
