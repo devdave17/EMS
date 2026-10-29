@@ -30,6 +30,25 @@ public class StudentExamController {
         this.examSessionService = examSessionService;
         this.questionRepository = questionRepository;
     }
+    public record WarningCountRequest(Integer totalWarnings) {}
+
+    @PutMapping("/sessions/{sessionId}/warnings")
+    public ResponseEntity<Void> saveWarningCount(
+            @PathVariable String sessionId,
+            @RequestBody WarningCountRequest request) {
+
+        String studentId = requireAuthenticatedStudent();
+
+        if (request == null || request.totalWarnings() == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Warning count is required");
+        }
+
+        examSessionService.saveWarningCount(
+                sessionId, studentId, request.totalWarnings());
+
+        return ResponseEntity.noContent().build();
+    }
 
     @PostMapping("/{quizId}/start")
     public ResponseEntity<ExamSessionResponse> startOrResumeExam(

@@ -216,11 +216,11 @@
         <div id="reviewList" class="mt-6 space-y-4"></div>
 
         <div class="mt-8 flex flex-wrap justify-between gap-3 border-t pt-5">
-            <button id="backToExamBtn"
-                    type="button"
-                    class="rounded-lg border px-5 py-3 font-semibold hover:bg-slate-50">
-                Back to Exam
-            </button>
+<!--            <button id="backToExamBtn"-->
+<!--                    type="button"-->
+<!--                    class="rounded-lg border px-5 py-3 font-semibold hover:bg-slate-50">-->
+<!--                Back to Exam-->
+<!--            </button>-->
 
             <button id="confirmSubmitBtn"
                     class="rounded-lg bg-rose-600 px-5 py-3 font-semibold text-white hover:bg-rose-700">
@@ -490,11 +490,20 @@
             try {
                 // Wait for all pending answer saves before submitting.
                 await saveQueue;
-
+                await api(
+                    `/api/student/exams/sessions/${encodeURIComponent(sessionId)}/warnings`,
+                    {
+                        method: "PUT",
+                        body: JSON.stringify({
+                            totalWarnings: warningTotal
+                        })
+                    }
+                );
                 const result = await api(
                     `/api/student/exams/sessions/${encodeURIComponent(sessionId)}/submit`,
                     {method: "POST"}
                 );
+
                 isReadOnly = true;
                 examStartedInBrowser = false;
                 clearInterval(timerInterval);
@@ -534,6 +543,7 @@
         </a>
     </div>
 `;
+
 
             } catch (error) {
                 isSubmitting = false;
@@ -921,6 +931,20 @@
         });
 
         function showReview() {
+            // Stop proctoring while the student reviews answers.
+            examStartedInBrowser = false;
+            clearInterval(frameInterval);
+            frameInterval = null;
+
+            // Camera is no longer needed during answer review.
+            if (cameraStream) {
+                cameraStream.getTracks().forEach(track => track.stop());
+                cameraStream = null;
+            }
+
+            $("proctoringStatus").classList.add("hidden");
+            $("examCameraContainer").classList.add("hidden");
+
             const attempted = questions.filter(q => answers[q.id] != null).length;
             const unanswered = questions.length - attempted;
 
@@ -1032,12 +1056,12 @@
 
         $("retryBtn").addEventListener("click", loadExam);
 
-        $("backToExamBtn").addEventListener("click", () => {
-            $("reviewArea").classList.add("hidden");
-            $("examArea").classList.remove("hidden");
-            $("examCameraContainer").classList.remove("hidden");
-            renderQuestion();
-        });
+        // $("backToExamBtn").addEventListener("click", () => {
+        //     $("reviewArea").classList.add("hidden");
+        //     $("examArea").classList.remove("hidden");
+        //     $("examCameraContainer").classList.remove("hidden");
+        //     renderQuestion();
+        // });
 
         $("confirmSubmitBtn").addEventListener("click", () => {
             submitExam(true);

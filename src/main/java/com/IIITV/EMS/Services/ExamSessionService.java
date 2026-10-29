@@ -407,4 +407,38 @@ public class ExamSessionService {
             String sessionId
     ) {}
 
+    public ExamSession saveWarningCount(String sessionId, String studentId, int totalWarnings) {
+        ExamSession session = examSessionRepository.findById(sessionId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Exam session not found"));
+
+        if (!session.getStudentId().equals(studentId)) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN, "This session does not belong to you");
+        }
+
+        if (session.getStatus() != SessionStatus.IN_PROGRESS) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT, "Exam is not in progress");
+        }
+
+        if (totalWarnings < 0) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Warning count cannot be negative");
+        }
+
+        session.setTotalWarnings(totalWarnings);
+
+        boolean flagged = totalWarnings > 5;
+        session.setIsFlagged(flagged);
+        session.setReviewStatus(flagged ? "PENDING_REVIEW" : "NOT_REQUIRED");
+
+        if (flagged) {
+            session.setFlagReason(
+                    "Total proctoring warnings reached " + totalWarnings);
+        }
+
+        session.setTotalWarnings(totalWarnings);
+        return examSessionRepository.save(session);
+    }
 }

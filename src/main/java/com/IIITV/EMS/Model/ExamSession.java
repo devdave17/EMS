@@ -51,4 +51,38 @@ public class ExamSession {
 
     public ExamSession() {
     }
+
+    // Proctoring summary
+    private Integer totalWarnings = 0;
+    private Integer headTurnWarnings = 0;
+    private Integer tabSwitchWarnings = 0;
+    private Integer faceDetectionWarnings = 0;
+    private Integer fullscreenWarnings = 0;
+    private Integer cameraWarnings = 0;
+
+    private Boolean isFlagged = false;
+    private String flagReason;
+    private String reviewStatus = "NOT_REQUIRED";
+
+    // Detailed proctoring events
+    private List<ProctoringEvent> proctoringEvents = new ArrayList<>();
+
+    @Data
+    public static class ProctoringEvent {
+        private String type;
+        private String message;
+        private LocalDateTime timestamp;
+
+        public ProctoringEvent() {
+        }
+
+        public ProctoringEvent(
+                String type,
+                String message,
+                LocalDateTime timestamp) {
+            this.type = type;
+            this.message = message;
+            this.timestamp = timestamp;
+        }
+    }
 }
