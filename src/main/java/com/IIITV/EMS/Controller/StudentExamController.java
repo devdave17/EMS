@@ -37,8 +37,7 @@ public class StudentExamController {
 
         String studentId = requireAuthenticatedStudent();
 
-        ExamSession session =
-                examSessionService.startOrResumeExam(quizId, studentId);
+        ExamSession session = examSessionService.startOrResumeExam(quizId, studentId);
 
         List<QuestionResponse> questions = new ArrayList<>();
 
@@ -53,10 +52,8 @@ public class StudentExamController {
                     question.getId(),
                     question.getQuestionText(),
                     question.getOptions(),
-                    question.getPoints()
-            ));
+                    question.getPoints()));
         }
-
 
         ExamSessionResponse response = new ExamSessionResponse(
                 session.getId(),
@@ -65,8 +62,7 @@ public class StudentExamController {
                 session.getStartedAt(),
                 session.getDeadline(),
                 questions,
-                session.getAnswers()
-        );
+                session.getAnswers());
         return ResponseEntity.ok(response);
     }
 
@@ -76,21 +72,19 @@ public class StudentExamController {
 
         String studentId = requireAuthenticatedStudent();
 
-        ExamSession session =
-                examSessionService.submitExam(sessionId, studentId);
+        ExamSession session = examSessionService.submitExam(sessionId, studentId);
 
         return ResponseEntity.ok(new SubmissionConfirmation(
                 session.getId(),
                 session.getStatus().name(),
-                session.getSubmittedAt()
-        ));
+                session.getSubmittedAt()));
     }
 
     public record SubmissionConfirmation(
             String sessionId,
             String status,
-            LocalDateTime submittedAt
-    ) {}
+            LocalDateTime submittedAt) {
+    }
 
     public record SubmissionResponse(
             String sessionId,
@@ -99,13 +93,11 @@ public class StudentExamController {
             java.math.BigDecimal totalMarks,
             Integer correctAnswers,
             Integer answeredQuestions,
-            LocalDateTime submittedAt
-    ) {
+            LocalDateTime submittedAt) {
     }
 
     private String requireAuthenticatedStudent() {
-        Authentication authentication =
-                SecurityContextHolder.getContext().getAuthentication();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null
                 || !authentication.isAuthenticated()
@@ -117,8 +109,7 @@ public class StudentExamController {
         }
 
         boolean isStudent = authentication.getAuthorities().stream()
-                .anyMatch(authority ->
-                        authority.getAuthority().equals("ROLE_STUDENT"));
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_STUDENT"));
 
         if (!isStudent) {
             throw new ResponseStatusException(
@@ -146,7 +137,6 @@ public class StudentExamController {
             java.math.BigDecimal points) {
     }
 
-
     public record ExamSessionResponse(
             String sessionId,
             String quizId,
@@ -154,11 +144,8 @@ public class StudentExamController {
             LocalDateTime startedAt,
             LocalDateTime deadline,
             List<QuestionResponse> questions,
-            java.util.Map<String, String> savedAnswers
-    ) {
+            java.util.Map<String, String> savedAnswers) {
     }
-
-
 
     @PutMapping("/sessions/{sessionId}/answers")
     public ResponseEntity<Void> saveAnswer(
@@ -178,8 +165,7 @@ public class StudentExamController {
                 sessionId,
                 studentId,
                 request.questionId(),
-                request.selectedOption()
-        );
+                request.selectedOption());
 
         return ResponseEntity.noContent().build();
     }
@@ -195,8 +181,7 @@ public class StudentExamController {
 
         String studentId = requireAuthenticatedStudent();
 
-        ExamSession session =
-                examSessionService.getSessionForStudent(sessionId, studentId);
+        ExamSession session = examSessionService.getSessionForStudent(sessionId, studentId);
 
         List<QuestionResponse> questions = new ArrayList<>();
 
@@ -210,8 +195,7 @@ public class StudentExamController {
                     question.getId(),
                     question.getQuestionText(),
                     question.getOptions(),
-                    question.getPoints()
-            ));
+                    question.getPoints()));
         }
 
         ExamSessionResponse response = new ExamSessionResponse(
@@ -221,19 +205,31 @@ public class StudentExamController {
                 session.getStartedAt(),
                 session.getDeadline(),
                 questions,
-                session.getAnswers()
-        );
+                session.getAnswers());
 
         return ResponseEntity.ok(response);
     }
+
     @GetMapping
-    public ResponseEntity<List<ExamSessionService.StudentExamSummary>>
-    getPublishedExams() {
+    public ResponseEntity<List<ExamSessionService.StudentExamSummary>> getPublishedExams() {
 
         String studentId = requireAuthenticatedStudent();
 
         return ResponseEntity.ok(
-                examSessionService.getPublishedExamsForStudent(studentId)
-        );
+                examSessionService.getPublishedExamsForStudent(studentId));
+    }
+
+    @GetMapping("/{quizId}/result")
+    public ResponseEntity<ExamSessionService.StudentExamResult> getResult(
+            @PathVariable String quizId) {
+        String studentId = requireAuthenticatedStudent();
+        return ResponseEntity.ok(
+                examSessionService.getStudentResult(quizId, studentId));
+    }
+
+    @GetMapping("/results")
+    public ResponseEntity<List<ExamSessionService.StudentResultSummary>> getResults() {
+        String studentId = requireAuthenticatedStudent();
+        return ResponseEntity.ok(examSessionService.getStudentResults(studentId));
     }
 }

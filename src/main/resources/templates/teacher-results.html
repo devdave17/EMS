@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Results | EMS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-800">
+<div class="min-h-screen md:flex">
+    <aside class="w-full border-b border-slate-200 bg-white p-5 md:min-h-screen md:w-64 md:border-b-0 md:border-r">
+        <a href="/auth/teacher/dashboard" class="text-2xl font-bold text-indigo-600">EMS<span class="text-slate-700">.</span></a>
+        <p class="mb-6 mt-1 text-xs text-slate-500">Examination Management System</p>
+        <nav class="space-y-2">
+            <a href="/auth/teacher/dashboard" class="block rounded-lg px-4 py-3 text-sm text-slate-600 hover:bg-slate-100">Dashboard</a>
+            <a href="/auth/teacher/exams" class="block rounded-lg px-4 py-3 text-sm text-slate-600 hover:bg-slate-100">Manage Exams</a>
+            <a href="/auth/teacher/results" class="block rounded-lg bg-indigo-50 px-4 py-3 text-sm font-semibold text-indigo-700">Results</a>
+        </nav>
+        <button id="logoutBtn" class="mt-6 w-full rounded-lg border border-slate-200 px-4 py-3 text-left text-sm text-red-600 hover:bg-red-50">Logout</button>
+    </aside>
+    <main class="min-w-0 flex-1 p-5 md:p-8">
+        <header class="mb-7 flex flex-wrap items-end justify-between gap-4">
+            <div><p class="text-sm text-slate-500">Teacher Portal / Results</p><h1 class="mt-1 text-2xl font-bold md:text-3xl">Exam Results</h1></div>
+            <button id="refreshBtn" class="rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-semibold hover:bg-slate-50">Refresh</button>
+        </header>
+        <div id="message" class="mb-5 hidden rounded-lg p-4 text-sm"></div>
+        <div id="loading" class="rounded-lg border border-slate-200 bg-white p-8 text-center text-sm text-slate-500">Loading exams...</div>
+        <section id="examList" class="hidden space-y-5"></section>
+        <div id="empty" class="hidden rounded-lg border border-slate-200 bg-white p-8 text-center text-sm text-slate-500">You have not created any exams yet.</div>
+    </main>
+</div>
+<script>
+    (() => {
+        const token = localStorage.getItem("token");
+        let user;
+        try { user = JSON.parse(localStorage.getItem("ems_current_user") || "null"); } catch { user = null; }
+        if (!token || !user || user.role !== "TEACHER") {
+            window.location.replace("/auth/login");
+            return;
+        }
+        const $ = id => document.getElementById(id);
+        const escapeHtml = value => String(value ?? "").replace(/[&<>"']/g, char => ({
+            "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+        })[char]);
+        const authHeaders = { "Authorization": `Bearer ${token}`, "Accept": "application/json" };
+
+        $("logoutBtn").addEventListener("click", () => {
+            localStorage.removeItem("token");
+            localStorage.removeItem("ems_current_user");
+            window.location.replace("/auth/login");
+        });
+
+        function displayMessage(text, isError = false) {
+            $("message").textContent = text;
+            $("message").className = `mb-5 rounded-lg p-4 text-sm ${isError ? "border border-red-200 bg-red-50 text-red-700" : "border border-emerald-200 bg-emerald-50 text-emerald-800"}`;
+        }
+
+        async function load() {
+            $("loading").classList.remove("hidden");
+            $("examList").classList.add("hidden");
+            $("empty").classList.add("hidden");
+            try {
+                const response = await fetch("/api/teacher/results", { headers: authHeaders });
+                const data = await response.json().catch(() => ({}));
+                if (response.status === 401) {
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("ems_current_user");
+                    window.location.replace("/auth/login");
+                    return;
+                }
+                if (!response.ok) throw new Error(data.message || data.detail || "Unable to load exam results.");
+                if (!data.length) {
+                    $("empty").classList.remove("hidden");
+                    return;
+                }
+                $("examList").innerHTML = data.map(exam => `
+                <article class="overflow-hidden rounded-lg border border-slate-200 bg-white">
+                    <header class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 p-5">
+                        <div><p class="text-xs font-semibold uppercase text-indigo-600">${escapeHtml(exam.subject || "General")}</p><h2 class="mt-1 text-lg font-bold">${escapeHtml(exam.title)}</h2>
+                        <p class="mt-1 text-xs text-slate-500">Ends ${exam.endTime ? escapeHtml(new Date(exam.endTime).toLocaleString()) : "not scheduled"} · ${exam.submissions.length} submission(s)</p></div>
+                        <div class="flex items-center gap-3"><span class="rounded-full px-3 py-1 text-xs font-semibold ${exam.resultsPublished ? "bg-emerald-50 text-emerald-700" : "bg-amber-50 text-amber-700"}">${exam.resultsPublished ? "Published" : "Unpublished"}</span>
+                        ${exam.canPublish ? `<button data-publish="${escapeHtml(exam.quizId)}" class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700">Publish results</button>` : ""}</div>
+                    </header>
+                    <div class="overflow-x-auto"><table class="w-full min-w-[640px] text-left text-sm"><thead class="bg-slate-50 text-xs uppercase text-slate-500"><tr><th class="px-5 py-3">Student ID</th><th class="px-5 py-3">Status</th><th class="px-5 py-3">Score</th><th class="px-5 py-3">Correct</th><th class="px-5 py-3">Submitted</th></tr></thead>
+                    <tbody class="divide-y divide-slate-100">${exam.submissions.length ? exam.submissions.map(submission => `<tr><td class="px-5 py-3 font-medium">${escapeHtml(submission.studentId)}</td><td class="px-5 py-3">${escapeHtml(submission.status.replaceAll("_", " "))}</td><td class="px-5 py-3">${escapeHtml(submission.score ?? 0)} / ${escapeHtml(submission.totalMarks ?? 0)}</td><td class="px-5 py-3">${escapeHtml(submission.correctAnswers ?? 0)} / ${escapeHtml(submission.answeredQuestions ?? 0)}</td><td class="px-5 py-3">${submission.submittedAt ? escapeHtml(new Date(submission.submittedAt).toLocaleString()) : "In progress"}</td></tr>`).join("") : `<tr><td colspan="5" class="px-5 py-6 text-center text-slate-500">No student submissions yet.</td></tr>`}</tbody></table></div>
+                </article>`).join("");
+                $("examList").classList.remove("hidden");
+            } catch (error) {
+                displayMessage(error.message, true);
+            } finally {
+                $("loading").classList.add("hidden");
+            }
+        }
+
+        $("examList").addEventListener("click", async event => {
+            const button = event.target.closest("button[data-publish]");
+            if (!button) return;
+            button.disabled = true;
+            button.textContent = "Publishing...";
+            try {
+                const response = await fetch(`/api/teacher/results/${encodeURIComponent(button.dataset.publish)}/publish`, {
+                    method: "POST", headers: authHeaders
+                });
+                const data = await response.json().catch(() => ({}));
+                if (!response.ok) throw new Error(data.message || data.detail || "Unable to publish results.");
+                displayMessage("Exam results published.");
+                await load();
+            } catch (error) {
+                displayMessage(error.message, true);
+                button.disabled = false;
+                button.textContent = "Publish results";
+            }
+        });
+        $("refreshBtn").addEventListener("click", load);
+        load();
+    })();
+</script>
+</body>
+</html>

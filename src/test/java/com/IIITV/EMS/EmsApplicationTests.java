@@ -28,4 +28,18 @@ class EmsApplicationTests {
 				.andExpect(view().name("admin-activity"));
 	}
 
+	@Test
+	void studentResultsPageRenders() throws Exception {
+		mockMvc.perform(get("/auth/student/results"))
+				.andExpect(status().isOk())
+				.andExpect(view().name("student-results"));
+	}
+
+	@Test
+	void teacherResultsPageRenders() throws Exception {
+		mockMvc.perform(get("/auth/teacher/results"))
+				.andExpect(status().isOk())
+				.andExpect(view().name("teacher-results"));
+	}
+
 }

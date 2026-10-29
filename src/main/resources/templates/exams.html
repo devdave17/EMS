@@ -299,6 +299,9 @@
             }
 
             if (status === "COMPLETED") {
+                if (!exam.resultsPublished) {
+                    return `<button disabled class="cursor-not-allowed rounded-lg bg-slate-100 px-4 py-2.5 text-sm font-semibold text-slate-400">Result Pending</button>`;
+                }
                 return `
                 <button data-action="result" data-id="${escapeHtml(exam.quizId)}"
                     class="rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50">
@@ -307,6 +310,9 @@
             }
 
             if (status === "AUTO_SUBMITTED") {
+                if (!exam.resultsPublished) {
+                    return `<button disabled class="cursor-not-allowed rounded-lg bg-slate-100 px-4 py-2.5 text-sm font-semibold text-slate-400">Result Pending</button>`;
+                }
                 return `
                 <button data-action="result" data-id="${escapeHtml(exam.quizId)}"
                     class="rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50">
@@ -453,8 +459,8 @@
             const quizId = button.dataset.id;
 
             if (action === "result") {
-                // Result API/page is a separate integration step.
-                alert("Result page integration is our next step.");
+                window.location.href =
+                    `/auth/student/results?quizId=${encodeURIComponent(quizId)}`;
                 return;
             }
 

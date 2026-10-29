@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Results | EMS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-800">
+<div class="min-h-screen md:flex">
+    <aside class="w-full border-b border-slate-200 bg-white p-5 md:min-h-screen md:w-64 md:border-b-0 md:border-r">
+        <a href="/auth/student/dashboard" class="text-2xl font-bold text-indigo-600">EMS<span class="text-slate-700">.</span></a>
+        <p class="mb-6 mt-1 text-xs text-slate-500">Examination Management System</p>
+        <nav class="space-y-2">
+            <a href="/auth/student/dashboard" class="block rounded-lg px-4 py-3 text-sm text-slate-600 hover:bg-slate-100">Dashboard</a>
+            <a href="/auth/student/exams" class="block rounded-lg px-4 py-3 text-sm text-slate-600 hover:bg-slate-100">My Exams</a>
+            <a href="/auth/student/results" class="block rounded-lg bg-indigo-50 px-4 py-3 text-sm font-semibold text-indigo-700">Results</a>
+        </nav>
+        <button id="logoutBtn" class="mt-6 w-full rounded-lg border border-slate-200 px-4 py-3 text-left text-sm text-red-600 hover:bg-red-50">Logout</button>
+    </aside>
+
+    <main class="min-w-0 flex-1 p-5 md:p-8">
+        <header class="mb-7">
+            <p class="text-sm text-slate-500">Student Portal / Results</p>
+            <h1 class="mt-1 text-2xl font-bold md:text-3xl">My Results</h1>
+        </header>
+        <div id="errorBox" class="mb-5 hidden rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700"></div>
+        <div class="grid gap-6 xl:grid-cols-[minmax(260px,340px)_1fr]">
+            <section>
+                <h2 class="mb-3 text-sm font-semibold uppercase text-slate-500">Completed exams</h2>
+                <div id="resultList" class="divide-y divide-slate-200 rounded-lg border border-slate-200 bg-white"></div>
+            </section>
+            <section id="detail" class="min-w-0">
+                <div class="rounded-lg border border-slate-200 bg-white p-8 text-center text-sm text-slate-500">Select a published result to review your answers.</div>
+            </section>
+        </div>
+    </main>
+</div>
+<script>
+    (() => {
+        const token = localStorage.getItem("token");
+        let user;
+        try { user = JSON.parse(localStorage.getItem("ems_current_user") || "null"); } catch { user = null; }
+        if (!token || !user || user.role !== "STUDENT") {
+            window.location.replace("/auth/login");
+            return;
+        }
+
+        const $ = id => document.getElementById(id);
+        const escapeHtml = value => String(value ?? "").replace(/[&<>"']/g, char => ({
+            "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+        })[char]);
+
+        $("logoutBtn").addEventListener("click", () => {
+            localStorage.removeItem("token");
+            localStorage.removeItem("ems_current_user");
+            window.location.replace("/auth/login");
+        });
+
+        async function request(url) {
+            const response = await fetch(url, {
+                headers: { "Authorization": `Bearer ${token}`, "Accept": "application/json" }
+            });
+            const data = await response.json().catch(() => ({}));
+            if (response.status === 401) {
+                localStorage.removeItem("token");
+                localStorage.removeItem("ems_current_user");
+                window.location.replace("/auth/login");
+                throw new Error("Please log in again.");
+            }
+            if (!response.ok) throw new Error(data.message || data.detail || "Unable to load this result.");
+            return data;
+        }
+
+        function renderResult(result) {
+            const submitted = result.submittedAt ? new Date(result.submittedAt).toLocaleString() : "—";
+            $("detail").innerHTML = `
+            <header class="mb-5 flex flex-wrap items-end justify-between gap-4 border-b border-slate-200 pb-5">
+                <div><p class="text-sm text-slate-500">${escapeHtml(result.status.replaceAll("_", " "))} · ${escapeHtml(submitted)}</p>
+                <h2 class="mt-1 text-xl font-bold">${escapeHtml(result.title)}</h2></div>
+                <div class="text-right"><p class="text-2xl font-bold text-indigo-700">${escapeHtml(result.score)} <span class="text-base font-medium text-slate-500">/ ${escapeHtml(result.totalMarks)}</span></p>
+                <p class="text-sm text-slate-500">${escapeHtml(result.correctAnswers)} correct · ${escapeHtml(result.answeredQuestions)} answered</p></div>
+            </header>
+            <div class="space-y-4">${result.questions.map((question, index) => `
+                <article class="rounded-lg border ${question.correct ? "border-emerald-200" : "border-slate-200"} bg-white p-5">
+                    <div class="flex flex-wrap justify-between gap-2"><h3 class="font-semibold">${index + 1}. ${escapeHtml(question.questionText)}</h3>
+                    <span class="text-sm font-semibold ${question.correct ? "text-emerald-700" : "text-slate-500"}">${question.correct ? "Correct" : "Review"} · ${escapeHtml(question.pointsEarned)} / ${escapeHtml(question.points)} marks</span></div>
+                    <div class="mt-4 grid gap-3 md:grid-cols-2">
+                        <div class="rounded-md bg-slate-50 p-3"><p class="text-xs font-semibold uppercase text-slate-500">Your answer</p><p class="mt-1 text-sm ${question.correct ? "text-emerald-700" : "text-slate-800"}">${escapeHtml(question.selectedAnswer || "Not answered")}</p></div>
+                        <div class="rounded-md bg-emerald-50 p-3"><p class="text-xs font-semibold uppercase text-emerald-700">Correct answer</p><p class="mt-1 text-sm text-emerald-900">${escapeHtml(question.correctAnswer)}</p></div>
+                    </div>
+                </article>`).join("")}</div>`;
+        }
+
+        async function load() {
+            try {
+                const completed = await request("/api/student/exams/results");
+                const requestedId = new URLSearchParams(location.search).get("quizId");
+                $("resultList").innerHTML = completed.length ? completed.map(exam => `
+                <button data-quiz-id="${escapeHtml(exam.quizId)}" class="block w-full px-4 py-4 text-left hover:bg-slate-50">
+                    <span class="block font-semibold">${escapeHtml(exam.title)}</span>
+                    <span class="mt-1 block text-xs ${exam.resultsPublished ? "text-emerald-700" : "text-amber-700"}">${exam.resultsPublished ? `Published · ${escapeHtml(exam.score)} / ${escapeHtml(exam.totalMarks)}` : "Awaiting teacher publication"}</span>
+                </button>`).join("") : `<p class="p-5 text-sm text-slate-500">No completed exams yet.</p>`;
+
+                $("resultList").addEventListener("click", async event => {
+                    const button = event.target.closest("button[data-quiz-id]");
+                    if (!button) return;
+                    const quizId = button.dataset.quizId;
+                    history.replaceState(null, "", `?quizId=${encodeURIComponent(quizId)}`);
+                    await showResult(quizId);
+                });
+
+                if (requestedId) await showResult(requestedId);
+            } catch (error) {
+                $("errorBox").textContent = error.message;
+                $("errorBox").classList.remove("hidden");
+            }
+        }
+
+        async function showResult(quizId) {
+            $("detail").innerHTML = `<div class="rounded-lg border border-slate-200 bg-white p-8 text-center text-sm text-slate-500">Loading result...</div>`;
+            try {
+                renderResult(await request(`/api/student/exams/${encodeURIComponent(quizId)}/result`));
+                $("errorBox").classList.add("hidden");
+            } catch (error) {
+                $("detail").innerHTML = `<div class="rounded-lg border border-amber-200 bg-amber-50 p-6 text-sm text-amber-900">${escapeHtml(error.message)}</div>`;
+            }
+        }
+
+        load();
+    })();
+</script>
+</body>
+</html>
