@@ -94,8 +94,7 @@ public class ExamSessionService {
         }
 
         // 3. Load questions in their existing database order.
-        List<Questions> questions =
-                questionRepository.findByQuizId(quizId);
+        List<Questions> questions = questionRepository.findByQuizId(quizId);
 
         if (questions.isEmpty()) {
             throw new ResponseStatusException(
@@ -140,14 +139,12 @@ public class ExamSessionService {
             return finalizeSession(
                     session,
                     LocalDateTime.now(),
-                    true
-            );
+                    true);
         }
 
         // Return the same session: do not reset its timer or question order.
         return session;
     }
-
 
     public ExamSession saveAnswer(
             String sessionId,
@@ -175,13 +172,11 @@ public class ExamSessionService {
             finalizeSession(
                     session,
                     LocalDateTime.now(),
-                    true
-            );
+                    true);
 
             throw new ResponseStatusException(
                     HttpStatus.CONFLICT,
-                    "Exam time has ended"
-            );
+                    "Exam time has ended");
         }
 
         if (!session.getQuestionIds().contains(questionId)) {
@@ -241,8 +236,7 @@ public class ExamSessionService {
             return finalizeSession(
                     session,
                     LocalDateTime.now(),
-                    true
-            );
+                    true);
         }
 
         return session;
@@ -275,8 +269,7 @@ public class ExamSessionService {
     private ExamSession finalizeSession(
             ExamSession session,
             LocalDateTime submittedAt,
-            boolean autoSubmitted
-    ) {
+            boolean autoSubmitted) {
         BigDecimal score = BigDecimal.ZERO;
         BigDecimal totalMarks = BigDecimal.ZERO;
         int correctAnswers = 0;
@@ -324,8 +317,7 @@ public class ExamSessionService {
         session.setStatus(
                 autoSubmitted
                         ? SessionStatus.AUTO_SUBMITTED
-                        : SessionStatus.SUBMITTED
-        );
+                        : SessionStatus.SUBMITTED);
 
         return examSessionRepository.save(session);
     }
@@ -335,11 +327,9 @@ public class ExamSessionService {
 
         LocalDateTime now = LocalDateTime.now();
 
-        List<Quiz> quizzes =
-                quizRepository.findByStatus(QuizStatus.PUBLISHED);
+        List<Quiz> quizzes = quizRepository.findByStatus(QuizStatus.PUBLISHED);
 
-        List<ExamSession> sessions =
-                examSessionRepository.findByStudentId(studentId);
+        List<ExamSession> sessions = examSessionRepository.findByStudentId(studentId);
 
         Map<String, ExamSession> sessionMap = new HashMap<>();
 
@@ -387,11 +377,188 @@ public class ExamSessionService {
                     quiz.getEndTime(),
                     quiz.getTotalMarks(),
                     examStatus,
-                    session != null ? session.getId() : null
-            ));
+                    session != null ? session.getId() : null,
+                    session != null && quiz.isResultsPublished()));
         }
 
         return result;
+    }
+
+    public List<TeacherExamResults> getTeacherResults(String teacherId) {
+        List<TeacherExamResults> results = new ArrayList<>();
+        LocalDateTime now = LocalDateTime.now();
+
+        for (Quiz quiz : quizRepository.findByCreatedBy(teacherId)) {
+            List<TeacherSubmission> submissions = examSessionRepository
+                    .findByQuizId(quiz.getId())
+                    .stream()
+                    .map(session -> new TeacherSubmission(
+                            session.getId(),
+                            session.getStudentId(),
+                            session.getStatus().name(),
+                            session.getScore(),
+                            session.getTotalMarks(),
+                            session.getCorrectAnswers(),
+                            session.getAnsweredQuestions(),
+                            session.getSubmittedAt()))
+                    .toList();
+
+            boolean examEnded = quiz.getEndTime() != null
+                    && !now.isBefore(quiz.getEndTime());
+
+            results.add(new TeacherExamResults(
+                    quiz.getId(),
+                    quiz.getTitle(),
+                    quiz.getSubject(),
+                    quiz.getEndTime(),
+                    quiz.isResultsPublished(),
+                    examEnded && !quiz.isResultsPublished(),
+                    submissions));
+        }
+
+        return results;
+    }
+
+    public Quiz publishResults(String quizId, String teacherId) {
+        Quiz quiz = quizRepository.findById(quizId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Exam not found"));
+
+        if (teacherId == null || !teacherId.equals(quiz.getCreatedBy())) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "Only the teacher who created this exam can publish its results");
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        if (quiz.getEndTime() == null || now.isBefore(quiz.getEndTime())) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Results can be published after the scheduled exam end time");
+        }
+
+        List<Questions> questions = questionRepository.findByQuizId(quizId);
+        if (questions.isEmpty() || questions.stream().anyMatch(question -> question.getCorrectOptionIndex() == null
+                || question.getOptions() == null
+                || question.getCorrectOptionIndex() < 0
+                || question.getCorrectOptionIndex() >= question.getOptions().size())) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Every exam question must have a valid correct answer before publishing");
+        }
+
+        for (ExamSession session : examSessionRepository.findByQuizId(quizId)) {
+            if (session.getStatus() == SessionStatus.IN_PROGRESS) {
+                finalizeSession(session, now, true);
+            }
+        }
+
+        if (!quiz.isResultsPublished()) {
+            quiz.setResultsPublished(true);
+            quiz.setResultsPublishedAt(now);
+        }
+
+        return quizRepository.save(quiz);
+    }
+
+    public StudentExamResult getStudentResult(String quizId, String studentId) {
+        Quiz quiz = quizRepository.findById(quizId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Exam not found"));
+
+        if (!quiz.isResultsPublished()) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "The teacher has not published this exam's results yet");
+        }
+
+        ExamSession session = examSessionRepository
+                .findByStudentIdAndQuizId(studentId, quizId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "No submission found for this exam"));
+
+        if (session.getStatus() == SessionStatus.IN_PROGRESS) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Submit the exam before viewing its result");
+        }
+
+        List<QuestionResult> questionResults = new ArrayList<>();
+        for (String questionId : session.getQuestionIds()) {
+            Questions question = questionRepository.findById(questionId)
+                    .orElseThrow(() -> new ResponseStatusException(
+                            HttpStatus.CONFLICT,
+                            "An exam question could not be loaded"));
+
+            Integer selectedIndex = null;
+            String savedAnswer = session.getAnswers().get(questionId);
+            if (savedAnswer != null) {
+                try {
+                    selectedIndex = Integer.valueOf(savedAnswer);
+                } catch (NumberFormatException ignored) {
+                    selectedIndex = null;
+                }
+            }
+
+            int correctIndex = question.getCorrectOptionIndex();
+            boolean correct = selectedIndex != null && selectedIndex == correctIndex;
+            BigDecimal points = question.getPoints() == null
+                    ? BigDecimal.ZERO
+                    : question.getPoints();
+
+            questionResults.add(new QuestionResult(
+                    question.getId(),
+                    question.getQuestionText(),
+                    question.getOptions(),
+                    selectedIndex,
+                    selectedIndex != null && selectedIndex >= 0
+                            && selectedIndex < question.getOptions().size()
+                            ? question.getOptions().get(selectedIndex)
+                            : null,
+                    correctIndex,
+                    question.getOptions().get(correctIndex),
+                    correct,
+                    points,
+                    correct ? points : BigDecimal.ZERO));
+        }
+
+        return new StudentExamResult(
+                session.getId(),
+                quiz.getId(),
+                quiz.getTitle(),
+                session.getStatus().name(),
+                session.getScore(),
+                session.getTotalMarks(),
+                session.getCorrectAnswers(),
+                session.getAnsweredQuestions(),
+                session.getSubmittedAt(),
+                questionResults);
+    }
+
+    public List<StudentResultSummary> getStudentResults(String studentId) {
+        List<StudentResultSummary> results = new ArrayList<>();
+
+        for (ExamSession session : examSessionRepository.findByStudentId(studentId)) {
+            if (session.getStatus() == SessionStatus.IN_PROGRESS) {
+                continue;
+            }
+
+            Quiz quiz = quizRepository.findById(session.getQuizId()).orElse(null);
+            if (quiz == null) {
+                continue;
+            }
+
+            results.add(new StudentResultSummary(
+                    quiz.getId(),
+                    quiz.getTitle(),
+                    session.getStatus().name(),
+                    quiz.isResultsPublished(),
+                    quiz.isResultsPublished() ? session.getScore() : null,
+                    quiz.isResultsPublished() ? session.getTotalMarks() : null,
+                    session.getSubmittedAt()));
+        }
+
+        return results;
     }
 
     public record StudentExamSummary(
@@ -404,8 +571,66 @@ public class ExamSessionService {
             LocalDateTime endTime,
             java.math.BigDecimal totalMarks,
             String examStatus,
-            String sessionId
-    ) {}
+            String sessionId,
+            boolean resultsPublished) {
+    }
+
+    public record TeacherExamResults(
+            String quizId,
+            String title,
+            String subject,
+            LocalDateTime endTime,
+            boolean resultsPublished,
+            boolean canPublish,
+            List<TeacherSubmission> submissions) {
+    }
+
+    public record TeacherSubmission(
+            String sessionId,
+            String studentId,
+            String status,
+            BigDecimal score,
+            BigDecimal totalMarks,
+            Integer correctAnswers,
+            Integer answeredQuestions,
+            LocalDateTime submittedAt) {
+    }
+
+    public record StudentExamResult(
+            String sessionId,
+            String quizId,
+            String title,
+            String status,
+            BigDecimal score,
+            BigDecimal totalMarks,
+            Integer correctAnswers,
+            Integer answeredQuestions,
+            LocalDateTime submittedAt,
+            List<QuestionResult> questions) {
+    }
+
+    public record StudentResultSummary(
+            String quizId,
+            String title,
+            String status,
+            boolean resultsPublished,
+            BigDecimal score,
+            BigDecimal totalMarks,
+            LocalDateTime submittedAt) {
+    }
+
+    public record QuestionResult(
+            String questionId,
+            String questionText,
+            List<String> options,
+            Integer selectedOptionIndex,
+            String selectedAnswer,
+            Integer correctOptionIndex,
+            String correctAnswer,
+            boolean correct,
+            BigDecimal points,
+            BigDecimal pointsEarned) {
+    }
 
     public ExamSession saveWarningCount(String sessionId, String studentId, int totalWarnings) {
         ExamSession session = examSessionRepository.findById(sessionId)

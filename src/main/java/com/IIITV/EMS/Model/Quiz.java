@@ -1,13 +1,14 @@
 package com.IIITV.EMS.Model;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
-import lombok.Data;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.Data;
 
 @Document(collection = "quizzes")
 @Data
@@ -32,4 +33,6 @@ public class Quiz {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private BigDecimal totalMarks;
+    private boolean resultsPublished;
+    private LocalDateTime resultsPublishedAt;
 }

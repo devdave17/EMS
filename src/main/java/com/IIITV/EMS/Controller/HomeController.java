@@ -9,12 +9,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class HomeController {
 
     @GetMapping("/")
-    public String index(){
+    public String index() {
         return "index";
     }
 
     @GetMapping("auth/login")
-    public String login(){
+    public String login() {
         return "login";
     }
 
@@ -81,14 +81,25 @@ public class HomeController {
     public String createExamPage() {
         return "exam-create";
     }
+
     @GetMapping("/auth/teacher/exams")
     public String manageExamsPage() {
         return "manage-exams";
     }
 
+    @GetMapping("/auth/teacher/results")
+    public String teacherResultsPage() {
+        return "teacher-results";
+    }
+
     @GetMapping("/auth/student/exams")
     public String studentExams() {
         return "exams";
+    }
+
+    @GetMapping("/auth/student/results")
+    public String studentResultsPage() {
+        return "student-results";
     }
 
     @GetMapping("/auth/student/exam")
