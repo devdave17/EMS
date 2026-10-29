@@ -400,7 +400,17 @@ public class ExamSessionService {
                             session.getTotalMarks(),
                             session.getCorrectAnswers(),
                             session.getAnsweredQuestions(),
-                            session.getSubmittedAt()))
+                            session.getSubmittedAt(),
+                            session.getTotalWarnings() != null
+                                    ? session.getTotalWarnings()
+                                    : 0,
+                            session.getIsFlagged() != null
+                                    ? session.getIsFlagged()
+                                    : false,
+                            session.getReviewStatus() != null
+                                    ? session.getReviewStatus()
+                                    : "NOT_REQUIRED"
+                    ))
                     .toList();
 
             boolean examEnded = quiz.getEndTime() != null
@@ -589,13 +599,16 @@ public class ExamSessionService {
             String sessionId,
             String studentId,
             String status,
-            BigDecimal score,
-            BigDecimal totalMarks,
+            Number score,
+            Number totalMarks,
             Integer correctAnswers,
             Integer answeredQuestions,
-            LocalDateTime submittedAt) {
+            LocalDateTime submittedAt,
+            Integer totalWarnings,
+            Boolean isFlagged,
+            String reviewStatus
+    ) {
     }
-
     public record StudentExamResult(
             String sessionId,
             String quizId,

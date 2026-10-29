@@ -81,8 +81,80 @@
                         <div class="flex items-center gap-3"><span class="rounded-full px-3 py-1 text-xs font-semibold ${exam.resultsPublished ? "bg-emerald-50 text-emerald-700" : "bg-amber-50 text-amber-700"}">${exam.resultsPublished ? "Published" : "Unpublished"}</span>
                         ${exam.canPublish ? `<button data-publish="${escapeHtml(exam.quizId)}" class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700">Publish results</button>` : ""}</div>
                     </header>
-                    <div class="overflow-x-auto"><table class="w-full min-w-[640px] text-left text-sm"><thead class="bg-slate-50 text-xs uppercase text-slate-500"><tr><th class="px-5 py-3">Student ID</th><th class="px-5 py-3">Status</th><th class="px-5 py-3">Score</th><th class="px-5 py-3">Correct</th><th class="px-5 py-3">Submitted</th></tr></thead>
-                    <tbody class="divide-y divide-slate-100">${exam.submissions.length ? exam.submissions.map(submission => `<tr><td class="px-5 py-3 font-medium">${escapeHtml(submission.studentId)}</td><td class="px-5 py-3">${escapeHtml(submission.status.replaceAll("_", " "))}</td><td class="px-5 py-3">${escapeHtml(submission.score ?? 0)} / ${escapeHtml(submission.totalMarks ?? 0)}</td><td class="px-5 py-3">${escapeHtml(submission.correctAnswers ?? 0)} / ${escapeHtml(submission.answeredQuestions ?? 0)}</td><td class="px-5 py-3">${submission.submittedAt ? escapeHtml(new Date(submission.submittedAt).toLocaleString()) : "In progress"}</td></tr>`).join("") : `<tr><td colspan="5" class="px-5 py-6 text-center text-slate-500">No student submissions yet.</td></tr>`}</tbody></table></div>
+                    <div class="overflow-x-auto"><table class="w-full min-w-[640px] text-left text-sm"><thead class="bg-slate-50 text-xs uppercase text-slate-500"><tr><th class="px-5 py-3">Student ID</th><th class="px-5 py-3">Status</th><th class="px-5 py-3">Score</th><th class="px-5 py-3">Correct</th><th class="px-5 py-3">Submitted</th> <th class="px-5 py-3">Warnings</th>
+        <th class="px-5 py-3">Proctoring Review</th></tr></thead>
+
+<tbody class="divide-y divide-slate-100">
+    ${exam.submissions.length
+                    ? exam.submissions.map(submission => {
+                        const reviewStatus = submission.reviewStatus
+                            || (submission.isFlagged ? "PENDING_REVIEW" : "NOT_REQUIRED");
+
+                        const flagged = submission.isFlagged === true
+                            || reviewStatus === "PENDING_REVIEW";
+
+                        const reviewClasses = flagged
+                            ? "bg-amber-50 text-amber-800"
+                            : reviewStatus === "CLEARED"
+                                ? "bg-emerald-50 text-emerald-700"
+                                : reviewStatus === "REVIEWED"
+                                    ? "bg-blue-50 text-blue-700"
+                                    : "bg-slate-100 text-slate-600";
+
+                        return `
+                <tr>
+                    <td class="px-5 py-3 font-medium">
+                        ${escapeHtml(submission.studentId)}
+                    </td>
+
+                    <td class="px-5 py-3">
+                        ${escapeHtml((submission.status || "").replaceAll("_", " "))}
+                    </td>
+
+                    <td class="px-5 py-3">
+                        ${escapeHtml(submission.score ?? 0)}
+                        /
+                        ${escapeHtml(submission.totalMarks ?? 0)}
+                    </td>
+
+                    <td class="px-5 py-3">
+                        ${escapeHtml(submission.correctAnswers ?? 0)}
+                        /
+                        ${escapeHtml(submission.answeredQuestions ?? 0)}
+                    </td>
+
+                    <td class="px-5 py-3">
+                        ${submission.submittedAt
+                            ? escapeHtml(new Date(submission.submittedAt).toLocaleString())
+                            : "In progress"}
+                    </td>
+
+                    <td class="px-5 py-3">
+                        <span class="font-semibold ${
+                            flagged ? "text-amber-700" : "text-slate-700"
+                        }">
+                            ${escapeHtml(submission.totalWarnings ?? 0)}
+                        </span>
+                    </td>
+
+                    <td class="px-5 py-3">
+                        <span class="inline-block whitespace-nowrap rounded-full px-3 py-1 text-xs font-semibold ${reviewClasses}">
+                            ${escapeHtml(reviewStatus.replaceAll("_", " "))}
+                        </span>
+                    </td>
+                </tr>
+            `;
+                    }).join("")
+                    : `
+            <tr>
+                <td colspan="7" class="px-5 py-6 text-center text-slate-500">
+                    No student submissions yet.
+                </td>
+            </tr>
+        `
+                }
+</tbody>
+</table></div>
                 </article>`).join("");
                 $("examList").classList.remove("hidden");
             } catch (error) {
