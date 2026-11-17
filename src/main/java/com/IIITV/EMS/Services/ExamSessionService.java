@@ -94,7 +94,7 @@ public class ExamSessionService {
         }
 
         // 3. Load questions in their existing database order.
-        List<Questions> questions = questionRepository.findByQuizId(quizId);
+        List<Questions> questions = questionRepository.findByQuizId(quiz.getId());
 
         if (questions.isEmpty()) {
             throw new ResponseStatusException(
@@ -384,6 +384,18 @@ public class ExamSessionService {
         return result;
     }
 
+    public List<StudentExamSummary> getUpcomingExamsForStudent(String studentId) {
+        LocalDateTime now = LocalDateTime.now();
+        return getPublishedExamsForStudent(studentId).stream()
+                .filter(exam -> exam.startTime() != null
+                        && exam.endTime() != null
+                        && now.isBefore(exam.endTime()))
+                .sorted(java.util.Comparator.comparing(
+                        StudentExamSummary::startTime,
+                        java.util.Comparator.nullsLast(java.util.Comparator.naturalOrder())))
+                .toList();
+    }
+
     public List<TeacherExamResults> getTeacherResults(String teacherId) {
         List<TeacherExamResults> results = new ArrayList<>();
         LocalDateTime now = LocalDateTime.now();
@@ -429,17 +441,100 @@ public class ExamSessionService {
         return results;
     }
 
-    public Quiz publishResults(String quizId, String teacherId) {
+    public TeacherSubmissionDetail getTeacherSubmissionDetail(
+            String quizId,
+            String sessionId,
+            String teacherId) {
         Quiz quiz = quizRepository.findById(quizId)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Exam not found"));
 
-        if (teacherId == null || !teacherId.equals(quiz.getCreatedBy())) {
+        if (!teacherId.equals(quiz.getCreatedBy())) {
             throw new ResponseStatusException(
-                    HttpStatus.FORBIDDEN,
-                    "Only the teacher who created this exam can publish its results");
+                    HttpStatus.FORBIDDEN, "You are not allowed to view this submission");
         }
 
+        ExamSession session = examSessionRepository.findById(sessionId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Submission not found"));
+
+        if (!quizId.equals(session.getQuizId())) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Submission not found for this exam");
+        }
+
+        List<QuestionAnswerDetail> answers = new ArrayList<>();
+        for (String questionId : session.getQuestionIds()) {
+            Questions question = questionRepository.findById(questionId)
+                    .orElseThrow(() -> new ResponseStatusException(
+                            HttpStatus.CONFLICT, "An exam question could not be loaded"));
+
+            Integer selectedIndex = parseAnswerIndex(session.getAnswers().get(questionId));
+            Integer correctIndex = question.getCorrectOptionIndex();
+            boolean correct = selectedIndex != null && selectedIndex.equals(correctIndex);
+            BigDecimal points = question.getPoints() == null
+                    ? BigDecimal.ZERO
+                    : question.getPoints();
+
+            answers.add(new QuestionAnswerDetail(
+                    question.getId(),
+                    question.getQuestionText(),
+                    question.getOptions(),
+                    selectedIndex,
+                    optionAt(question.getOptions(), selectedIndex),
+                    correctIndex,
+                    optionAt(question.getOptions(), correctIndex),
+                    correct,
+                    points,
+                    correct ? points : BigDecimal.ZERO));
+        }
+
+        return new TeacherSubmissionDetail(
+                session.getId(),
+                session.getStudentId(),
+                session.getStatus().name(),
+                session.getScore(),
+                session.getTotalMarks(),
+                session.getSubmittedAt(),
+                answers);
+    }
+
+    private Integer parseAnswerIndex(String answer) {
+        if (answer == null) {
+            return null;
+        }
+        try {
+            return Integer.valueOf(answer);
+        } catch (NumberFormatException ignored) {
+            return null;
+        }
+    }
+
+    private String optionAt(List<String> options, Integer index) {
+        return index != null && options != null
+                && index >= 0 && index < options.size()
+                ? options.get(index)
+                : null;
+    }
+
+    public Quiz publishResults(String quizId, String teacherId) {
+        Quiz quiz = quizRepository.findById(quizId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Exam not found"));
+        if (teacherId == null || !teacherId.equals(quiz.getCreatedBy())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only the exam owner can publish results");
+        }
+        return publishResultsInternal(quiz);
+    }
+
+    public Quiz publishResultsAsAdmin(String quizId) {
+        Quiz quiz = quizRepository.findById(quizId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Exam not found"));
+        return publishResultsInternal(quiz);
+    }
+
+    private Quiz publishResultsInternal(Quiz quiz) {
         LocalDateTime now = LocalDateTime.now();
         if (quiz.getEndTime() == null || now.isBefore(quiz.getEndTime())) {
             throw new ResponseStatusException(
@@ -447,7 +542,7 @@ public class ExamSessionService {
                     "Results can be published after the scheduled exam end time");
         }
 
-        List<Questions> questions = questionRepository.findByQuizId(quizId);
+        List<Questions> questions = questionRepository.findByQuizId(quiz.getId());
         if (questions.isEmpty() || questions.stream().anyMatch(question -> question.getCorrectOptionIndex() == null
                 || question.getOptions() == null
                 || question.getCorrectOptionIndex() < 0
@@ -457,7 +552,7 @@ public class ExamSessionService {
                     "Every exam question must have a valid correct answer before publishing");
         }
 
-        for (ExamSession session : examSessionRepository.findByQuizId(quizId)) {
+        for (ExamSession session : examSessionRepository.findByQuizId(quiz.getId())) {
             if (session.getStatus() == SessionStatus.IN_PROGRESS) {
                 finalizeSession(session, now, true);
             }
@@ -608,6 +703,29 @@ public class ExamSessionService {
             Boolean isFlagged,
             String reviewStatus
     ) {
+    }
+
+    public record TeacherSubmissionDetail(
+            String sessionId,
+            String studentId,
+            String status,
+            BigDecimal score,
+            BigDecimal totalMarks,
+            LocalDateTime submittedAt,
+            List<QuestionAnswerDetail> answers) {
+    }
+
+    public record QuestionAnswerDetail(
+            String questionId,
+            String questionText,
+            List<String> options,
+            Integer selectedOptionIndex,
+            String selectedAnswer,
+            Integer correctOptionIndex,
+            String correctAnswer,
+            boolean correct,
+            BigDecimal points,
+            BigDecimal pointsEarned) {
     }
     public record StudentExamResult(
             String sessionId,

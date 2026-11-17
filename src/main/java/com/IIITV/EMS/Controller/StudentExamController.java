@@ -238,6 +238,13 @@ public class StudentExamController {
                 examSessionService.getPublishedExamsForStudent(studentId));
     }
 
+    @GetMapping("/timetable")
+    public ResponseEntity<List<ExamSessionService.StudentExamSummary>> getTimetable() {
+        String studentId = requireAuthenticatedStudent();
+        return ResponseEntity.ok(
+                examSessionService.getUpcomingExamsForStudent(studentId));
+    }
+
     @GetMapping("/{quizId}/result")
     public ResponseEntity<ExamSessionService.StudentExamResult> getResult(
             @PathVariable String quizId) {

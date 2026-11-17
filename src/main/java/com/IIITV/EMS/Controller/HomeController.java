@@ -48,6 +48,26 @@ public class HomeController {
         return "admin-activity";
     }
 
+    @GetMapping("/auth/admin/students")
+    public String adminStudents() {
+        return "admin-users";
+    }
+
+    @GetMapping("/auth/admin/teachers")
+    public String adminTeachers() {
+        return "admin-users";
+    }
+
+    @GetMapping("/auth/admin/exams")
+    public String adminExams() {
+        return "admin-exams";
+    }
+
+    @GetMapping("/auth/admin/results")
+    public String adminResults() {
+        return "admin-results";
+    }
+
     @GetMapping("/auth/forgot-password")
     public String forgotPasswordPage() {
         return "forget-password";
@@ -105,5 +125,25 @@ public class HomeController {
     @GetMapping("/auth/student/exam")
     public String studentExamPage() {
         return "student-exam";
+    }
+
+    @GetMapping("/auth/student/timetable")
+    public String studentTimetablePage() {
+        return "student-timetable";
+    }
+
+    @GetMapping("/auth/student/profile")
+    public String studentProfilePage() {
+        return "profile";
+    }
+
+    @GetMapping("/auth/teacher/profile")
+    public String teacherProfilePage() {
+        return "profile";
+    }
+
+    @GetMapping("/auth/admin/profile")
+    public String adminProfilePage() {
+        return "profile";
     }
 }

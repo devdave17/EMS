@@ -38,6 +38,14 @@ public class TeacherResultController {
         return ResponseEntity.ok(quiz);
     }
 
+    @GetMapping("/{quizId}/submissions/{sessionId}")
+    public ResponseEntity<ExamSessionService.TeacherSubmissionDetail> getSubmissionDetail(
+            @PathVariable String quizId,
+            @PathVariable String sessionId) {
+        return ResponseEntity.ok(examSessionService.getTeacherSubmissionDetail(
+                quizId, sessionId, requireAuthenticatedTeacher()));
+    }
+
     private String requireAuthenticatedTeacher() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 

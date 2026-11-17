@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="/EMSlogo.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Exam Results | EMS</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -82,7 +83,7 @@
                         ${exam.canPublish ? `<button data-publish="${escapeHtml(exam.quizId)}" class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700">Publish results</button>` : ""}</div>
                     </header>
                     <div class="overflow-x-auto"><table class="w-full min-w-[640px] text-left text-sm"><thead class="bg-slate-50 text-xs uppercase text-slate-500"><tr><th class="px-5 py-3">Student ID</th><th class="px-5 py-3">Status</th><th class="px-5 py-3">Score</th><th class="px-5 py-3">Correct</th><th class="px-5 py-3">Submitted</th> <th class="px-5 py-3">Warnings</th>
-        <th class="px-5 py-3">Proctoring Review</th></tr></thead>
+        <th class="px-5 py-3">Proctoring Review</th><th class="px-5 py-3">Answers</th></tr></thead>
 
 <tbody class="divide-y divide-slate-100">
     ${exam.submissions.length
@@ -142,12 +143,27 @@
                             ${escapeHtml(reviewStatus.replaceAll("_", " "))}
                         </span>
                     </td>
+
+                    <td class="px-5 py-3">
+                        <button
+                            type="button"
+                            data-view-submission="${escapeHtml(submission.sessionId)}"
+                            data-quiz-id="${escapeHtml(exam.quizId)}"
+                            class="rounded-md border border-indigo-200 px-3 py-1 text-xs font-semibold text-indigo-700 hover:bg-indigo-50">
+                            View answers
+                        </button>
+                    </td>
+                </tr>
+                <tr id="details-${escapeHtml(submission.sessionId)}" class="hidden">
+                    <td colspan="8" class="bg-slate-50 p-5">
+                        <div class="text-sm text-slate-500">Loading answers...</div>
+                    </td>
                 </tr>
             `;
                     }).join("")
                     : `
             <tr>
-                <td colspan="7" class="px-5 py-6 text-center text-slate-500">
+                <td colspan="8" class="px-5 py-6 text-center text-slate-500">
                     No student submissions yet.
                 </td>
             </tr>
@@ -165,6 +181,51 @@
         }
 
         $("examList").addEventListener("click", async event => {
+            const viewButton = event.target.closest("button[data-view-submission]");
+            if (viewButton) {
+                const detailsRow = document.getElementById(`details-${viewButton.dataset.viewSubmission}`);
+                if (!detailsRow.classList.contains("hidden")) {
+                    detailsRow.classList.add("hidden");
+                    return;
+                }
+
+                detailsRow.classList.remove("hidden");
+                const detailsCell = detailsRow.querySelector("td");
+                detailsCell.innerHTML = `<div class="text-sm text-slate-500">Loading answers...</div>`;
+                try {
+                    const response = await fetch(
+                        `/api/teacher/results/${encodeURIComponent(viewButton.dataset.quizId)}/submissions/${encodeURIComponent(viewButton.dataset.viewSubmission)}`,
+                        { headers: authHeaders }
+                    );
+                    const data = await response.json().catch(() => ({}));
+                    if (!response.ok) {
+                        throw new Error(data.message || data.detail || "Unable to load submission answers.");
+                    }
+                    detailsCell.innerHTML = `
+                        <div class="mb-4 flex flex-wrap gap-4 text-sm">
+                            <span><strong>Student:</strong> ${escapeHtml(data.studentId)}</span>
+                            <span><strong>Score:</strong> ${escapeHtml(data.score ?? 0)} / ${escapeHtml(data.totalMarks ?? 0)}</span>
+                        </div>
+                        <div class="space-y-3">
+                            ${data.answers.map((answer, index) => `
+                                <article class="rounded-lg border bg-white p-4">
+                                    <div class="flex flex-wrap justify-between gap-2">
+                                        <h4 class="font-semibold">${index + 1}. ${escapeHtml(answer.questionText)}</h4>
+                                        <span class="text-xs font-semibold ${answer.correct ? "text-emerald-700" : "text-rose-700"}">
+                                            ${answer.correct ? "Correct" : "Incorrect"} · ${escapeHtml(answer.pointsEarned)} / ${escapeHtml(answer.points)} marks
+                                        </span>
+                                    </div>
+                                    <p class="mt-2 text-sm"><strong>Student answer:</strong> ${escapeHtml(answer.selectedAnswer || "Not answered")}</p>
+                                    <p class="mt-1 text-sm text-emerald-700"><strong>Correct answer:</strong> ${escapeHtml(answer.correctAnswer || "Not available")}</p>
+                                </article>
+                            `).join("")}
+                        </div>`;
+                } catch (error) {
+                    detailsCell.innerHTML = `<div class="text-sm text-red-600">${escapeHtml(error.message)}</div>`;
+                }
+                return;
+            }
+
             const button = event.target.closest("button[data-publish]");
             if (!button) return;
             button.disabled = true;
@@ -187,5 +248,6 @@
         load();
     })();
 </script>
+<script src="/js/ems-navbar.js"></script>
 </body>
 </html>

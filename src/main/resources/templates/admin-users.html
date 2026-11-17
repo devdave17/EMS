@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/EMSlogo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>User Management | EMS</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -261,6 +262,17 @@
     const userDialog = document.getElementById('user-dialog');
     const userForm = document.getElementById('user-form');
     let users = [];
+    const pageRole = window.location.pathname.endsWith('/students')
+        ? 'STUDENT'
+        : window.location.pathname.endsWith('/teachers')
+            ? 'TEACHER'
+            : '';
+    if (pageRole) {
+        document.getElementById('role-filter').value = pageRole;
+        document.getElementById('role-filter').disabled = true;
+        document.querySelector('#users-heading').textContent =
+            pageRole === 'STUDENT' ? 'Students' : 'Teachers';
+    }
 
     if (!token) {
         window.location.replace('/auth/login');
@@ -319,7 +331,7 @@
             .getElementById('user-search')
             .value.trim()
             .toLowerCase();
-        const role = document.getElementById('role-filter').value;
+        const role = pageRole || document.getElementById('role-filter').value;
         const filteredUsers = users.filter((user) => {
             const matchesSearch = `${user.name} ${user.email}`
                 .toLowerCase()
@@ -482,5 +494,6 @@
         .addEventListener('change', renderUsers);
     loadUsers();
 </script>
+<script src="/js/ems-navbar.js"></script>
 </body>
 </html>
