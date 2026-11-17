@@ -1,343 +1,427 @@
 # Exam Management System (EMS)
 
-## Project Team — Group 18
+## Project Team --- Group 18
 
-| Student ID | Team Member |
-|---|---|
-| 20251651034 | Dave Dev Rupeshkumar |
-| 20251651053 | Kuldeep Rout |
-| 20251651102 | Vikash Kumar |
-| 20251651029 | Arjun Bodana |
+  Student ID    Team Member
+  ------------- ----------------------
+  20251651034   Dave Dev Rupeshkumar
+  20251651053   Kuldeep Rout
+  20251651102   Vikash Kumar
+  20251651029   Arjun Bodana
 
----
+------------------------------------------------------------------------
 
 ## Working Demonstration
 
-**[Watch the Project Demonstration](https://drive.google.com/file/d/1YHTr4C86DSjM63jwR5ihjT-Xy6B0uZnp)**
-
-The demonstration video showcases the application's workflows and API implementation.
-
----
 
 ## About the Project
 
-The **Exam Management System (EMS)** is a Java-based web application developed using Spring Boot. It provides REST APIs for authentication, user management, and quiz management, along with a web interface featuring role-specific dashboards.
+The **Exam Management System (EMS)** is a Java-based web application
+built with Spring Boot and MongoDB. It provides REST APIs and
+role-specific interfaces for authentication, user management, quiz
+management, student exam sessions, teacher results, and proctoring
+review.
 
-The project demonstrates REST API design, HTTP status codes, request validation, standardized error handling, idempotency, conditional requests, caching, rate limiting, and API documentation using OpenAPI.
-
-**Repository:** [https://github.com/devdave17/EMS](https://github.com/devdave17/EMS)
+**Repository:** <https://github.com/devdave17/EMS>
 
 ## Key Features
 
-### 1. Authentication and Security
-- User login through a REST API.
-- JWT-based authentication components.
-- Spring Security configuration and bearer-token filtering.
-- Role-aware pages for students, teachers, and administrators.
-- Protected API access based on the application's security configuration.
+-   JWT-based authentication components and role-aware access for
+    students, teachers, and administrators.
+-   User CRUD operations, request validation, idempotency keys, and
+    ETag-based conditional requests.
+-   Quiz creation, retrieval, status filtering, and status updates.
+-   Student exam session start, session retrieval, answer saving,
+    warning-count saving, and submission.
+-   Proctoring fields including `totalWarnings`, `isFlagged`, and
+    `reviewStatus`.
+-   Teacher result listing and quiz result publishing.
+-   Standardized error handling, HTTP status codes, rate limiting, and
+    OpenAPI documentation.
 
-### 2. User Management Service
-- Create new users.
-- Retrieve all users.
-- Retrieve an individual user by ID.
-- Update existing user information.
-- Delete users.
-- Validate request data.
-- Return a `Location` header when creating a resource.
-- Support idempotency keys for user creation.
-- Detect conflicting requests when an idempotency key is reused with a different payload.
-- Support ETag-based conditional requests.
-- Use `If-None-Match` for conditional retrieval and `304 Not Modified` responses.
-- Use `If-Match` to prevent updates based on stale entity versions.
-- Return `412 Precondition Failed` when an update fails the supplied ETag condition.
-
-### 3. Quiz Management Service
-- Create quizzes with a title and description.
-- Retrieve quizzes by ID.
-- Retrieve all quizzes.
-- Filter quizzes by status.
-- Update quiz status.
-- Require an idempotency key when creating a quiz.
-- Return `201 Created` with a `Location` header for newly created quizzes.
-- Return the existing resource for an identical repeated creation request.
-- Return `409 Conflict` when the same idempotency key is reused with a different request.
-
-### 4. API Error Handling and Validation
-- Centralized exception handling using Spring's controller advice mechanism.
-- Problem Details-style JSON error responses.
-- Standard error fields: `type`, `title`, `status`, and `detail`.
-- Field-level validation errors through an `errors` array.
-- Generic internal-error responses that avoid exposing implementation details.
-- Appropriate HTTP status codes for common request failures.
-- Validation using Jakarta Bean Validation.
-
-### 5. Rate Limiting
-- Request rate limiting to reduce excessive API requests.
-- `429 Too Many Requests` response when the configured limit is exceeded.
-- `Retry-After` header indicating when the client can retry.
-- `X-RateLimit-Limit` and `X-RateLimit-Remaining` response headers.
-
-### 6. HTTP and REST Concepts
-- Appropriate HTTP methods and status codes.
-- Resource creation using `201 Created`.
-- Resource identification using the `Location` header.
-- Idempotency keys for retry-safe creation requests.
-- ETag-based conditional requests.
-- Optimistic concurrency control.
-- Cache validation using `If-None-Match`.
-- Content negotiation checks using the `Accept` header.
-- Standardized error representations.
-
-### 7. Web Interface
-- Thymeleaf-based web pages.
-- Login page.
-- Student dashboard.
-- Teacher dashboard.
-- Admin dashboard.
-- Static CSS assets for application styling.
-
-### 8. API Documentation
-- OpenAPI 3.0.3 specification.
-- Endpoint descriptions and request schemas.
-- Documented response codes and error schemas.
-- API specification available at `src/main/resources/openapi.yaml`.
-
----
+**Proctoring note:** `PENDING_REVIEW` means a submission still requires
+teacher review. Result-release rules must be enforced by the backend;
+hiding a frontend button alone is not sufficient. The exact
+review-resolution endpoint should be documented once implemented and
+verified.
 
 ## Technology Stack
 
-| Component | Technology |
-|---|---|
-| Programming Language | Java 21 |
-| Backend Framework | Spring Boot |
-| Build Tool | Gradle |
-| API Architecture | REST |
-| Database Integration | Spring Data MongoDB |
-| Security | Spring Security and JWT components |
-| Validation | Jakarta Bean Validation |
-| Web Templates | Thymeleaf |
-| JSON/XML Processing | Jackson |
-| API Documentation | OpenAPI 3.0.3 |
-| Testing Support | JUnit Platform and Spring Boot test dependencies |
-
----
+  Component              Technology
+  ---------------------- -------------------------------------------
+  Programming Language   Java 21
+  Backend Framework      Spring Boot
+  Build Tool             Gradle
+  API Architecture       REST
+  Database               Spring Data MongoDB
+  Security               Spring Security and JWT components
+  Validation             Jakarta Bean Validation
+  Web Interface          Thymeleaf and JavaScript-based interfaces
+  API Documentation      OpenAPI 3.0.3
 
 ## Project Structure
 
-```text
+``` text
 EMS/
-├── src/
-│   └── main/
-│       ├── java/com/IIITV/EMS/
-│       │   ├── Controller/
-│       │   │   ├── AuthController.java
-│       │   │   ├── HomeController.java
-│       │   │   ├── QuizController.java
-│       │   │   └── UserController.java
-│       │   ├── DTO/
-│       │   │   └── LoginRequest.java
-│       │   ├── Model/
-│       │   │   ├── IdempotencyRecord.java
-│       │   │   ├── Quiz.java
-│       │   │   ├── QuizStatus.java
-│       │   │   ├── Role.java
-│       │   │   ├── User.java
-│       │   │   └── UserStatus.java
-│       │   ├── Repository/
-│       │   ├── Security/
-│       │   ├── Services/
-│       │   ├── EmsApplication.java
-│       │   └── GlobalExceptionHandler.java
-│       └── resources/
-│           ├── openapi.yaml
-│           ├── static/
-│           └── templates/
-├── gradle/
-├── build.gradle
-├── settings.gradle
-├── gradlew
-└── gradlew.bat
+├── src/main/java/com/IIITV/EMS/
+│   ├── Controller/
+│   │   ├── AuthController.java
+│   │   ├── HomeController.java
+│   │   ├── QuizController.java
+│   │   ├── UserController.java
+│   │   ├── StudentExamController.java
+│   │   └── TeacherResultController.java
+│   ├── DTO/
+│   ├── Model/
+│   ├── Repository/
+│   ├── Security/
+│   ├── Services/
+│   └── GlobalExceptionHandler.java
+└── src/main/resources/
+    ├── openapi.yaml
+    ├── static/
+    └── templates/
 ```
 
----
+*The tree shows the main areas and controllers discussed for the
+project; exact files may vary by branch.*
+
+------------------------------------------------------------------------
 
 ## API Reference
 
-The default local development URL is:
+Default local URL: `http://localhost:8080`
 
-```text
-http://localhost:8080
+For protected endpoints, send the bearer token expected by the
+application's security configuration:
+
+``` http
+Authorization: Bearer YOUR_TOKEN
 ```
 
-### Authentication Endpoints
+### Authentication
 
-| Method | Endpoint | Description |
-|---|---|---|
-| `POST` | `/api/auth/login` | Authenticate a user |
+  Method   Endpoint            Description
+  -------- ------------------- ---------------------
+  `POST`   `/api/auth/login`   Authenticate a user
 
 Example request:
 
-```json
+``` json
 {
   "email": "student@example.com",
   "password": "your-password"
 }
 ```
 
-### User Endpoints
+### User Management
 
-| Method | Endpoint | Description |
-|---|---|---|
-| `POST` | `/api/users` | Create a user |
-| `GET` | `/api/users` | Retrieve all users |
-| `GET` | `/api/users/{id}` | Retrieve a user by ID |
-| `PUT` | `/api/users/{id}` | Update a user |
-| `DELETE` | `/api/users/{id}` | Delete a user |
-| `OPTIONS` | `/api/users` | Retrieve supported HTTP methods |
+  Method      Endpoint            Description
+  ----------- ------------------- ----------------------------------------
+  `POST`      `/api/users`        Create a user
+  `GET`       `/api/users`        Retrieve users
+  `GET`       `/api/users/{id}`   Retrieve a user by ID
+  `PUT`       `/api/users/{id}`   Update a user
+  `DELETE`    `/api/users/{id}`   Delete a user
+  `OPTIONS`   `/api/users`        Retrieve supported methods, if enabled
 
-### Quiz Endpoints
+User creation may use an `Idempotency-Key`. ETag conditional requests
+and their response codes depend on the configured controller behavior.
 
-| Method | Endpoint | Description |
-|---|---|---|
-| `POST` | `/api/quizzes` | Create a quiz |
-| `GET` | `/api/quizzes` | Retrieve quizzes, optionally filtered by status |
-| `GET` | `/api/quizzes/{id}` | Retrieve a quiz by ID |
-| `PUT` | `/api/quizzes/{id}/status` | Update quiz status |
+### Quiz Management
 
-For detailed request schemas and documented responses, refer to [`src/main/resources/openapi.yaml`](src/main/resources/openapi.yaml).
+  ----------------------------------------------------------------------------
+  Method                  Endpoint                     Description
+  ----------------------- ---------------------------- -----------------------
+  `POST`                  `/api/quizzes`               Create a quiz
 
----
+  `GET`                   `/api/quizzes`               Retrieve quizzes; may
+                                                       support status
+                                                       filtering
+
+  `GET`                   `/api/quizzes/{id}`          Retrieve a quiz by ID
+
+  `PUT`                   `/api/quizzes/{id}/status`   Update quiz status
+  ----------------------------------------------------------------------------
+
+Quiz creation uses an idempotency key according to the existing API
+behavior.
+
+### Student Exams and Sessions
+
+Base path: `/api/student/exams`
+
+  ----------------------------------------------------------------------------------------------------
+  Method                  Endpoint                                             Description
+  ----------------------- ---------------------------------------------------- -----------------------
+  `GET`                   `/api/student/exams`                                 Retrieve exams for the
+                                                                               authenticated student
+
+  `POST`                  `/api/student/exams/{quizId}/start`                  Start an exam session
+
+  `GET`                   `/api/student/exams/sessions/{sessionId}`            Retrieve the student's
+                                                                               exam session
+
+  `PUT`                   `/api/student/exams/sessions/{sessionId}/answers`    Save answers for an
+                                                                               in-progress session
+
+  `PUT`                   `/api/student/exams/sessions/{sessionId}/warnings`   Save total proctoring
+                                                                               warning count
+
+  `POST`                  `/api/student/exams/sessions/{sessionId}/submit`     Submit an exam session
+  ----------------------------------------------------------------------------------------------------
+
+Example warning-count request:
+
+``` http
+PUT /api/student/exams/sessions/SESSION_ID/warnings
+Content-Type: application/json
+Authorization: Bearer STUDENT_TOKEN
+```
+
+``` json
+{
+  "totalWarnings": 5
+}
+```
+
+**Important:** Save the warning count before submitting. The warning
+endpoint requires the session to be `IN_PROGRESS`; calling it after
+submission can return `409 Conflict`.
+
+### Teacher Results
+
+Base path: `/api/teacher/results`
+
+  -----------------------------------------------------------------------------------------
+  Method                  Endpoint                                  Description
+  ----------------------- ----------------------------------------- -----------------------
+  `GET`                   `/api/teacher/results`                    Retrieve results for
+                                                                    quizzes created by the
+                                                                    authenticated teacher
+
+  `POST`                  `/api/teacher/results/{quizId}/publish`   Publish results for a
+                                                                    quiz, subject to
+                                                                    backend rules
+  -----------------------------------------------------------------------------------------
+
+Each submission may include these fields in the teacher results
+response:
+
+  -----------------------------------------------------------------------
+  Field                               Description
+  ----------------------------------- -----------------------------------
+  `sessionId`                         Exam session identifier
+
+  `studentId`                         Student identifier
+
+  `status`                            Exam-session status
+
+  `score`                             Score achieved
+
+  `totalMarks`                        Maximum marks
+
+  `correctAnswers`                    Number of correct answers
+
+  `answeredQuestions`                 Number of answered questions
+
+  `submittedAt`                       Submission date/time
+
+  `totalWarnings`                     Total recorded proctoring warnings
+
+  `isFlagged`                         Whether the submission is flagged
+
+  `reviewStatus`                      Review state, such as
+                                      `PENDING_REVIEW`, `CLEARED`,
+                                      `REVIEWED`, or `NOT_REQUIRED`
+  -----------------------------------------------------------------------
+
+The exact JSON types depend on the DTO. Keep the DTO aligned with the
+frontend.
+
+**Result-release rule:** A `PENDING_REVIEW` submission must not be
+treated as cleared. If the implementation blocks publication for the
+entire quiz, all quiz results remain unpublished until review is
+resolved. If publication is per student, enforce the restriction when
+serving individual student results.
+
+### Endpoint Summary
+
+  Area              Base path
+  ----------------- ------------------------
+  Authentication    `/api/auth`
+  User management   `/api/users`
+  Quiz management   `/api/quizzes`
+  Student exams     `/api/student/exams`
+  Teacher results   `/api/teacher/results`
+
+See [`src/main/resources/openapi.yaml`](src/main/resources/openapi.yaml)
+for additional request/response schemas and documented response codes.
+Keep it synchronized with controller changes.
+
+------------------------------------------------------------------------
 
 ## Getting Started
 
 ### Prerequisites
 
-- Java Development Kit (JDK) 21
-- Git
-- A MongoDB instance
-- Internet access for downloading Gradle dependencies
+-   JDK 21
+-   Git
+-   MongoDB instance
+-   Internet access for Gradle dependencies
 
-### Step 1: Clone the Repository
+### 1. Clone the Repository
 
-```bash
+``` bash
 git clone https://github.com/devdave17/EMS.git
 cd EMS
 ```
 
-### Step 2: Configure MongoDB
+### 2. Configure MongoDB
 
-Configure the MongoDB connection using the property names expected by the application.
+Configure the MongoDB connection using the property names expected by
+the application. Ensure the connection string, database permissions, and
+network access rules are correct.
 
-Ensure that:
-- The MongoDB connection string is correct.
-- The database user has the required permissions.
-- Your IP address is allowed by the database network configuration.
+**Security:** Never commit database credentials, JWT secrets, or other
+sensitive values.
 
-**Security note:** Never commit database credentials, JWT secrets, or other sensitive configuration values to the repository.
+### 3. Run the Application
 
-### Step 3: Run the Application
+Windows Command Prompt:
 
-**Windows Command Prompt:**
-
-```bat
+``` bat
 gradlew.bat bootRun
 ```
 
-**macOS/Linux:**
+macOS/Linux:
 
-```bash
+``` bash
 ./gradlew bootRun
 ```
 
-After the application starts, open:
+Open `http://localhost:8080` after the application starts.
 
-```text
-http://localhost:8080
-```
-
----
+------------------------------------------------------------------------
 
 ## Example API Requests
 
-The following commands are examples for local testing. Use credentials and tokens configured for your environment.
+Use test credentials, IDs, and tokens for your environment.
 
-### 1. Login
+### Login
 
-```bash
+``` bash
 curl -i -X POST http://localhost:8080/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"student@example.com","password":"your-password"}'
 ```
 
-### 2. Create a User
+### Retrieve Users
 
-```bash
-curl -i -X POST http://localhost:8080/api/users \
-  -H "Content-Type: application/json" \
-  -H "Idempotency-Key: user-create-demo-001" \
-  -d '{"name":"Demo User","email":"demo@example.com","password":"ChangeThisPassword123!","role":"STUDENT","status":"ACTIVE"}'
-```
-
-### 3. Retrieve Users
-
-```bash
+``` bash
 curl -i http://localhost:8080/api/users \
   -H "Accept: application/json" \
   -H "Authorization: Bearer YOUR_TOKEN"
 ```
 
-### 4. Create a Quiz
+### Create a Quiz
 
-```bash
+``` bash
 curl -i -X POST http://localhost:8080/api/quizzes \
   -H "Content-Type: application/json" \
   -H "Idempotency-Key: quiz-create-demo-001" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
   -d '{"title":"Java Fundamentals","description":"Core Java concepts"}'
 ```
 
-### 5. Retrieve Quizzes
+### Retrieve Teacher Results
 
-```bash
-curl -i http://localhost:8080/api/quizzes
+``` bash
+curl -i http://localhost:8080/api/teacher/results \
+  -H "Accept: application/json" \
+  -H "Authorization: Bearer TEACHER_TOKEN"
 ```
 
-Replace example passwords and tokens with your own test values. Actual responses depend on the database contents and application configuration.
+### Save Proctoring Warning Count
 
----
+``` bash
+curl -i -X PUT http://localhost:8080/api/student/exams/sessions/SESSION_ID/warnings \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer STUDENT_TOKEN" \
+  -d '{"totalWarnings":5}'
+```
+
+### Submit an Exam
+
+``` bash
+curl -i -X POST http://localhost:8080/api/student/exams/sessions/SESSION_ID/submit \
+  -H "Authorization: Bearer STUDENT_TOKEN"
+```
+
+Save warnings before submitting the exam.
+
+### Publish Quiz Results
+
+``` bash
+curl -i -X POST http://localhost:8080/api/teacher/results/QUIZ_ID/publish \
+  -H "Authorization: Bearer TEACHER_TOKEN"
+```
+
+------------------------------------------------------------------------
 
 ## Important HTTP Behaviors
 
-| Concept | Implementation |
-|---|---|
-| Resource creation | `201 Created` and `Location` header |
-| Idempotent creation | `Idempotency-Key` header |
-| Conflicting idempotency request | `409 Conflict` |
-| Conditional retrieval | ETag and `If-None-Match` |
-| Conditional update | ETag and `If-Match` |
-| Unchanged resource | `304 Not Modified` |
-| Failed update precondition | `412 Precondition Failed` |
-| Request validation | Validation error responses |
-| Standardized errors | Problem Details-style JSON |
-| Rate limiting | `429 Too Many Requests` and `Retry-After` |
-| API contract | OpenAPI specification |
+  -----------------------------------------------------------------------
+  Concept                             Behavior
+  ----------------------------------- -----------------------------------
+  Resource creation                   `201 Created` and `Location` header
+                                      where configured
 
----
+  Idempotent creation                 `Idempotency-Key` header
+
+  Conflicting idempotency request     `409 Conflict`
+
+  Conditional retrieval               ETag and `If-None-Match`, where
+                                      configured
+
+  Conditional update                  ETag and `If-Match`, where
+                                      configured
+
+  Unchanged resource                  `304 Not Modified`, where
+                                      configured
+
+  Failed update precondition          `412 Precondition Failed`, where
+                                      configured
+
+  Rate limiting                       `429 Too Many Requests` and
+                                      `Retry-After`, where configured
+
+  Validation                          Validation error responses
+
+  Proctoring warning save after       Rejected because the session is no
+  submission                          longer `IN_PROGRESS`
+  -----------------------------------------------------------------------
 
 ## Security Considerations
 
-- Keep database credentials and signing secrets outside source control.
-- Use strong passwords and environment-specific configuration.
-- Use test credentials for demonstrations.
-- Do not expose sensitive user information in API responses.
-- Verify security rules before deploying the application publicly.
+-   Keep database credentials and signing secrets outside source
+    control.
+-   Use strong passwords and environment-specific configuration.
+-   Do not expose sensitive user information in API responses.
+-   Enforce role checks, ownership checks, and result-release rules on
+    the backend.
+-   Do not rely only on frontend controls to protect pending-review
+    results.
+-   Verify security rules before public deployment.
 
 ## Repository Links
 
-- **Source Code:** [GitHub Repository](https://github.com/devdave17/EMS)
-- **Working Demonstration:** [Watch on Google Drive](https://drive.google.com/file/d/1YHTr4C86DSjM63jwR5ihjT-Xy6B0uZnp)
-- **API Specification:** [`openapi.yaml`](src/main/resources/openapi.yaml)
+-   **Source Code:** [GitHub
+    Repository](https://github.com/devdave17/EMS)
+-   **API Specification:**
+    [`openapi.yaml`](src/main/resources/openapi.yaml)
 
----
+------------------------------------------------------------------------
 
 ## License
 
