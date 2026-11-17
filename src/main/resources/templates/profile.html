@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="/EMSlogo.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile | EMS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-800">
+<main class="mx-auto max-w-4xl p-5 sm:p-8">
+    <header class="mb-8">
+        <p class="text-sm text-slate-500">EMS / My Profile</p>
+        <h1 class="mt-1 text-3xl font-bold">My Profile</h1>
+        <p class="mt-2 text-sm text-slate-500">
+            Your account information is shown below.
+        </p>
+    </header>
+
+    <div id="loading" class="rounded-2xl border bg-white p-8 text-center text-sm text-slate-500">
+        Loading profile...
+    </div>
+    <div id="error" class="hidden rounded-2xl border border-red-200 bg-red-50 p-6 text-sm text-red-700"></div>
+
+    <section id="profile-card" class="hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div class="flex items-center gap-4 border-b border-slate-100 pb-6">
+            <div id="avatar" class="flex h-14 w-14 items-center justify-center rounded-full bg-indigo-100 text-xl font-bold text-indigo-700"></div>
+            <div>
+                <h2 id="profile-name" class="text-xl font-bold text-slate-900"></h2>
+                <p id="profile-role" class="mt-1 text-sm text-slate-500"></p>
+            </div>
+        </div>
+
+        <dl class="mt-6 grid gap-5 sm:grid-cols-2">
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">Full name</dt>
+                <dd id="detail-name" class="mt-1 text-sm text-slate-900"></dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">Email</dt>
+                <dd id="detail-email" class="mt-1 break-all text-sm text-slate-900"></dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">Role</dt>
+                <dd id="detail-role" class="mt-1 text-sm text-slate-900"></dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">Account status</dt>
+                <dd id="detail-status" class="mt-1 text-sm text-slate-900"></dd>
+            </div>
+
+        </dl>
+
+        <div class="mt-8 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+            Profile details cannot be updated here. If you need to update your information,
+            please contact your institute administrator.
+        </div>
+    </section>
+</main>
+
+<script>
+    (() => {
+        const token = localStorage.getItem('token');
+        let user;
+        try {
+            user = JSON.parse(localStorage.getItem('ems_current_user') || 'null');
+        } catch {
+            user = null;
+        }
+
+        if (!token || !user) {
+            window.location.replace('/auth/login');
+            return;
+        }
+
+        const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, character => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        })[character]);
+
+        async function loadProfile() {
+            try {
+                const response = await fetch('/api/profile', {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        Accept: 'application/json'
+                    }
+                });
+                if (response.status === 401) {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('ems_current_user');
+                    window.location.replace('/auth/login');
+                    return;
+                }
+                if (!response.ok) {
+                    throw new Error(`Unable to load profile (HTTP ${response.status}).`);
+                }
+
+                const profile = await response.json();
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('profile-card').classList.remove('hidden');
+                document.getElementById('avatar').textContent = profile.name.charAt(0).toUpperCase();
+                document.getElementById('profile-name').textContent = profile.name;
+                document.getElementById('profile-role').textContent = profile.role;
+                document.getElementById('detail-name').textContent = profile.name;
+                document.getElementById('detail-email').textContent = profile.email;
+                document.getElementById('detail-role').textContent = profile.role;
+                document.getElementById('detail-status').textContent = profile.status;
+            } catch (error) {
+                document.getElementById('loading').classList.add('hidden');
+                const errorBox = document.getElementById('error');
+                errorBox.textContent = error.message;
+                errorBox.classList.remove('hidden');
+            }
+        }
+
+        loadProfile();
+    })();
+</script>
+<script src="/js/ems-navbar.js"></script>
+</body>
+</html>
